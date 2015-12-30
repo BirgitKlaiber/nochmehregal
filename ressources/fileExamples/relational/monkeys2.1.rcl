@@ -1,0 +1,16 @@
+signature
+    Monkey = {andy, bobby, charly}
+
+    feeds(Monkey, Monkey)
+    hungry(Monkey)
+
+conditionals
+	kb1{
+	    (feeds(X, Y) | !hungry(X), hungry(Y))[0.80]
+	    ( !feeds(X, Y) | hungry(X))[0.999]
+	    ( !feeds(X, Y) | !hungry(X),!hungry(Y))[0.90]
+	    (feeds(X, charly) | !hungry(X))[0.95]
+	    (feeds(X, X))[0.001]
+	}
+	
+	

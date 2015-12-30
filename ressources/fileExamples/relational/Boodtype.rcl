@@ -1,0 +1,121 @@
+signature
+	Bloodtype = {a,b,ab,null}
+	Chrom = {aChrom,bChrom,nullChrom}
+	Person = {uwe,kristian,annette,wilhelm,alfred,marianne,herbert,anneliese,pauline,margot,nadine}
+
+	father(Person,Person)
+	mother(Person,Person)
+	founder(Person)
+	mchrom(Person,Chrom)
+	pchrom(Person,Chrom)
+	bloodtype(Person,Bloodtype)
+
+conditionals
+	(mchrom(X,aChrom)|founder(X))[0.3]
+	(mchrom(X,bChrom)|founder(X))[0.3]
+	(mchrom(X,nullChrom)|founder(X))[0.4]
+	
+	(pchrom(X,aChrom)|founder(X))[0.3]
+	(pchrom(X,bChrom)|founder(X))[0.3]
+	(pchrom(X,nullChrom)|founder(X))[0.4]
+	
+	(mchrom(X,aChrom)|mother(Y,X),pchrom(Y,aChrom),mchrom(Y,aChrom))[0.9]
+	(mchrom(X,aChrom)|mother(Y,X),pchrom(Y,aChrom),mchrom(Y,bChrom))[0.49]
+	(mchrom(X,aChrom)|mother(Y,X),pchrom(Y,aChrom),mchrom(Y,nullChrom))[0.49]
+	(mchrom(X,aChrom)|mother(Y,X),pchrom(Y,bChrom),mchrom(Y,aChrom))[0.49]
+	(mchrom(X,aChrom)|mother(Y,X),pchrom(Y,bChrom),mchrom(Y,bChrom))[0.05]
+	(mchrom(X,aChrom)|mother(Y,X),pchrom(Y,bChrom),mchrom(Y,nullChrom))[0.02]
+	(mchrom(X,aChrom)|mother(Y,X),pchrom(Y,nullChrom),mchrom(Y,aChrom))[0.49]
+	(mchrom(X,aChrom)|mother(Y,X),pchrom(Y,nullChrom),mchrom(Y,bChrom))[0.02]
+	(mchrom(X,aChrom)|mother(Y,X),pchrom(Y,nullChrom),mchrom(Y,nullChrom))[0.05]
+	
+	(mchrom(X,bChrom)|mother(Y,X),pchrom(Y,aChrom),mchrom(Y,aChrom))[0.05]
+	(mchrom(X,bChrom)|mother(Y,X),pchrom(Y,aChrom),mchrom(Y,bChrom))[0.49]
+	(mchrom(X,bChrom)|mother(Y,X),pchrom(Y,aChrom),mchrom(Y,nullChrom))[0.02]
+	(mchrom(X,bChrom)|mother(Y,X),pchrom(Y,bChrom),mchrom(Y,aChrom))[0.49]
+	(mchrom(X,bChrom)|mother(Y,X),pchrom(Y,bChrom),mchrom(Y,bChrom))[0.9]
+	(mchrom(X,bChrom)|mother(Y,X),pchrom(Y,bChrom),mchrom(Y,nullChrom))[0.49]
+	(mchrom(X,bChrom)|mother(Y,X),pchrom(Y,nullChrom),mchrom(Y,aChrom))[0.02]
+	(mchrom(X,bChrom)|mother(Y,X),pchrom(Y,nullChrom),mchrom(Y,bChrom))[0.49]
+	(mchrom(X,bChrom)|mother(Y,X),pchrom(Y,nullChrom),mchrom(Y,nullChrom))[0.05]
+	
+	(mchrom(X,nullChrom)|mother(Y,X),pchrom(Y,aChrom),mchrom(Y,aChrom))[0.05]
+	(mchrom(X,nullChrom)|mother(Y,X),pchrom(Y,aChrom),mchrom(Y,bChrom))[0.02]
+	(mchrom(X,nullChrom)|mother(Y,X),pchrom(Y,aChrom),mchrom(Y,nullChrom))[0.49]
+	(mchrom(X,nullChrom)|mother(Y,X),pchrom(Y,bChrom),mchrom(Y,aChrom))[0.02]
+	(mchrom(X,nullChrom)|mother(Y,X),pchrom(Y,bChrom),mchrom(Y,bChrom))[0.05]
+	(mchrom(X,nullChrom)|mother(Y,X),pchrom(Y,bChrom),mchrom(Y,nullChrom))[0.49]
+	(mchrom(X,nullChrom)|mother(Y,X),pchrom(Y,nullChrom),mchrom(Y,aChrom))[0.49]
+	(mchrom(X,nullChrom)|mother(Y,X),pchrom(Y,nullChrom),mchrom(Y,bChrom))[0.49]
+	(mchrom(X,nullChrom)|mother(Y,X),pchrom(Y,nullChrom),mchrom(Y,nullChrom))[0.9]
+	
+	(mchrom(X,aChrom)|father(Y,X),pchrom(Y,aChrom),mchrom(Y,aChrom))[0.9]
+	(mchrom(X,aChrom)|father(Y,X),pchrom(Y,aChrom),mchrom(Y,bChrom))[0.49]
+	(mchrom(X,aChrom)|father(Y,X),pchrom(Y,aChrom),mchrom(Y,nullChrom))[0.49]
+	(mchrom(X,aChrom)|father(Y,X),pchrom(Y,bChrom),mchrom(Y,aChrom))[0.49]
+	(mchrom(X,aChrom)|father(Y,X),pchrom(Y,bChrom),mchrom(Y,bChrom))[0.05]
+	(mchrom(X,aChrom)|father(Y,X),pchrom(Y,bChrom),mchrom(Y,nullChrom))[0.02]
+	(mchrom(X,aChrom)|father(Y,X),pchrom(Y,nullChrom),mchrom(Y,aChrom))[0.49]
+	(mchrom(X,aChrom)|father(Y,X),pchrom(Y,nullChrom),mchrom(Y,bChrom))[0.02]
+	(mchrom(X,aChrom)|father(Y,X),pchrom(Y,nullChrom),mchrom(Y,nullChrom))[0.05]
+	
+	(mchrom(X,bChrom)|father(Y,X),pchrom(Y,aChrom),mchrom(Y,aChrom))[0.05]
+	(mchrom(X,bChrom)|father(Y,X),pchrom(Y,aChrom),mchrom(Y,bChrom))[0.49]
+	(mchrom(X,bChrom)|father(Y,X),pchrom(Y,aChrom),mchrom(Y,nullChrom))[0.02]
+	(mchrom(X,bChrom)|father(Y,X),pchrom(Y,bChrom),mchrom(Y,aChrom))[0.49]
+	(mchrom(X,bChrom)|father(Y,X),pchrom(Y,bChrom),mchrom(Y,bChrom))[0.9]
+	(mchrom(X,bChrom)|father(Y,X),pchrom(Y,bChrom),mchrom(Y,nullChrom))[0.49]
+	(mchrom(X,bChrom)|father(Y,X),pchrom(Y,nullChrom),mchrom(Y,aChrom))[0.02]
+	(mchrom(X,bChrom)|father(Y,X),pchrom(Y,nullChrom),mchrom(Y,bChrom))[0.49]
+	(mchrom(X,bChrom)|father(Y,X),pchrom(Y,nullChrom),mchrom(Y,nullChrom))[0.05]
+
+	(mchrom(X,nullChrom)|father(Y,X),pchrom(Y,aChrom),mchrom(Y,aChrom))[0.05]
+	(mchrom(X,nullChrom)|father(Y,X),pchrom(Y,aChrom),mchrom(Y,bChrom))[0.02]
+	(mchrom(X,nullChrom)|father(Y,X),pchrom(Y,aChrom),mchrom(Y,nullChrom))[0.49]
+	(mchrom(X,nullChrom)|father(Y,X),pchrom(Y,bChrom),mchrom(Y,aChrom))[0.02]
+	(mchrom(X,nullChrom)|father(Y,X),pchrom(Y,bChrom),mchrom(Y,bChrom))[0.05]
+	(mchrom(X,nullChrom)|father(Y,X),pchrom(Y,bChrom),mchrom(Y,nullChrom))[0.49]
+	(mchrom(X,nullChrom)|father(Y,X),pchrom(Y,nullChrom),mchrom(Y,aChrom))[0.49]
+	(mchrom(X,nullChrom)|father(Y,X),pchrom(Y,nullChrom),mchrom(Y,bChrom))[0.49]
+	(mchrom(X,nullChrom)|father(Y,X),pchrom(Y,nullChrom),mchrom(Y,nullChrom))[0.9]	
+
+
+	(bloodtype(X,a)|pchrom(X,aChrom),mchrom(X,aChrom))[0.9]
+	(bloodtype(X,a)|pchrom(X,aChrom),mchrom(X,bChrom))[0.03]
+	(bloodtype(X,a)|pchrom(X,aChrom),mchrom(X,nullChrom))[0.9]
+	(bloodtype(X,a)|pchrom(X,bChrom),mchrom(X,aChrom))[0.03]
+	(bloodtype(X,a)|pchrom(X,bChrom),mchrom(X,bChrom))[0.04]
+	(bloodtype(X,a)|pchrom(X,bChrom),mchrom(X,nullChrom))[0.02]
+	(bloodtype(X,a)|pchrom(X,nullChrom),mchrom(X,aChrom))[0.9]
+	(bloodtype(X,a)|pchrom(X,nullChrom),mchrom(X,bChrom))[0.02]
+	(bloodtype(X,a)|pchrom(X,nullChrom),mchrom(X,nullChrom))[0.02]
+
+	(bloodtype(X,b)|pchrom(X,aChrom),mchrom(X,aChrom))[0.03]
+	(bloodtype(X,b)|pchrom(X,aChrom),mchrom(X,bChrom))[0.03]
+	(bloodtype(X,b)|pchrom(X,aChrom),mchrom(X,nullChrom))[0.04]
+	(bloodtype(X,b)|pchrom(X,bChrom),mchrom(X,aChrom))[0.03]
+	(bloodtype(X,b)|pchrom(X,bChrom),mchrom(X,bChrom))[0.9]
+	(bloodtype(X,b)|pchrom(X,bChrom),mchrom(X,nullChrom))[0.9]
+	(bloodtype(X,b)|pchrom(X,nullChrom),mchrom(X,aChrom))[0.03]
+	(bloodtype(X,b)|pchrom(X,nullChrom),mchrom(X,bChrom))[0.9]
+	(bloodtype(X,b)|pchrom(X,nullChrom),mchrom(X,nullChrom))[0.04]
+
+	(bloodtype(X,ab)|pchrom(X,aChrom),mchrom(X,aChrom))[0.03]
+	(bloodtype(X,ab)|pchrom(X,aChrom),mchrom(X,bChrom))[0.9]
+	(bloodtype(X,ab)|pchrom(X,aChrom),mchrom(X,nullChrom))[0.03]
+	(bloodtype(X,ab)|pchrom(X,bChrom),mchrom(X,aChrom))[0.9]
+	(bloodtype(X,ab)|pchrom(X,bChrom),mchrom(X,bChrom))[0.03]
+	(bloodtype(X,ab)|pchrom(X,bChrom),mchrom(X,nullChrom))[0.04]
+	(bloodtype(X,ab)|pchrom(X,nullChrom),mchrom(X,aChrom))[0.03]
+	(bloodtype(X,ab)|pchrom(X,nullChrom),mchrom(X,bChrom))[0.04]
+	(bloodtype(X,ab)|pchrom(X,nullChrom),mchrom(X,nullChrom))[0.04]
+
+	(bloodtype(X,null)|pchrom(X,aChrom),mchrom(X,aChrom))[0.04]
+	(bloodtype(X,null)|pchrom(X,aChrom),mchrom(X,bChrom))[0.04]
+	(bloodtype(X,null)|pchrom(X,aChrom),mchrom(X,nullChrom))[0.03]
+	(bloodtype(X,null)|pchrom(X,bChrom),mchrom(X,aChrom))[0.04]
+	(bloodtype(X,null)|pchrom(X,bChrom),mchrom(X,bChrom))[0.03]
+	(bloodtype(X,null)|pchrom(X,bChrom),mchrom(X,nullChrom))[0.04]
+	(bloodtype(X,null)|pchrom(X,nullChrom),mchrom(X,aChrom))[0.04]
+	(bloodtype(X,null)|pchrom(X,nullChrom),mchrom(X,bChrom))[0.04]
+	(bloodtype(X,null)|pchrom(X,nullChrom),mchrom(X,nullChrom))[0.9]

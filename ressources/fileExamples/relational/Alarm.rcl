@@ -1,0 +1,26 @@
+signature
+	Value={yes,no}
+	
+	burglary(Value)
+	earthquake(Value)
+	alarm(Value)
+	johncalls(Value)
+	marycalls(Value)
+
+conditionals
+	( burglary(X) | burglary(Y) ) [0] <X!=Y>
+	( earthquake(X) | earthquake(Y) ) [0] <X!=Y>
+	( alarm(X) | alarm(Y) ) [0] <X!=Y>
+	( johncalls(X) | johncalls(Y) ) [0] <X!=Y>
+	( marycalls(X) | marycalls(Y) ) [0] <X!=Y>
+	
+	( burglary(yes) ) [0.01]
+	( earthquake(yes) ) [0.1]
+	( alarm(yes) | burglary(yes), earthquake(yes) ) [0.95]
+	( alarm(yes) | burglary(yes), earthquake(no) ) [0.8]
+	( alarm(yes) | burglary(no), earthquake(yes) ) [0.3]
+	( alarm(yes) | burglary(no), earthquake(no) ) [0.001]
+	( johncalls(yes) | alarm(yes) ) [0.6]
+	( johncalls(yes) | alarm(no) ) [0.1]
+	( marycalls(yes) | alarm(yes) ) [0.7]
+	( marycalls(yes) | alarm(no) ) [0.05]

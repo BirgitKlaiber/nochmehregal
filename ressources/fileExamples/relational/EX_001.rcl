@@ -1,0 +1,18 @@
+### EX_001.rcl ###
+signature
+	### constants ###
+	Sort1={c1,c2,c3},
+	Sort2={c4,c5,c6}
+
+	### predicates ###
+	P1(Sort1)
+	P2(Sort2, Sort1),
+	P3()
+
+conditionals
+	(P2(c4,c2), P1(X))<X!=c1, X==c2; X==c2>
+	(P2(c4,c2))[0.5]
+    (P2(c4,c2) and P3 | P3 and P1(c3) or P2(c6, X))[.9]<X==c1, X!=c2; X==c3, X!=c1>
+	(P3 | P1(c3))[.7]
+	(P1(Y) | P1(c3))<Y!=c2; Y!=c1, Y!=c2>
+	(P3 | P1(c3))

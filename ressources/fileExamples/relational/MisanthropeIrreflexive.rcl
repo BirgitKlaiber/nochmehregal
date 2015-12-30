@@ -1,0 +1,9 @@
+signature
+	Group = { a,b,c }
+
+	likes(Group, Group)
+
+conditionals
+	( likes(U, V) | likes(V,U) )[0.9]<U!=V>
+	( likes(a, V) )[0.05]<V!=a>	
+	( likes(U,U) ) [0]

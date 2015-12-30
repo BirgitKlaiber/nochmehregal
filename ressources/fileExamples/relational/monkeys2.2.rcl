@@ -1,0 +1,12 @@
+signature
+    Monkey = {andy, bobby, charly}
+
+    feeds(Monkey, Monkey)
+    hungry(Monkey)
+
+conditionals
+	kb2{
+	  ( hungry (X) | feeds(X, Y))[0.2]<X != Y>
+	}
+	
+	

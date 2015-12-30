@@ -1,0 +1,10 @@
+signature
+	Elephant = { clyde, dumbo, tuffi }
+	Keeper = { fred, hank }
+
+	likes(Elephant, Keeper)
+
+conditionals
+	( likes(X, Y) )[0.9]<Y!=fred>
+	( likes(X, fred) )[0.3]
+<X!=clyde> ( likes(clyde, fred) )[1.0]

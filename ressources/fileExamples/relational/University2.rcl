@@ -1,0 +1,38 @@
+signature
+	Person =  {hanna, ivy, gail}
+	Title = {title1, title2}
+	Phase = {pre_quals, post_quals}
+	Position = {faculty, faculty_emeritus}
+	
+	hasPosition(Person,Position)
+	advisedBy(Person,Person)
+	professor(Person)
+	publication(Title,Person)
+	inPhase(Person,Phase)
+	student(Person)
+
+
+conditionals
+	(student(S)|professor(P))[0.01] 
+	(student(S)|advisedBy(S,P))[0.99]
+	
+	(professor(P)|advisedBy(S,P))[0.98]
+	(professor(P)|hasPosition(P,faculty))[1.0]
+	(professor(P)|hasPosition(P,faculty_emeritus))[1.0]
+	
+	(advisedBy(S,P)|student(S),professor(P),publication(Z,S),publication(Z,P))[0.99] <S!=P>
+	
+	(inPhase(S,pre_quals)|advisedBy(S,P),hasPosition(P,faculty))[0.32]
+	(inPhase(S,pre_quals)|advisedBy(S,P),hasPosition(P,faculty_emeritus))[0.55]
+	(inPhase(S,post_quals)|advisedBy(S,P),hasPosition(P,faculty))[0.19]
+	(inPhase(S,post_quals)|advisedBy(S,P),hasPosition(P,faculty_emeritus))[0.93]
+	
+	(inPhase(S,pre_quals)|inPhase(S,post_quals))[0.02]
+	(inPhase(S,post_quals)|inPhase(S,pre_quals))[0.11]
+	
+	(professor(P))[0.08]
+	(student(S))[0.16]
+	(advisedBy(S,P))[0.05]
+	(publication(T,P))[0.35]
+	(inPhase(S,Ph))[0.48]
+	(hasPosition(P,Pos))[0.37]

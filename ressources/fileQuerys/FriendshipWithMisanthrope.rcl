@@ -1,0 +1,8 @@
+signature
+	Group = { a,b,c }
+
+	likes(Group, Group)
+
+conditionals
+	kb{( likes(U, V) | likes(V,U) )[0.9]<U!=V>
+	( likes(U, X) | likes (U, V), likes (V, X) )[0.8]<U!=V, X!=V, X!=U > ( likes(a, V) )[0.05]<V!=a>} query1{(likes(U, V))}  query2{(likes(U, V) | likes(V, X))} query3{(likes(U, V) | likes(V, U) )}  query4{(likes(U, X) | likes(U, V), likes (V, X))}

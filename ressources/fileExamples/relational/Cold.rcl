@@ -1,0 +1,14 @@
+signature
+	Person  = {anna,bob,carl,dave}
+
+	cold(Person)
+	susceptible(Person)
+	contact(Person, Person)
+
+conditionals
+	( cold(X) | contact(X, Y), cold(Y) ) [0.6] <X!=Y>
+	( cold(X) | susceptible(X) )[0.1]
+	( cold(X) )[0.05] 
+
+	( contact(X,Y) | contact(Y,X) )[1.00] <X!=Y>
+	( contact(X,X) )[0.00]
