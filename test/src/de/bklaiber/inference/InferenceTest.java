@@ -1,4 +1,4 @@
-package de.klaiber.inference;
+package de.bklaiber.inference;
 
 import static org.junit.Assert.*;
 
