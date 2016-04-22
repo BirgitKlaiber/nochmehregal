@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import de.bklaiber.Types.ProbabilityConditional;
 
 /**
- * @author birgit klaiber
+ * 
+ * Used to generate the output if all conditionals have a different probability.
+ * 
+ * @author Birgit Klaiber
  *
  */
 public class PrintNoEqualProbabilities implements PrintConditionalProbabilities
@@ -15,6 +18,7 @@ public class PrintNoEqualProbabilities implements PrintConditionalProbabilities
 
 	/**
 	 * 
+	 * Constructor of PrintNoEqualProbabilities.
 	 * 
 	 * @param listOfConditionals
 	 */
@@ -25,6 +29,9 @@ public class PrintNoEqualProbabilities implements PrintConditionalProbabilities
 
 	}// endofconstructor
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString()
 	{

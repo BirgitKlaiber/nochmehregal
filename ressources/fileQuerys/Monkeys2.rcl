@@ -1,0 +1,24 @@
+signature
+    Monkey = {andy, bob, charly}
+
+    feeds(Monkey, Monkey)
+    hungry(Monkey)
+
+conditionals
+	kb{
+	    (feeds(X, Y) | !hungry(X), hungry(Y))[0.80]
+	<X != Y>    ( !feeds(X, Y) | hungry(X))[0.999]
+<X!=Y>   
+( !feeds(X, Y) | !hungry(X), !hungry(Y))[0.90] 
+
+ (feeds(X, charly) | !hungry(X))[0.95]
+(feeds(X, X))[0.001]
+
+	}
+	query1{
+	    (feeds(X, Y) | !hungry(X), hungry(Y)) } query2{  ( !feeds(X, Y) | hungry(X))  } query3{	(
+feeds(X, Y))} query4{ (!hungry(X), hungry(Y))	}
+	
+query5{ (feeds(X, Y)|  !hungry(X))	}
+
+query6{ (!feeds(X, Y)|  !hungry(X), !hungry(Y))	}

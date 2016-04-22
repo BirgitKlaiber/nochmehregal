@@ -4,6 +4,13 @@ import java.util.ArrayList;
 
 import de.bklaiber.Types.ProbabilityConditional;
 
+/**
+ * 
+ * Manages the case where there is a single exception.
+ * 
+ * @author Birgit Klaiber
+ *
+ */
 public class PrintSingleException
 {
 	private ArrayList<ProbabilityConditional> listOfConditionals;

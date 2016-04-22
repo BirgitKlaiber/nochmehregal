@@ -1,0 +1,14 @@
+signature
+    Person = {Anna, Bob, Chris}
+
+    sport(Person)
+    normalWeight(Person)
+
+conditionals
+	kb{
+	    (normalWeight(X) | sport(X))[0.80]<X != Chris> 	(sport(Chris) )[0]}
+   query1{
+	    (sport(X) ) }	query2{   (normalWeight(X))
+}  query3{   (sport(X) | normalWeight(X))
+}   query4{ (normalWeight(X) | sport(X))
+}	

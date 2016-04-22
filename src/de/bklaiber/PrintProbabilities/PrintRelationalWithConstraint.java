@@ -8,9 +8,15 @@ import edu.cs.ai.log4KR.relational.classicalLogic.syntax.RelationalAtom;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Variable;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
+/**
+ * 
+ * Used to generate a relational conditonal with a single exception.
+ * 
+ * @author Birgit Klaiber
+ *
+ */
 public class PrintRelationalWithConstraint implements
-		PrintConditionalProbabilities
-{
+		PrintConditionalProbabilities {
 	private RelationalConditional relationalConditional;
 	private ProbabilityConditional probalilityConditional;
 	private Collection<Atom<RelationalAtom>> relationalAtoms;
@@ -24,12 +30,22 @@ public class PrintRelationalWithConstraint implements
 	private boolean ant = false;
 	private boolean cons = false;
 
-	public void setAnt (boolean ant)
-	{
+	/**
+	 * Sets ant.
+	 * 
+	 * @param ant
+	 */
+	public void setAnt(boolean ant) {
 		this.ant = ant;
 	}
-	public void setCons(boolean cons)
-	{
+
+	/**
+	 * 
+	 * Sets cons.
+	 * 
+	 * @param cons
+	 */
+	public void setCons(boolean cons) {
 		this.cons = cons;
 	}
 
@@ -39,14 +55,26 @@ public class PrintRelationalWithConstraint implements
 	 * 
 	 * public void setAtomsOfConsequence( Collection<Atom<RelationalAtom>>
 	 * atomsOfConsequence) { this.atomsOfConsequence = atomsOfConsequence; }
-	 */public void setNull(boolean isNull)
-	{
+	 */
+
+	/**
+	 * 
+	 * Sets isNull.
+	 * 
+	 * @param isNull
+	 */
+	public void setNull(boolean isNull) {
 		this.isNull = isNull;
 	}
 
+	/**
+	 * 
+	 * Constructor of class PrintRelationalWithConstraint.
+	 * 
+	 * @param probalilityConditional
+	 */
 	public PrintRelationalWithConstraint(
-			ProbabilityConditional probalilityConditional)
-	{
+			ProbabilityConditional probalilityConditional) {
 		super();
 		this.probalilityConditional = probalilityConditional;
 		this.relationalConditional = probalilityConditional
@@ -54,105 +82,93 @@ public class PrintRelationalWithConstraint implements
 		this.relationalAtoms = relationalConditional.getAtoms();
 		variables = new HashSet<Variable>();
 		variablesCons = new HashSet<Variable>();
-	}
+	}// endof PrintrelationalwithConstraint
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder probCond = new StringBuilder();
 
-		// wenn die Wahrscheinlichkeit Null ist, dann die Atome der Konsequenz
-		// betrachten, da die Wahrscheinlichkeit der Konsequenz Null ist
-		if (isNull)
-		{
+		// if the probability is Null, look at the atoms of the consequence,
+		// because the probability of the consequence is Null
+		//get all the variables; later used for intersection
+
+		if (isNull) {
 			atomsOfConsequence = relationalConditional.getConsequence()
 					.getAtoms();
-			for (Atom<RelationalAtom> atom : atomsOfConsequence)
-			{
+			for (Atom<RelationalAtom> atom : atomsOfConsequence) {
 				Collection<Variable> variablesOfConsequence = ((RelationalAtom) atom)
 						.getVariables();
-				for (Variable variable : variablesOfConsequence)
-				{
+				for (Variable variable : variablesOfConsequence) {
 					// System.out.println(variable.toString());
 					variables.add(variable);
-				}//endfor
+				}// endfor
 
-			}//endfor
+			}// endfor
 
-		} else
-		{
-			// wenn die Wahrscheinlichkeit -1 ist, dann die Atome der
-			// Antezendenz betrachten, da die Wahrscheinlichkeit der Antezendenz
-			// Null ist
-			if (!possible || ant )
-			{
+		} else {
+			// if the probability is -1, then have a look at the atoms of the
+			// antecedence, because the probability of the antecedence is Null
+			if (!possible || ant) {
 
 				atomsOfAntecendence = relationalConditional.getAntecedence()
 						.getAtoms();
-				for (Atom<RelationalAtom> atom : atomsOfAntecendence)
-				{
+				for (Atom<RelationalAtom> atom : atomsOfAntecendence) {
 					Collection<Variable> variablesOfAntecendence = ((RelationalAtom) atom)
 							.getVariables();
-					for (Variable variable : variablesOfAntecendence)
-					{
+					for (Variable variable : variablesOfAntecendence) {
 						// System.out.println(variable.toString());
 						variables.add(variable);
-					}//endfor
+					}// endfor
 
-				}//endfor
+				}// endfor
 
-			}//endif
-			//else
-			//{
-				if(cons)
-				{
-					atomsOfConsequence = relationalConditional.getConsequence()
-							.getAtoms();
-					for (Atom<RelationalAtom> atom : atomsOfConsequence)
-					{
-						Collection<Variable> variablesOfConsequence = ((RelationalAtom) atom)
-								.getVariables();
-						for (Variable variable : variablesOfConsequence)
-						{
-							// System.out.println(variable.toString());
-							variablesCons.add(variable);
-						}//endfor
+			}// endif
+				// else
+				// {
+			
+			//get all the variables; later used for intersection
+			if (cons) {
+				atomsOfConsequence = relationalConditional.getConsequence()
+						.getAtoms();
+				for (Atom<RelationalAtom> atom : atomsOfConsequence) {
+					Collection<Variable> variablesOfConsequence = ((RelationalAtom) atom)
+							.getVariables();
+					for (Variable variable : variablesOfConsequence) {
+						// System.out.println(variable.toString());
+						variablesCons.add(variable);
+					}// endfor
 
-					}//endfor
+				}// endfor
 
-				}
-				//else
-				//{
-				if(possible && !ant && !cons)
-				{
-				for (Atom<RelationalAtom> atom : relationalAtoms)
-				{
+			}
+			// else
+			// {
+			//get the variables; later used for generating the exceptions
+			if (possible && !ant && !cons) {
+				for (Atom<RelationalAtom> atom : relationalAtoms) {
 					Collection<Variable> variablesOfAtom = ((RelationalAtom) atom)
 							.getVariables();
 					// System.out.println("Anzahl Variablen: " +
 					// variablesOfAtom.size());
 					// System.out.println(variablesOfAtom.toString());
-					for (Variable variable : variablesOfAtom)
-					{
+					for (Variable variable : variablesOfAtom) {
 						// System.out.println(variable.toString());
 						variables.add(variable);
-					}//endfor
+					}// endfor
 
-				}//endfor
-		}
-			//}//endelse
-			//}
-		}//endelse
+				}// endfor
+			}
+			// }//endelse
+			// }
+		}// endelse
 
 		probCond.append(probalilityConditional.relationalToString(true));
-		if (possible)
-		{
+		if (possible) {
 			// probCond.append(probalilityConditional.relationalToString(true));
 			probCond.append("["
 					+ Math.rint(probalilityConditional.getProbability() * 1000)
 					/ 1000 + "]");
-		} else
-		{
+		} else {
 			probCond.append(" ist keine zulaessige Anfrage fuer ");
 		}
 		// for (Variable variable : variables)
@@ -164,45 +180,41 @@ public class PrintRelationalWithConstraint implements
 		 * 
 		 * System.out.print(variable.toString()); System.out.println("\n"); }
 		 */
-		
-		if(variablesCons != null)
-		{
-			//ArrayList<Variable> variablesListCons = new ArrayList<>(variablesCons);
-			for (int i = 0; i < variablesCons.size(); i++)
-			{
-				ArrayList<Variable> variablesListCons = new ArrayList<>(variablesCons);
-				//System.out.println("i: " + variablesListCons.get(i));
+
+		//here the conditonals with constraints were generated
+		if (variablesCons != null) {
+			// ArrayList<Variable> variablesListCons = new
+			// ArrayList<>(variablesCons);
+			for (int i = 0; i < variablesCons.size(); i++) {
+				ArrayList<Variable> variablesListCons = new ArrayList<>(
+						variablesCons);
+				// System.out.println("i: " + variablesListCons.get(i));
 
 				// for (Variable otherVariable : variables)
 				for (int j = 1; j < variablesListCons.size(); j++)
 
 				{
-					//System.out.println("j: " + variablesListCons.get(j));
+					// System.out.println("j: " + variablesListCons.get(j));
 
 					// if(!(variablesList.get(i).toString().equals((variablesList).get(j).toString())));
-					if (variablesListCons.get(i).toString() != variablesListCons.get(j)
-							.toString())
-					{
+					if (variablesListCons.get(i).toString() != variablesListCons
+							.get(j).toString()) {
 						probCond.append("<" + variablesListCons.get(i));
-						if (equal)
-						{
+						if (equal) {
 							probCond.append("=" + variablesListCons.get(j));
 							probCond.append("> + ");
-						} else
-						{
+						} else {
 							probCond.append("!=" + variablesListCons.get(j));
 							probCond.append("> * ");
-						}
-						
-					}
-				}
-			}
+						}//endelse
 
-		}
+					}//endif
+				}//endfor
+			}//endfor
 
+		}//endif
 
-		for (int i = 0; i < variables.size(); i++)
-		{
+		for (int i = 0; i < variables.size(); i++) {
 
 			// System.out.println("i: " + variablesList.get(i));
 
@@ -213,46 +225,50 @@ public class PrintRelationalWithConstraint implements
 				// System.out.println("j: " + variablesList.get(j));
 
 				// if(!(variablesList.get(i).toString().equals((variablesList).get(j).toString())));
-				if(variablesList.size() == 2  || j < variablesList.size()-1)
-				{
-				if (variablesList.get(i).toString() != variablesList.get(j)
-						.toString())
-				{
-					probCond.append("<" + variablesList.get(i));
-					if (equal)
-					{
-						probCond.append("=" + variablesList.get(j));
-						probCond.append("> + ");
-					} else
-					{
-						probCond.append("!=" + variablesList.get(j));
-						probCond.append("> * ");
-					}
-					
-				}
-			
-				}
-			}
-		}
-//ArrayList<Variable> variablesListCons;
-//= new ArrayList<>(variablesCons);
-		
+				if (variablesList.size() == 2 || j < variablesList.size() - 1) {
+					if (variablesList.get(i).toString() != variablesList.get(j)
+							.toString()) {
+						probCond.append("<" + variablesList.get(i));
+						if (equal) {
+							probCond.append("=" + variablesList.get(j));
+							probCond.append("> + ");
+						} else {
+							probCond.append("!=" + variablesList.get(j));
+							probCond.append("> * ");
+						}//endelse
+
+					}//endif
+
+				}//endif
+			}//endfor
+		}//endfor
+		// ArrayList<Variable> variablesListCons;
+		// = new ArrayList<>(variablesCons);
+
 		probCond.deleteCharAt(probCond.length() - 1);
 		probCond.deleteCharAt(probCond.length() - 1);
 		probCond.deleteCharAt(probCond.length() - 1);
-		
 
 		return probCond.toString();
-	}
+	}//endof toString
 
-
-	public void setPossible(boolean possible)
-	{
+	/**
+	 * 
+	 * Sets possible.
+	 * 
+	 * @param possible
+	 */
+	public void setPossible(boolean possible) {
 		this.possible = possible;
 	}
 
-	public void setEqual(boolean equal)
-	{
+	/**
+	 * 
+	 * Sets equal.
+	 * 
+	 * @param equal
+	 */
+	public void setEqual(boolean equal) {
 		this.equal = equal;
 	}
-}//endofPrintRelationalWithConstraint
+}// endofPrintRelationalWithConstraint

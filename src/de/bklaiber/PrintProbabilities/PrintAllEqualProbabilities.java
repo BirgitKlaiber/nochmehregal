@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import de.bklaiber.Types.ProbabilityConditional;
 
 /**
+ * 
+ * 
  * @author birgit klaiber
+ * 
+ * Used to generate the output if the probabilities of all conditionals are equal.
  *
  */
 public class PrintAllEqualProbabilities implements
@@ -16,6 +20,9 @@ public class PrintAllEqualProbabilities implements
 	
 
 	/**
+	 * 
+	 * Constructor of the class PrintAllEqualProbabilities.
+	 * 
 	 * @param listOfConditionals
 	 */
 	public PrintAllEqualProbabilities(
