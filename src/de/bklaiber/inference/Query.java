@@ -39,7 +39,7 @@ import edu.cs.ai.log4KR.structuredLogics.satisfiability.SatisfiabilityTestOjAlgo
  * 
  * This class is necessary to query the kb. It contains the main method.
  * 
- * @author Birgit Klaiber
+ * @author klaiber
  *
  * 
  *
