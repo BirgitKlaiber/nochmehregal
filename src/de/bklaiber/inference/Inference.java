@@ -35,8 +35,9 @@ public class Inference {
 
 		Collection<RelationalConditional> groundedQuery = ground(c);
 
-		Collection<RelationalConditional> equivalenceClasses = classify(groundedQuery);
-		return null;
+		Collection<RelationalConditional> generalizedClasses = classify(groundedQuery);
+
+		return generalizedClasses;
 
 	}
 
@@ -50,7 +51,8 @@ public class Inference {
 
 	private Collection<RelationalConditional> generalize(
 			Collection<RelationalConditional> query) {
-		return null;
+
+		return query;
 	}
 
 	private Collection<RelationalConditional> compute(
@@ -80,10 +82,11 @@ public class Inference {
 	 * @param reader
 	 * @param kbFile
 	 */
-	private void setKnowledgebase(Log4KRReader reader, File kbFile) {
-
+	public void setKnowledgebase(Log4KRReader reader, File kbFile) {
+		reader.read(kbFile);
 		Collection<RelationalConditional> knowledgebase = reader
 				.getKnowledgeBase("kb");
+
 		Collection<Constant> constants = reader.getConstants();
 
 		GroundingOperator gop = new ConstraintBasedGroundingOperator();
