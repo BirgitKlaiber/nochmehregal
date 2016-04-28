@@ -6,11 +6,23 @@ signature
 
 conditionals
 	kb{
-	    (flies(X) | isBird(X))[0.90]<X != Tweety>	    ( flies(Tweety))[0]
+	    (flies(X) | isBird(X))[0.90]<X != Tweety>	    
+	    ( flies(Tweety))[0]
 	    ( isBird(Tweety))[1]
-	    	}
-   query1{
-	    (flies(X) ) }	query2{   (isBird(X))
-}  query3{   (flies(X) | isBird(X))
-}   query4{ (isBird(X) | flies(X))
-}	
+	    }
+
+   	query1{
+	    (flies(X) ) 
+	    }
+	    	
+	query2{   
+		(isBird(X))
+		}
+		  
+	query3{   
+		(flies(X) | isBird(X))
+		}
+		   
+	query4{ 
+		(isBird(X) | flies(X))
+	}	

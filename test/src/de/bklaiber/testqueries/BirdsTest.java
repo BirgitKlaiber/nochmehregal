@@ -1,5 +1,7 @@
 package de.bklaiber.testqueries;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Vector;
@@ -25,14 +27,28 @@ public class BirdsTest {
 	private static Vector<RelationalConditional> queries = null;
 
 	/**
-	 * generalized version of the query ...
+	 * generalized version of the query <code>(flies(X) )</code>, that is
+	 * <code>...</code>
 	 */
-	private static final RelationalConditional GENERALIZED_RESULT_1 = null;
+	private static final Collection<RelationalConditional> GENERALIZED_RESULT_1 = null;
 
 	/**
-	 * generalized version of the query ...
+	 * generalized version of the query <code>(isBird(X))</code>, that is
+	 * <code>...</code>
 	 */
-	private static final RelationalConditional GENERALIZED_RESULT_2 = null;
+	private static final Collection<RelationalConditional> GENERALIZED_RESULT_2 = null;
+
+	/**
+	 * generalized version of the query <code>(flies(X) | isBird(X))</code>,
+	 * that is <code>...</code>
+	 */
+	private static final Collection<RelationalConditional> GENERALIZED_RESULT_3 = null;
+
+	/**
+	 * generalized version of the query <code>(isBird(X) | flies(X))</code>,
+	 * that is <code>...</code>
+	 */
+	private static final Collection<RelationalConditional> GENERALIZED_RESULT_4 = null;
 
 	/**
 	 * Setup the knowledgebase for all further testing. As the knowledgebase
@@ -43,11 +59,9 @@ public class BirdsTest {
 	public static void setup() {
 		inference = new Inference();
 
-		inference.setKnowledgebase(new Log4KRReader(), new File(
-				"test/res/Birds.rcl"));
+		inference.setKnowledgebase(new Log4KRReader(), new File("test/res/Birds.rcl"));
 
-		queries = new Vector<RelationalConditional>(
-				QueryReader.readQueries(new File("test/res/Birds.rcl")));
+		queries = new Vector<RelationalConditional>(QueryReader.readQueries(new File("test/res/Birds.rcl")));
 
 	}
 
@@ -57,8 +71,7 @@ public class BirdsTest {
 	@Test
 	public void queryTest() {
 
-		Collection<RelationalConditional> generalization = inference
-				.queryConditional(queries.elementAt(0));
+		Collection<RelationalConditional> generalization = inference.queryConditional(queries.elementAt(0));
 
 	}
 
@@ -77,15 +90,14 @@ public class BirdsTest {
 	 */
 	@Test
 	public void checkRuntimeOfGenerlization() {
-		/*
-		 * long before = System.currentTimeMillis();
-		 * 
-		 * Collection<RelationalConditional> generalization = inference
-		 * .queryConditional(queries.elementAt(0));
-		 * 
-		 * long after = System.currentTimeMillis(); assertEquals(after - before
-		 * < 60 * 1000, true);
-		 */
+
+		long before = System.currentTimeMillis();
+
+		Collection<RelationalConditional> generalization = inference.queryConditional(queries.elementAt(0));
+
+		long after = System.currentTimeMillis();
+		assertEquals(after - before < 60 * 1000, true);
+
 	}
 
 }
