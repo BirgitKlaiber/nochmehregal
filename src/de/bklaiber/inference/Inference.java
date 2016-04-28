@@ -75,7 +75,7 @@ public class Inference {
 
 	/**
 	 * 
-	 * Reads the knowlegedbase from a file, initializes the epistemic state
+	 * Reads the knowledgebase from a file, initializes the epistemic state
 	 * witch is best the from the possible worlds regarding the principle of
 	 * maximum entropy
 	 * 
@@ -102,5 +102,6 @@ public class Inference {
 
 		epState = new RelationalOptimumEntropyEpistemicStateLBFGS(semantics);
 		epState.initialize(possibleWorlds, knowledgebase);
+
 	}
 }

@@ -7,17 +7,16 @@ import de.bklaiber.types.ProbabilityConditional;
 /**
  * 
  * 
- * @author birgit klaiber
+ * @author klaiber
  * 
- * Used to generate the output if the probabilities of all conditionals are equal.
+ *         Used to generate the output if the probabilities of all conditionals
+ *         are equal.
  *
  */
 public class PrintAllEqualProbabilities implements
-		PrintConditionalProbabilities
-{
+		PrintConditionalProbabilities {
 
 	private ArrayList<ProbabilityConditional> listOfConditionals;
-	
 
 	/**
 	 * 
@@ -26,28 +25,27 @@ public class PrintAllEqualProbabilities implements
 	 * @param listOfConditionals
 	 */
 	public PrintAllEqualProbabilities(
-			ArrayList<ProbabilityConditional> listOfConditionals)
-	{
+			ArrayList<ProbabilityConditional> listOfConditionals) {
 		this.listOfConditionals = listOfConditionals;
-		
+
 	}// endofconstructor
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder probCond = new StringBuilder();
 		boolean withoutProb = false;
 
 		ProbabilityConditional probabilityConditional = listOfConditionals
 				.get(0);
-		
+
 		probCond.append(probabilityConditional.relationalToString(withoutProb));
-	
 
 		return probCond.toString();
 	}
 
-}//endofPrintAllEqualProbabilities
+}// endofPrintAllEqualProbabilities

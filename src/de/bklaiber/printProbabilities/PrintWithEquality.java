@@ -14,7 +14,7 @@ import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.Relation
  * 
  * Generate a conditional with equality constraint.
  * 
- * @author Birgit Klaiber
+ * @author klaiber
  * 
  * 
  *
@@ -90,7 +90,7 @@ public class PrintWithEquality {
 				probCond.append("<" + variable + "=" + c.toString() + "> + ");
 
 			} // endoffor
-		}//endoffor
+		}// endoffor
 		probCond.deleteCharAt(probCond.length() - 1);
 		probCond.deleteCharAt(probCond.length() - 1);
 		// probCond.deleteCharAt(probCond.length()-1);

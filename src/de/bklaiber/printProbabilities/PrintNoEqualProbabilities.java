@@ -8,11 +8,10 @@ import de.bklaiber.types.ProbabilityConditional;
  * 
  * Used to generate the output if all conditionals have a different probability.
  * 
- * @author Birgit Klaiber
+ * @author klaiber
  *
  */
-public class PrintNoEqualProbabilities implements PrintConditionalProbabilities
-{
+public class PrintNoEqualProbabilities implements PrintConditionalProbabilities {
 
 	private ArrayList<ProbabilityConditional> listOfConditionals;
 
@@ -23,22 +22,21 @@ public class PrintNoEqualProbabilities implements PrintConditionalProbabilities
 	 * @param listOfConditionals
 	 */
 	public PrintNoEqualProbabilities(
-			ArrayList<ProbabilityConditional> listOfConditionals)
-	{
+			ArrayList<ProbabilityConditional> listOfConditionals) {
 		this.listOfConditionals = listOfConditionals;
 
 	}// endofconstructor
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder probCond = new StringBuilder();
 
-		for (ProbabilityConditional probabilityConditional : listOfConditionals)
-		{
+		for (ProbabilityConditional probabilityConditional : listOfConditionals) {
 
 			probCond.append(probabilityConditional.toString());
 			probCond.append("\n");

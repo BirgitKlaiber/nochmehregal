@@ -6,14 +6,15 @@ import java.util.Collection;
 import de.bklaiber.types.ProbabilityConditional;
 import edu.cs.ai.log4KR.logical.syntax.Atom;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.RelationalAtom;
-import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.*;
+import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Constant;
+import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Variable;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
 /**
  * 
  * Generates a relational conditonal with inequality constraint
  * 
- * @author Birgit Klaiber
+ * @author klaiber
  *
  */
 public class PrintWithInequality implements PrintConditionalProbabilities {
@@ -85,8 +86,8 @@ public class PrintWithInequality implements PrintConditionalProbabilities {
 			for (Constant c : constants) {
 				probCond.append("<" + variable + "!=" + c.toString() + "> * ");
 
-			}//endoffor
-		}//endoffor
+			}// endoffor
+		}// endoffor
 
 		probCond.deleteCharAt(probCond.length() - 1);
 		probCond.deleteCharAt(probCond.length() - 1);
@@ -94,6 +95,6 @@ public class PrintWithInequality implements PrintConditionalProbabilities {
 		// probCond.deleteCharAt(probCond.length()-1);
 
 		return probCond.toString();
-	}//endoftostring
+	}// endoftostring
 
 }// endofPrintWithInequality
