@@ -30,8 +30,7 @@ public class Inference {
 	RelationalOptimumEntropyEpistemicStateLBFGS epState = null; // epistemic
 																// state
 
-	public Collection<RelationalConditional> queryConditional(
-			RelationalConditional c) {
+	public Collection<RelationalConditional> queryConditional(RelationalConditional c) {
 
 		Collection<RelationalConditional> groundedQuery = ground(c);
 
@@ -41,22 +40,19 @@ public class Inference {
 
 	}
 
-	private Collection<RelationalConditional> classify(
-			Collection<RelationalConditional> groundedQuery) {
+	private Collection<RelationalConditional> classify(Collection<RelationalConditional> groundedQuery) {
 		Collection<RelationalConditional> query = compute(groundedQuery);
 		query = generalize(query);
 
 		return query;
 	}
 
-	private Collection<RelationalConditional> generalize(
-			Collection<RelationalConditional> query) {
+	private Collection<RelationalConditional> generalize(Collection<RelationalConditional> query) {
 
 		return query;
 	}
 
-	private Collection<RelationalConditional> compute(
-			Collection<RelationalConditional> groundedQuery) {
+	private Collection<RelationalConditional> compute(Collection<RelationalConditional> groundedQuery) {
 
 		return null;
 	}
@@ -84,8 +80,7 @@ public class Inference {
 	 */
 	public void setKnowledgebase(Log4KRReader reader, File kbFile) {
 		reader.read(kbFile);
-		Collection<RelationalConditional> knowledgebase = reader
-				.getKnowledgeBase("kb");
+		kb = reader.getKnowledgeBase("kb");
 
 		Collection<Constant> constants = reader.getConstants();
 
@@ -96,12 +91,10 @@ public class Inference {
 		PossibleWorldFactory<RelationalAtom> worldFactory = new RelationalPossibleWorldMapRepresentationFactory();
 
 		Interpretation<RelationalAtom>[] possibleWorlds = worldFactory
-				.createPossibleWorlds(RelationalUtils
-						.getAtomsFromKnowledgeBase(knowledgebase, constants,
-								gop));
+				.createPossibleWorlds(RelationalUtils.getAtomsFromKnowledgeBase(kb, constants, gop));
 
 		epState = new RelationalOptimumEntropyEpistemicStateLBFGS(semantics);
-		epState.initialize(possibleWorlds, knowledgebase);
+		epState.initialize(possibleWorlds, kb);
 
 	}
 }
