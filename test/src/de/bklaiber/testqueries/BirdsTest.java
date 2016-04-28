@@ -12,10 +12,27 @@ import de.bklaiber.inference.Inference;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.kbParser.log4KRReader.Log4KRReader;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
+/**
+ * Tests how <code>Inference</code> works for the birds example from...
+ * 
+ * 
+ * @author bklaiber
+ *
+ */
 public class BirdsTest {
 
 	private static Inference inference = null;
 	private static RelationalConditional query = null;
+
+	/**
+	 * generalized version of the query ...
+	 */
+	private static final RelationalConditional GENERALIZED_RESULT_1 = null;
+
+	/**
+	 * generalized version of the query ...
+	 */
+	private static final RelationalConditional GENERALIZED_RESULT_2 = null;
 
 	@BeforeClass
 	public static void setup() {
@@ -35,7 +52,7 @@ public class BirdsTest {
 	}
 
 	/**
-	 * Tests if the generalization works as expected.
+	 * Tests if the generalization produces the results expected.
 	 */
 	@Test
 	public void checkGeneralization() {
