@@ -34,6 +34,11 @@ public class BirdsTest {
 	 */
 	private static final RelationalConditional GENERALIZED_RESULT_2 = null;
 
+	/**
+	 * Setup the knowledgebase for all further testing. As the knowledgebase
+	 * does not change for the method provided by the <code>Inference</code>
+	 * component it is set up in advance and only once.
+	 */
 	@BeforeClass
 	public static void setup() {
 		inference = new Inference();
