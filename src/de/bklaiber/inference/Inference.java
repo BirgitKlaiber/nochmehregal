@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import edu.cs.ai.log4KR.logical.semantics.Interpretation;
 import edu.cs.ai.log4KR.logical.semantics.PossibleWorldFactory;
+import edu.cs.ai.log4KR.logical.syntax.Formula;
 import edu.cs.ai.log4KR.relational.classicalLogic.grounding.ConstraintBasedGroundingOperator;
 import edu.cs.ai.log4KR.relational.classicalLogic.grounding.GroundingOperator;
 import edu.cs.ai.log4KR.relational.classicalLogic.semantics.RelationalPossibleWorldMapRepresentationFactory;
@@ -29,6 +30,8 @@ public class Inference {
 	Collection<RelationalConditional> kb = null; // non grounded knowledgebase
 	RelationalOptimumEntropyEpistemicStateLBFGS epState = null; // epistemic
 																// state
+	GroundingOperator gop = null;
+	Collection<Constant> constants = null;
 
 	public Collection<RelationalConditional> queryConditional(RelationalConditional c) {
 
@@ -52,7 +55,31 @@ public class Inference {
 		return query;
 	}
 
+	/**
+	 * Calls Log4KR and copmutes the probability for each grounded conditional
+	 * 
+	 * @param groundedQuery
+	 * @return
+	 */
 	private Collection<RelationalConditional> compute(Collection<RelationalConditional> groundedQuery) {
+		for (RelationalConditional relationalGroundConditional : groundedQuery) {
+
+			Formula<RelationalAtom> formulaCons = relationalGroundConditional.getConsequence();
+			Formula<RelationalAtom> formAnt = relationalGroundConditional.getAntecedence();
+
+			double probability = epState.queryConditionalProbability(formulaCons, formAnt);
+
+			//RelationalConditional probabilityConitional = new RelationalConditional(formulaCons, formAnt, probability);
+			/*
+						ProbabilityConditional probabilityConditional = new ProbabilityConditional(
+								probability, relationalGroundConditional);
+						probabilityConditional
+								.setRelationalConditional(relationalConditionals.get(0));
+			
+						probabilityConditionals.add(probabilityConditional);
+			*/
+
+		} // endfor
 
 		return null;
 	}
@@ -66,7 +93,9 @@ public class Inference {
 		if (kb == null) {
 			throw new NullPointerException(MSG_NOKNOWLEDGEBASE);
 		}
-		return null;
+		Collection<RelationalConditional> groundQuery = gop.groundConditional(c, constants);
+
+		return groundQuery;
 	}
 
 	/**
@@ -82,9 +111,9 @@ public class Inference {
 		reader.read(kbFile);
 		kb = reader.getKnowledgeBase("kb");
 
-		Collection<Constant> constants = reader.getConstants();
+		constants = reader.getConstants();
 
-		GroundingOperator gop = new ConstraintBasedGroundingOperator();
+		gop = new ConstraintBasedGroundingOperator();
 
 		GroundingSemantics semantics = new GroundingSemantics(gop, constants);
 
