@@ -1,11 +1,13 @@
 package de.bklaiber.inference;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import edu.cs.ai.log4KR.logical.semantics.Interpretation;
 import edu.cs.ai.log4KR.logical.semantics.PossibleWorldFactory;
 import edu.cs.ai.log4KR.logical.syntax.Formula;
+import edu.cs.ai.log4KR.math.types.Fraction;
 import edu.cs.ai.log4KR.relational.classicalLogic.grounding.ConstraintBasedGroundingOperator;
 import edu.cs.ai.log4KR.relational.classicalLogic.grounding.GroundingOperator;
 import edu.cs.ai.log4KR.relational.classicalLogic.semantics.RelationalPossibleWorldMapRepresentationFactory;
@@ -28,15 +30,34 @@ public class Inference {
 	private static final String MSG_NOKNOWLEDGEBASE = "no knowledgebase set";
 
 	Collection<RelationalConditional> kb = null; // non grounded knowledgebase
-	RelationalOptimumEntropyEpistemicStateLBFGS epState = null; // epistemic
-																// state
+	RelationalOptimumEntropyEpistemicStateLBFGS epState = null; // epistemic state
+
 	GroundingOperator gop = null;
 	Collection<Constant> constants = null;
 
+	/**
+	 * Computes the probabilities for each ground instance of the query
+	 * conditional and unifies ground instances with the same probability.
+	 * 
+	 * for example: <code>
+	 * 	c = (flies(X))
+	 *  against a knowledge base resulting in the computed answers
+	 *  	P(flies(Tweety))=0
+	 *  	P(flies(Bully))=0.2
+	 *  	P(flies(Kirby))=0.2
+	 *  	P(flies(Sylvester))=0.2
+	 *  returns
+	 *  	(flies(X))[0.2]<X!=Tweety>
+	 *  	(flies(Tweety))[0]
+	 *  </code>
+	 * 
+	 * @param c
+	 *            conditional without probability
+	 * @return generalized probabilistic conditionals
+	 */
 	public Collection<RelationalConditional> queryConditional(RelationalConditional c) {
 
 		Collection<RelationalConditional> groundedQuery = ground(c);
-
 		Collection<RelationalConditional> generalizedClasses = classify(groundedQuery);
 
 		return generalizedClasses;
@@ -56,32 +77,25 @@ public class Inference {
 	}
 
 	/**
-	 * Calls Log4KR and copmutes the probability for each grounded conditional
+	 * Calls Log4KR to compute the probability for each grounded conditional
 	 * 
 	 * @param groundedQuery
 	 * @return
 	 */
 	private Collection<RelationalConditional> compute(Collection<RelationalConditional> groundedQuery) {
+
+		ArrayList<RelationalConditional> probabilisticConditionals = new ArrayList<RelationalConditional>();
+
 		for (RelationalConditional relationalGroundConditional : groundedQuery) {
 
 			Formula<RelationalAtom> formulaCons = relationalGroundConditional.getConsequence();
 			Formula<RelationalAtom> formAnt = relationalGroundConditional.getAntecedence();
 
 			double probability = epState.queryConditionalProbability(formulaCons, formAnt);
+			probabilisticConditionals.add(new RelationalConditional(formulaCons, formAnt, new Fraction(probability)));
+		}
 
-			//RelationalConditional probabilityConitional = new RelationalConditional(formulaCons, formAnt, probability);
-			/*
-						ProbabilityConditional probabilityConditional = new ProbabilityConditional(
-								probability, relationalGroundConditional);
-						probabilityConditional
-								.setRelationalConditional(relationalConditionals.get(0));
-			
-						probabilityConditionals.add(probabilityConditional);
-			*/
-
-		} // endfor
-
-		return null;
+		return probabilisticConditionals;
 	}
 
 	/**
@@ -108,17 +122,15 @@ public class Inference {
 	 * @param kbFile
 	 */
 	public void setKnowledgebase(Log4KRReader reader, File kbFile) {
+
 		reader.read(kbFile);
 		kb = reader.getKnowledgeBase("kb");
-
 		constants = reader.getConstants();
 
 		gop = new ConstraintBasedGroundingOperator();
-
 		GroundingSemantics semantics = new GroundingSemantics(gop, constants);
 
 		PossibleWorldFactory<RelationalAtom> worldFactory = new RelationalPossibleWorldMapRepresentationFactory();
-
 		Interpretation<RelationalAtom>[] possibleWorlds = worldFactory
 				.createPossibleWorlds(RelationalUtils.getAtomsFromKnowledgeBase(kb, constants, gop));
 
