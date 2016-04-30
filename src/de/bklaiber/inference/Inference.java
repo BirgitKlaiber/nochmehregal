@@ -92,7 +92,8 @@ public class Inference {
 			Formula<RelationalAtom> formAnt = relationalGroundConditional.getAntecedence();
 
 			double probability = epState.queryConditionalProbability(formulaCons, formAnt);
-			probabilisticConditionals.add(new RelationalConditional(formulaCons, formAnt, new Fraction(probability)));
+			probabilisticConditionals
+					.add(new RelationalConditional(formulaCons, formAnt, (new Fraction(probability)).simplify()));
 		}
 
 		return probabilisticConditionals;
@@ -107,7 +108,12 @@ public class Inference {
 		if (kb == null) {
 			throw new NullPointerException(MSG_NOKNOWLEDGEBASE);
 		}
+
 		Collection<RelationalConditional> groundQuery = gop.groundConditional(c, constants);
+
+		System.out.println(kb);
+
+		System.out.println(groundQuery);
 
 		return groundQuery;
 	}
