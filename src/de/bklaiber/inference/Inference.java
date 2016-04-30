@@ -111,10 +111,6 @@ public class Inference {
 
 		Collection<RelationalConditional> groundQuery = gop.groundConditional(c, constants);
 
-		System.out.println(kb);
-
-		System.out.println(groundQuery);
-
 		return groundQuery;
 	}
 
