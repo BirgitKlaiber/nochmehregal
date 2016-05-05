@@ -2,14 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test/src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Log4KR_2"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="/Log4KR_2/Software/Log4KR/trunk/lib/antlr/antlr-4.2.2-complete.jar"/>
-	<classpathentry kind="lib" path="/Log4KR_2/Software/Log4KR/trunk/lib/jUnit/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="/Log4KR_2/Software/Log4KR/trunk/lib/jUnit/junit-4.11.jar"/>
-	<classpathentry kind="lib" path="/Log4KR_2/Software/Log4KR/trunk/lib/lpSolve/lpsolve55j.jar"/>
-	<classpathentry kind="lib" path="/Log4KR_2/Software/Log4KR/trunk/lib/mecore/mecore.jar"/>
-	<classpathentry kind="lib" path="/Log4KR_2/Software/Log4KR/trunk/lib/ojAlgo/ojalgo-37.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/birgi/workspaceNew/Log4KR/lib/antlr-4.2.2-complete.jar"/>
+	<classpathentry kind="lib" path="C:/Users/birgi/workspaceNew/Log4KR/lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/birgi/workspaceNew/Log4KR/lib/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/birgi/workspaceNew/Log4KR/lib/lpsolve55j.jar"/>
+	<classpathentry kind="lib" path="C:/Users/birgi/workspaceNew/Log4KR/lib/mecore.jar"/>
+	<classpathentry kind="lib" path="C:/Users/birgi/workspaceNew/Log4KR/lib/ojalgo-37.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Log4KR"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
