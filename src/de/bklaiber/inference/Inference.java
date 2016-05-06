@@ -94,6 +94,11 @@ public class Inference {
 			double probability = epState.queryConditionalProbability(formulaCons, formAnt);
 			probabilisticConditionals
 					.add(new RelationalConditional(formulaCons, formAnt, (new Fraction(probability)).simplify()));
+
+		}
+
+		for (RelationalConditional relationalConditional : probabilisticConditionals) {
+			System.out.println("Konditional mit Wahrscheinlichkeit: " + relationalConditional);
 		}
 
 		return probabilisticConditionals;
