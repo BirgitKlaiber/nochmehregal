@@ -11,4 +11,11 @@ public interface Classifier {
 
 	public boolean isEquivalent(RelationalConditional probGroundInsA, RelationalConditional probGroundInsB,
 			Collection<RelationalConditional> probabilisticGroundInstances);
+
+	/**
+	 * 
+	 * @return true if and only if the relation deciding the equivalence is
+	 *         transitive
+	 */
+	public boolean isTransitive();
 }
