@@ -33,6 +33,7 @@ public class Inference {
 	RelationalOptimumEntropyEpistemicStateLBFGS epState = null; // epistemic state
 
 	GroundingOperator gop = null;
+	Classifier classifier = null;
 	Collection<Constant> constants = null;
 
 	/**
@@ -57,23 +58,33 @@ public class Inference {
 	 */
 	public Collection<RelationalConditional> queryConditional(RelationalConditional c) {
 
-		Collection<RelationalConditional> groundedQuery = ground(c);
-		Collection<RelationalConditional> generalizedClasses = classify(groundedQuery);
+		Collection<RelationalConditional> groundInstances = ground(c);
+		Collection<RelationalConditional> generalizedClasses = classify(c, groundInstances);
 
 		return generalizedClasses;
 
 	}
 
-	private Collection<RelationalConditional> classify(Collection<RelationalConditional> groundedQuery) {
-		Collection<RelationalConditional> query = compute(groundedQuery);
-		query = generalize(query);
+	/**
+	 * 
+	 * @param c
+	 * @param groundInstances
+	 * @return
+	 */
+	private Collection<RelationalConditional> classify(RelationalConditional c,
+			Collection<RelationalConditional> groundInstances) {
+		Collection<RelationalConditional> probabilisticGroundInstances = compute(groundInstances);
+		probabilisticGroundInstances = generalize(c, probabilisticGroundInstances);
 
-		return query;
+		return probabilisticGroundInstances;
 	}
 
-	private Collection<RelationalConditional> generalize(Collection<RelationalConditional> query) {
+	private Collection<RelationalConditional> generalize(RelationalConditional c,
+			Collection<RelationalConditional> probabilisticGroundInstances) {
+		Collection<Collection<RelationalConditional>> equivalenceClasses = classifier
+				.classify(probabilisticGroundInstances);
 
-		return query;
+		return probabilisticGroundInstances;
 	}
 
 	/**

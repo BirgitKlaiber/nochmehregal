@@ -28,7 +28,7 @@ public abstract class AbstractQueryTest {
 	 * @param threshold
 	 *            in milliseconds
 	 */
-	public void checkRuntimeOfGenerlization(long threshold) {
+	public void checkRuntimeOfGeneralization(long threshold) {
 
 		long before = System.currentTimeMillis();
 

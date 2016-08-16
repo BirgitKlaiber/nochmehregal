@@ -74,12 +74,9 @@ public class Query {
 		Log4KRReader reader = new Log4KRReader();
 		reader.read(file);
 
-		Map<String, Collection<RelationalConditional>> allKnowledgeBases = reader
-				.getKnowledgeBases();
-		Set<Entry<String, Collection<RelationalConditional>>> knowledgebases = allKnowledgeBases
-				.entrySet();
-		Collection<RelationalConditional> knowledgebase = reader
-				.getKnowledgeBase("kb");
+		Map<String, Collection<RelationalConditional>> allKnowledgeBases = reader.getKnowledgeBases();
+		Set<Entry<String, Collection<RelationalConditional>>> knowledgebases = allKnowledgeBases.entrySet();
+		Collection<RelationalConditional> knowledgebase = reader.getKnowledgeBase("kb");
 		// Collection<Variable> variables = reader.getVariables();
 		Collection<Constant> constants = reader.getConstants();
 		// Collection<Predicate> predicates = reader.getPredicates();
@@ -94,22 +91,18 @@ public class Query {
 		PossibleWorldFactory<RelationalAtom> worldFactory = new RelationalPossibleWorldMapRepresentationFactory();
 
 		Interpretation<RelationalAtom>[] possibleWorlds = worldFactory
-				.createPossibleWorlds(RelationalUtils
-						.getAtomsFromKnowledgeBase(knowledgebase, constants,
-								gop));
+				.createPossibleWorlds(RelationalUtils.getAtomsFromKnowledgeBase(knowledgebase, constants, gop));
 
 		epState.initialize(possibleWorlds, knowledgebase);
 
-		SatisfiabilityTestOjAlgo<RelationalAtom> satTest = new SatisfiabilityTestOjAlgo<>(
-				possibleWorlds, semantics);
+		SatisfiabilityTestOjAlgo<RelationalAtom> satTest = new SatisfiabilityTestOjAlgo<>(possibleWorlds, semantics);
 
 		/*
 		 * System.out.println("Is consistent? " +
 		 * satTest.isSatisfiable(knowledgebase));
 		 */
 
-		Collection<RelationalConditional> groundKb = gop.groundKnowledgeBase(
-				knowledgebase, constants);
+		Collection<RelationalConditional> groundKb = gop.groundKnowledgeBase(knowledgebase, constants);
 
 		System.out.println("Grundkonditionale: ");
 
@@ -127,11 +120,9 @@ public class Query {
 
 		for (int i = 1; i < knowledgebases.size(); i++) {
 			// every query is in a knowledgebase
-			Collection<RelationalConditional> queryCond = reader
-					.getKnowledgeBase("query" + i);
+			Collection<RelationalConditional> queryCond = reader.getKnowledgeBase("query" + i);
 
-			Collection<RelationalConditional> groundKnowledgeBase = gop
-					.groundKnowledgeBase(queryCond, constants);
+			Collection<RelationalConditional> groundKnowledgeBase = gop.groundKnowledgeBase(queryCond, constants);
 
 			ArrayList<ProbabilityConditional> probabilityConditionals = new ArrayList<ProbabilityConditional>();
 			ArrayList<RelationalConditional> relationalConditionals = new ArrayList<RelationalConditional>();
@@ -142,8 +133,7 @@ public class Query {
 
 			for (RelationalConditional relationalConditional : queryCond) {
 
-				System.out.println("Anfrage: "
-						+ relationalConditional.toString());
+				System.out.println("Anfrage: " + relationalConditional.toString());
 
 			}
 			System.out.println("");
@@ -154,32 +144,44 @@ public class Query {
 
 			for (RelationalConditional relationalGroundConditional : groundKnowledgeBase) {
 
-				Formula<RelationalAtom> formulaCons = relationalGroundConditional
-						.getConsequence();
-				Formula<RelationalAtom> formAnt = relationalGroundConditional
-						.getAntecedence();
+				Formula<RelationalAtom> formulaCons = relationalGroundConditional.getConsequence();
+				Formula<RelationalAtom> formAnt = relationalGroundConditional.getAntecedence();
 
 				for (RelationalConditional relationalConditional : queryCond) {
 					relationalConditionals.add(relationalConditional);
 
 				}
 
-				probability = epState.queryConditionalProbability(formulaCons,
-						formAnt);
+				probability = epState.queryConditionalProbability(formulaCons, formAnt);
 
-				ProbabilityConditional probabilityConditional = new ProbabilityConditional(
-						probability, relationalGroundConditional);
-				probabilityConditional
-						.setRelationalConditional(relationalConditionals.get(0));
+				ProbabilityConditional probabilityConditional = new ProbabilityConditional(probability,
+						relationalGroundConditional);
+				probabilityConditional.setRelationalConditional(relationalConditionals.get(0));
 
 				probabilityConditionals.add(probabilityConditional);
 
-			}// endfor
+			} // endfor
+
+			/*
+			try {
+				BufferedWriter writer = new BufferedWriter(new FileWriter("query.csv"));
+			
+				writer.format("%f", (epState.getDist().getProbabilityVector()));
+			
+				writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			*/
+			epState.printCurrentProbabilities();
+
+			System.out.println("");
 
 			probCondsSize = probabilityConditionals.size();
 			Collections.sort(probabilityConditionals);
-			double compareTo = roundScale(probabilityConditionals.get(0)
-					.getProbability());
+			//double compareTo = roundScale(probabilityConditionals.get(0).getProbability());
+			double compareTo = probabilityConditionals.get(0).getProbability();
 
 			ArrayList<ProbabilityConditional> listOfEqualProbs = new ArrayList<ProbabilityConditional>();
 			Set<ArrayList<ProbabilityConditional>> setOfEquiClass = new HashSet<ArrayList<ProbabilityConditional>>();
@@ -194,11 +196,11 @@ public class Query {
 			listOfEqualProbs.add(probabilityConditionals.get(0));
 
 			for (int k = 1; k < probCondsSize; k++) {
-				ProbabilityConditional nextCond = probabilityConditionals
-						.get(k);
+				ProbabilityConditional nextCond = probabilityConditionals.get(k);
 				// all conditionals with equal probabilities in there own list
 
-				if (roundScale(nextCond.getProbability()) == compareTo) {
+				//if (roundScale(nextCond.getProbability()) == compareTo) {
+				if ((nextCond.getProbability()) == compareTo) {
 
 					listOfEqualProbs.add(nextCond);
 				}
@@ -207,10 +209,11 @@ public class Query {
 					setOfEquiClass.add(listOfEqualProbs);
 					listOfEqualProbs = new ArrayList<ProbabilityConditional>();
 					listOfEqualProbs.add(nextCond);
-					compareTo = roundScale(nextCond.getProbability());
-				}// endelse
+					//compareTo = roundScale(nextCond.getProbability());
+					compareTo = nextCond.getProbability();
+				} // endelse
 
-			}// endfor
+			} // endfor
 			setOfEquiClass.add(listOfEqualProbs);
 			numberOfEquiClasses = setOfEquiClass.size();
 
@@ -243,21 +246,21 @@ public class Query {
 						for (Constant constant : collectionOfConstants) {
 							setOfConstantOfClass.add(constant);
 
-						}// endfor
+						} // endfor
 
-					}// endfor
+					} // endfor
 						// }
 
-				}// endfor
-				double prob = (setOfConstantOfClass)
-						.getProbabilityConditional().getProbability();
-				prob = roundScale(prob);
+				} // endfor
+				double prob = (setOfConstantOfClass).getProbabilityConditional().getProbability();
+				//prob = roundScale(prob);
+
 				if (prob != 0 && prob != -1) {
 					// System.out.println("Prob: " + prob);
 					listOfSetOfConstants.add(setOfConstantOfClass);
 				}
 
-			}// endfor
+			} // endfor
 
 			// convert the HashSet in a ArrayList to make it possible to get
 			// single elements
@@ -267,63 +270,54 @@ public class Query {
 
 			}
 
-			List<ArrayList<ProbabilityConditional>> listOfLists = new ArrayList<ArrayList<ProbabilityConditional>>(
-					set);
-			ArrayList<ProbabilityConditional> probabilityList1 = listOfLists
-					.get(0);
+			List<ArrayList<ProbabilityConditional>> listOfLists = new ArrayList<ArrayList<ProbabilityConditional>>(set);
+			ArrayList<ProbabilityConditional> probabilityList1 = listOfLists.get(0);
 
 			// here is only one List; that means all ground conditionals have
 			// the
 			// same probability
 			if (numberOfEquiClasses == 1) {
 
-				System.out
-						.println("Berechnung der Wahrscheinlichkeiten der Gundkonditionale: ");
+				System.out.println("Berechnung der Wahrscheinlichkeiten der Gundkonditionale: ");
 				for (ArrayList<ProbabilityConditional> probabilityList : listOfLists) {
 					// System.out.println("zum Vergleich");
 
 					for (ProbabilityConditional probabilityConditional : (ArrayList<ProbabilityConditional>) probabilityList) {
 
-						System.out.println(probabilityConditional
-								.getRelationalGroundConditional().toString()
-								+ "["
-								+ roundScale(probabilityConditional
-										.getProbability()) + "]");
+						//System.out.println(probabilityConditional.getRelationalGroundConditional().toString() + "["
+						//	+ roundScale(probabilityConditional.getProbability()) + "]");
+						System.out.println(probabilityConditional.getRelationalGroundConditional().toString() + "["
+								+ probabilityConditional.getProbability() + "]");
 
-					}// endfor
+					} // endfor
 				}
 				System.out.println("");
 				System.out.println("Ausgabe des Programms: ");
-				System.out
-						.println("Hier sind die Wahrscheinlichkeiten des Konditionals alle gleich: ");
-				PrintAllEqualProbabilities printAllProbs1 = new PrintAllEqualProbabilities(
-						probabilityList1);
+				System.out.println("Hier sind die Wahrscheinlichkeiten des Konditionals alle gleich: ");
+				PrintAllEqualProbabilities printAllProbs1 = new PrintAllEqualProbabilities(probabilityList1);
 				System.out.println(printAllProbs1.toString());
 			}
 
 			// here there is more than one list
 			else {
-				System.out
-						.println("Berechnung der Wahrscheinlichkeiten der Gundkonditionale: ");
+				System.out.println("Berechnung der Wahrscheinlichkeiten der Gundkonditionale: ");
 				for (ArrayList<ProbabilityConditional> probabilityList : listOfLists) {
 					// System.out.println("zum Vergleich");
 
 					for (ProbabilityConditional probabilityConditional : (ArrayList<ProbabilityConditional>) probabilityList) {
 
-						System.out.println(probabilityConditional
-								.getRelationalGroundConditional().toString()
-								+ "["
-								+ roundScale(probabilityConditional
-										.getProbability()) + "]");
+						//System.out.println(probabilityConditional.getRelationalGroundConditional().toString() + "["
+						//	+ roundScale(probabilityConditional.getProbability()) + "]");
+						System.out.println(probabilityConditional.getRelationalGroundConditional().toString() + "["
+								+ (probabilityConditional.getProbability()) + "]");
 
-					}// endfor
+					} // endfor
 						// System.out.println("Ende Vergleich");
 						// System.out.println("xxx");
 
 				}
 
-				ArrayList<ProbabilityConditional> probabilityList2 = listOfLists
-						.get(1);
+				ArrayList<ProbabilityConditional> probabilityList2 = listOfLists.get(1);
 
 				// when there are two lists
 				if (numberOfEquiClasses == 2) {
@@ -338,19 +332,16 @@ public class Query {
 
 						for (int j = 0; j < listOfLists.size(); j++) {
 
-							relationalGroundCond = listOfLists.get(j).get(0)
-									.getRelationalGroundConditional();
+							relationalGroundCond = listOfLists.get(j).get(0).getRelationalGroundConditional();
 							Collection<Atom<RelationalAtom>> relAtomList = null;
 
 							// if it is a fact
 							if (relationalGroundCond instanceof RelationalFact) {
-								relAtomList = relationalGroundCond
-										.getConsequence().getAtoms();
+								relAtomList = relationalGroundCond.getConsequence().getAtoms();
 
 							} else {
 
-								relAtomList = relationalGroundCond
-										.getAntecedence().getAtoms();
+								relAtomList = relationalGroundCond.getAntecedence().getAtoms();
 
 							}
 
@@ -359,30 +350,26 @@ public class Query {
 								constantsOfAtom = relationalAtom.getConstants();
 
 							}
-							PrintSingleException exception = new PrintSingleException(
-									listOfLists.get(j));
+							PrintSingleException exception = new PrintSingleException(listOfLists.get(j));
 							System.out.println(exception.toString());
 
-						}// endfor
+						} // endfor
 
 					}
 					// when one list contains more than one conditional and the
 					// other only one conditional
 					else {
 						if (sizeOfList1 == 1) {
-							relationalGroundCond = probabilityList1.get(0)
-									.getRelationalGroundConditional();
+							relationalGroundCond = probabilityList1.get(0).getRelationalGroundConditional();
 							Collection<Atom<RelationalAtom>> relAtomList = null;
 
 							// if it is a fact
 							if (relationalGroundCond instanceof RelationalFact) {
-								relAtomList = relationalGroundCond
-										.getConsequence().getAtoms();
+								relAtomList = relationalGroundCond.getConsequence().getAtoms();
 
 							} else {
 
-								relAtomList = relationalGroundCond
-										.getAntecedence().getAtoms();
+								relAtomList = relationalGroundCond.getAntecedence().getAtoms();
 
 							}
 
@@ -391,32 +378,28 @@ public class Query {
 								constantsOfAtom = relationalAtom.getConstants();
 
 							}
-							PrintSingleException exception = new PrintSingleException(
-									probabilityList1);
+							PrintSingleException exception = new PrintSingleException(probabilityList1);
 							System.out.println("");
 							System.out.println("Ausgabe des Programms:");
 							System.out.println(exception.toString());
-							PrintWithInequality printWithSingleEx = new PrintWithInequality(
-									probabilityList2, constantsOfAtom);
+							PrintWithInequality printWithSingleEx = new PrintWithInequality(probabilityList2,
+									constantsOfAtom);
 							System.out.println(printWithSingleEx.toString());
 
 						}
 
 						if (sizeOfList2 == 1) {
 
-							relationalGroundCond = probabilityList2.get(0)
-									.getRelationalGroundConditional();
+							relationalGroundCond = probabilityList2.get(0).getRelationalGroundConditional();
 							Collection<Atom<RelationalAtom>> relAtomList = null;
 
 							// if it is a fact
 							if (relationalGroundCond instanceof RelationalFact) {
-								relAtomList = relationalGroundCond
-										.getConsequence().getAtoms();
+								relAtomList = relationalGroundCond.getConsequence().getAtoms();
 
 							} else {
 
-								relAtomList = relationalGroundCond
-										.getAntecedence().getAtoms();
+								relAtomList = relationalGroundCond.getAntecedence().getAtoms();
 
 							}
 
@@ -425,13 +408,12 @@ public class Query {
 								constantsOfAtom = relationalAtom.getConstants();
 
 							}
-							PrintSingleException exception = new PrintSingleException(
-									probabilityList2);
+							PrintSingleException exception = new PrintSingleException(probabilityList2);
 
 							System.out.println(exception.toString());
 
-							PrintWithInequality printWithSingleEx = new PrintWithInequality(
-									probabilityList1, constantsOfAtom);
+							PrintWithInequality printWithSingleEx = new PrintWithInequality(probabilityList1,
+									constantsOfAtom);
 							System.out.println(printWithSingleEx.toString());
 
 						}
@@ -460,23 +442,18 @@ public class Query {
 							// conditionals have the probatility zero, - 1 or
 							// 1(reflexive knowlede)
 
-							ArrayList<ProbabilityConditional> list1 = listOfLists
-									.get(0);
-							ArrayList<ProbabilityConditional> list2 = listOfLists
-									.get(1);
+							ArrayList<ProbabilityConditional> list1 = listOfLists.get(0);
+							ArrayList<ProbabilityConditional> list2 = listOfLists.get(1);
 
 							ProbabilityConditional probCond1 = list1.get(0);
 							ProbabilityConditional probCond2 = list2.get(0);
 
-							PrintRelationalWithConstraint prwithC1 = new PrintRelationalWithConstraint(
-									probCond1);
-							PrintRelationalWithConstraint prwithC2 = new PrintRelationalWithConstraint(
-									probCond2);
+							PrintRelationalWithConstraint prwithC1 = new PrintRelationalWithConstraint(probCond1);
+							PrintRelationalWithConstraint prwithC2 = new PrintRelationalWithConstraint(probCond2);
 
 							// when the first of both conditionals has the
 							// probability zero, -1 or 1
-							if (roundScale(probCond1.getProbability()) == 0
-									|| probCond1.getProbability() == -1
+							if (probCond1.getProbability() == 0 || probCond1.getProbability() == -1
 									|| probCond1.getProbability() == 1) {
 								// when the conditional has the probability -1
 
@@ -501,8 +478,7 @@ public class Query {
 								// if the second conditional has the probability
 								// Zero or - 1 probably reflexive knowledge)
 
-								if (roundScale(probCond2.getProbability()) == 0
-										|| probCond2.getProbability() == -1
+								if (probCond2.getProbability() == 0 || probCond2.getProbability() == -1
 										|| probCond2.getProbability() == 1) {
 									if (probCond2.getProbability() == -1) {
 										prwithC2.setPossible(false);
@@ -520,22 +496,18 @@ public class Query {
 									System.out.println(prwithC1.toString());
 									System.out.println(prwithC2.toString());
 
-								}// endif
+								} // endif
 
 								// none of the both conditionas has zero
 								// probability
 								else {
 									System.out.println("else");
 									System.out.println("toDo ");
-									System.out.println("prob1: "
-											+ probCond1.getProbability());
-									System.out.println("prob2: "
-											+ probCond2.getProbability());
+									System.out.println("prob1: " + probCond1.getProbability());
+									System.out.println("prob2: " + probCond2.getProbability());
 									System.out.println("zum Vergleich ");
-									PrintNoEqualProbabilities paep1 = new PrintNoEqualProbabilities(
-											list1);
-									PrintNoEqualProbabilities paep2 = new PrintNoEqualProbabilities(
-											list2);
+									PrintNoEqualProbabilities paep1 = new PrintNoEqualProbabilities(list1);
+									PrintNoEqualProbabilities paep2 = new PrintNoEqualProbabilities(list2);
 									System.out.println(paep1.toString());
 									System.out.println(paep2.toString());
 									//
@@ -543,11 +515,11 @@ public class Query {
 								}
 							}
 
-						}// endif(two lists each with more than one conditional)
+						} // endif(two lists each with more than one conditional)
 
-					}// endelse
+					} // endelse
 
-				}// endifnumberofClasses=2
+				} // endifnumberofClasses=2
 
 				// here there are more than two lists
 				else {
@@ -559,8 +531,7 @@ public class Query {
 
 						PrintNoEqualProbabilities printDifferentConditionals = new PrintNoEqualProbabilities(
 								probabilityConditionals);
-						System.out.println(printDifferentConditionals
-								.toString());
+						System.out.println(printDifferentConditionals.toString());
 
 					} else {
 						boolean consNull = false;
@@ -568,18 +539,14 @@ public class Query {
 						List<ArrayList<ProbabilityConditional>> newListOfLists = new ArrayList<ArrayList<ProbabilityConditional>>();
 						for (int j = 0; j < listOfLists.size(); j++) {
 
-							ArrayList<ProbabilityConditional> nextlist = listOfLists
-									.get(j);
-							ProbabilityConditional probabilityCond = nextlist
-									.get(0);
-							PrintRelationalWithConstraint prwithC = new PrintRelationalWithConstraint(
-									probabilityCond);
+							ArrayList<ProbabilityConditional> nextlist = listOfLists.get(j);
+							ProbabilityConditional probabilityCond = nextlist.get(0);
+							PrintRelationalWithConstraint prwithC = new PrintRelationalWithConstraint(probabilityCond);
 							System.out.println("hier gibt es einen Fehler!!!");
 							// look at the border cases, where the consequence
 							// or
 							// the antecedence have the probability zero
-							if (roundScale(probabilityCond.getProbability()) == 0
-									|| probabilityCond.getProbability() == -1) {
+							if (probabilityCond.getProbability() == 0 || probabilityCond.getProbability() == -1) {
 								// here the probability of the antecedence is
 								// zero
 								if (probabilityCond.getProbability() == -1) {
@@ -589,7 +556,7 @@ public class Query {
 								}
 								// here the probability of the consequence is
 								// zero
-								if (roundScale(probabilityCond.getProbability()) == 0) {
+								if (probabilityCond.getProbability() == 0) {
 									prwithC.setPossible(true);
 									consNull = true;
 									prwithC.setNull(true);
@@ -606,9 +573,9 @@ public class Query {
 							 */
 							else {
 								newListOfLists.add(nextlist);
-							}// endelse
+							} // endelse
 
-						}// endfor
+						} // endfor
 
 						ConstantSet constantSet1 = listOfSetOfConstants.get(0);
 						ConstantSet constantsIneq = null;
@@ -649,13 +616,12 @@ public class Query {
 										 */
 										if (andNull) {
 											printRWC.setAnt(true);
-											System.out.println(printRWC
-													.toString());
+											System.out.println(printRWC.toString());
 
-										}// endif
-									}// endelse
-								}// endelse
-							}// endif
+										} // endif
+									} // endelse
+								} // endelse
+							} // endif
 							else {
 								System.out.println("TODO3");
 								// hier muss man die Konditionale betrachten
@@ -667,8 +633,7 @@ public class Query {
 						}
 
 						for (int k = 1; k < listOfSetOfConstants.size(); k++) {
-							ConstantSet constantSet2 = listOfSetOfConstants
-									.get(k);
+							ConstantSet constantSet2 = listOfSetOfConstants.get(k);
 							// if one set contains more elements
 							if (constantSet1.size() > constantSet2.size()) {
 								constantsToPrint1 = constantSet2;
@@ -696,49 +661,40 @@ public class Query {
 									System.out.println("TODO2");
 									// System.out.println("groesse neue Liste: "
 									// + newListOfLists.size());
-									ProbabilityConditional prob1 = constantSet1
-											.getProbabilityConditional();
-									ProbabilityConditional prob2 = constantSet2
-											.getProbabilityConditional();
+									ProbabilityConditional prob1 = constantSet1.getProbabilityConditional();
+									ProbabilityConditional prob2 = constantSet2.getProbabilityConditional();
 
 									// here the constants of the atoms of
 									// antecedence and consequence are compared
 
-									RelationalConditional relCond1 = prob1
-											.getRelationalGroundConditional();
-									Collection<Atom<RelationalAtom>> atomsAnt1 = relCond1
-											.getAntecedence().getAtoms();
-									Collection<Atom<RelationalAtom>> atomsCons1 = relCond1
-											.getConsequence().getAtoms();
+									RelationalConditional relCond1 = prob1.getRelationalGroundConditional();
+									Collection<Atom<RelationalAtom>> atomsAnt1 = relCond1.getAntecedence().getAtoms();
+									Collection<Atom<RelationalAtom>> atomsCons1 = relCond1.getConsequence().getAtoms();
 									ConstantSet setOfConstantsOfAnt1 = new ConstantSet();
 									ConstantSet setOfConstantsOfCons1 = new ConstantSet();
 
-									setOfConstantsOfAnt1
-											.setProbabilityConditional(prob1);
-									setOfConstantsOfCons1
-											.setProbabilityConditional(prob1);
+									setOfConstantsOfAnt1.setProbabilityConditional(prob1);
+									setOfConstantsOfCons1.setProbabilityConditional(prob1);
 
 									// constants of the antecendence
 									for (Atom<RelationalAtom> atom : atomsAnt1) {
 										RelationalAtom relationalAtom = (RelationalAtom) atom;
-										collectionOfConstants = relationalAtom
-												.getConstants();
+										collectionOfConstants = relationalAtom.getConstants();
 										for (Constant constant : collectionOfConstants) {
 											setOfConstantsOfAnt1.add(constant);
-										}// endfor
+										} // endfor
 
-									}// endfor
+									} // endfor
 
 									// constants of the consequence
 									for (Atom<RelationalAtom> atom : atomsCons1) {
 										RelationalAtom relationalAtom = (RelationalAtom) atom;
-										collectionOfConstants = relationalAtom
-												.getConstants();
+										collectionOfConstants = relationalAtom.getConstants();
 										for (Constant constant : collectionOfConstants) {
 											setOfConstantsOfCons1.add(constant);
-										}// endfor
+										} // endfor
 
-									}// endfor
+									} // endfor
 
 									/*
 									 * //here antecendence and consequence
@@ -766,43 +722,36 @@ public class Query {
 									 * }
 									 */
 
-									RelationalConditional relCond2 = prob2
-											.getRelationalGroundConditional();
-									Collection<Atom<RelationalAtom>> atomsAnt2 = relCond2
-											.getAntecedence().getAtoms();
-									Collection<Atom<RelationalAtom>> atomsCons2 = relCond2
-											.getConsequence().getAtoms();
+									RelationalConditional relCond2 = prob2.getRelationalGroundConditional();
+									Collection<Atom<RelationalAtom>> atomsAnt2 = relCond2.getAntecedence().getAtoms();
+									Collection<Atom<RelationalAtom>> atomsCons2 = relCond2.getConsequence().getAtoms();
 
 									ConstantSet setOfConstantsOfAnt2 = new ConstantSet();
 									ConstantSet setOfConstantsOfCons2 = new ConstantSet();
-									setOfConstantsOfAnt2
-											.setProbabilityConditional(prob2);
-									setOfConstantsOfCons2
-											.setProbabilityConditional(prob2);
+									setOfConstantsOfAnt2.setProbabilityConditional(prob2);
+									setOfConstantsOfCons2.setProbabilityConditional(prob2);
 
 									// Konstanten der Antezendenz
 									for (Atom<RelationalAtom> atom : atomsAnt2) {
 										RelationalAtom relationalAtom = (RelationalAtom) atom;
-										collectionOfConstants = relationalAtom
-												.getConstants();
+										collectionOfConstants = relationalAtom.getConstants();
 										for (Constant constant : collectionOfConstants) {
 											setOfConstantsOfAnt2.add(constant);
 
-										}// endfor
+										} // endfor
 
-									}// endfor
+									} // endfor
 
 									// Konstanten der Konsequenz
 									for (Atom<RelationalAtom> atom : atomsCons2) {
 										RelationalAtom relationalAtom = (RelationalAtom) atom;
-										collectionOfConstants = relationalAtom
-												.getConstants();
+										collectionOfConstants = relationalAtom.getConstants();
 										for (Constant constant : collectionOfConstants) {
 											setOfConstantsOfCons2.add(constant);
 
-										}// endfor
+										} // endfor
 
-									}// endfor
+									} // endfor
 
 									/*
 									 * setOfConstantsOfAnt2.removeAll(
@@ -830,23 +779,19 @@ public class Query {
 									 * System.out.println(print.toString()); }
 									 */
 
-								}// endelse
-							}// endelse
+								} // endelse
+							} // endelse
 
 							if (constantsIneq != null) {
 								PrintWithInequality printWithInEq = new PrintWithInequality(
-										constantsToPrint1
-												.getProbabilityConditional(),
-										constantsIneq);
+										constantsToPrint1.getProbabilityConditional(), constantsIneq);
 								System.out.println(printWithInEq.toString());
 
 							}
 
 							if (constantsEq != null) {
 								PrintWithEquality printWithEq = new PrintWithEquality(
-										constantsToPrint2
-												.getProbabilityConditional(),
-										constantsEq);
+										constantsToPrint2.getProbabilityConditional(), constantsEq);
 								System.out.println(printWithEq.toString());
 
 							}
@@ -878,14 +823,14 @@ public class Query {
 							 * 
 							 * }// endfor
 							 */
-					}// endelse
-				}// endelse
+					} // endelse
+				} // endelse
 
-			}// endelse
+			} // endelse
 
 			System.out.println(spacebetween);
 
-		}// endfor
+		} // endfor
 
 	}// endofquery
 
