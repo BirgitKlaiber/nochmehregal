@@ -7,7 +7,7 @@ import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.Relation
 
 public class SimpleRoundingClassifier extends AbstractClassifier {
 
-	Fraction roundScale = new Fraction(1, 1000000);
+	Fraction roundScale = null;
 
 	public Fraction getRoundScale() {
 		return roundScale;
@@ -23,12 +23,12 @@ public class SimpleRoundingClassifier extends AbstractClassifier {
 	}
 
 	public SimpleRoundingClassifier() {
-		super();
+		this(new Fraction(1, 100));
 	}
 
-	public SimpleRoundingClassifier(Fraction threshold) {
+	public SimpleRoundingClassifier(Fraction roundScale) {
 		super();
-		this.roundScale = threshold;
+		this.roundScale = roundScale;
 	}
 
 	@Override

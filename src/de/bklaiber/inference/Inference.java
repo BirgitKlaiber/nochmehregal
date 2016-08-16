@@ -34,6 +34,15 @@ public class Inference {
 
 	GroundingOperator gop = null;
 	Classifier classifier = null;
+
+	public Classifier getClassifier() {
+		return classifier;
+	}
+
+	public void setClassifier(Classifier classifier) {
+		this.classifier = classifier;
+	}
+
 	Collection<Constant> constants = null;
 
 	/**
@@ -106,10 +115,6 @@ public class Inference {
 			probabilisticConditionals
 					.add(new RelationalConditional(formulaCons, formAnt, (new Fraction(probability)).simplify()));
 
-		}
-
-		for (RelationalConditional relationalConditional : probabilisticConditionals) {
-			System.out.println("Konditional mit Wahrscheinlichkeit: " + relationalConditional);
 		}
 
 		return probabilisticConditionals;

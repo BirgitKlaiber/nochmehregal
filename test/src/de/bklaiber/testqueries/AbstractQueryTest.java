@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Vector;
 
 import de.bklaiber.inference.Inference;
+import de.bklaiber.inference.SimpleRoundingClassifier;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
 public abstract class AbstractQueryTest {
@@ -37,6 +38,11 @@ public abstract class AbstractQueryTest {
 		long after = System.currentTimeMillis();
 		assertEquals(after - before < threshold, true);
 
+	}
+
+	public void setup() {
+		inference = new Inference();
+		inference.setClassifier(new SimpleRoundingClassifier());
 	}
 
 }
