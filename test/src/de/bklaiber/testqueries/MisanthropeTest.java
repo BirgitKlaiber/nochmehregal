@@ -41,9 +41,9 @@ public class MisanthropeTest extends AbstractQueryTest {
 	 * Tests if the runtime is below expected threshold.
 	 */
 	@Test
-	public void checkRuntimeOfGenerlization() {
+	public void checkRuntimeOfGeneralization() {
 
-		super.checkRuntimeOfGenerlization(60000);
+		super.checkRuntimeOfGeneralization(60000);
 	}
 
 }

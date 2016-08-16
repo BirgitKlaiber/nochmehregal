@@ -1,0 +1,33 @@
+signature
+    Bird = {Tweety, Bully, Kirby, Sylvester}
+
+    flies(Bird)
+    isBird(Bird)
+
+conditionals
+	kb{
+	    (flies(X) | isBird(X))[0.90]<X != Tweety>	    
+	    ( flies(Tweety))[0.001]
+	    ( isBird(Tweety))[1]
+	    }
+
+   	query1{
+	    (!flies(X) ) 
+	    }
+	    	
+	query2{
+	    (flies(X) ) 
+	    }
+	
+	query3{   
+		(!isBird(X))
+		}
+		  
+	query4{   
+		(!flies(X) | isBird(X))
+		}
+		   
+	query5{ 
+		(!isBird(X) | flies(X))
+	}
+	
