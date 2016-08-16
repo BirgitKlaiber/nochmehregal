@@ -4,8 +4,8 @@
 	<classpathentry kind="src" path="test/src"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Log4KR"/>
-	<classpathentry kind="var" path="log4kr_libs"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Log4KR"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/log4kr_libs"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
