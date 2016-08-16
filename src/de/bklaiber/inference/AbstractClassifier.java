@@ -49,4 +49,11 @@ public abstract class AbstractClassifier implements Classifier {
 	public boolean isTransitive() {
 		return true;
 	}
+
+	@Override
+	public boolean isEquivalent(RelationalConditional probGroundInsA, RelationalConditional probGroundInsB,
+			Collection<RelationalConditional> probabilisticGroundInstances) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
