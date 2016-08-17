@@ -6,6 +6,8 @@ import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.Relation
 
 public class ClusteringClassifier extends AbstractClassifier {
 
+	private ClusteringAlgorithm algorithm = null;
+
 	@Override
 	public boolean isTransitive() {
 		return false;
@@ -29,6 +31,14 @@ public class ClusteringClassifier extends AbstractClassifier {
 			Collection<RelationalConditional> probabilisticGroundInstances) {
 		// TODO Auto-generated method stub
 		return super.classify(probabilisticGroundInstances);
+	}
+
+	public ClusteringAlgorithm getAlgorithm() {
+		return algorithm;
+	}
+
+	public void setAlgorithm(ClusteringAlgorithm algorithm) {
+		this.algorithm = algorithm;
 	}
 
 }
