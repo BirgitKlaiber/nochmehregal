@@ -23,12 +23,8 @@ public class SimpleRoundingClassifier extends AbstractClassifier {
 	}
 
 	public SimpleRoundingClassifier() {
-		this(new Fraction(1, 100));
-	}
-
-	public SimpleRoundingClassifier(Fraction roundScale) {
 		super();
-		this.roundScale = roundScale;
+		roundScale = new Fraction(1, Integer.parseInt(properties.getProperty("roundScale", "100")));
 	}
 
 	@Override
@@ -39,6 +35,11 @@ public class SimpleRoundingClassifier extends AbstractClassifier {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isConfigurable() {
+		return true;
 	}
 
 }

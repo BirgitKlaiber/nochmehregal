@@ -1,11 +1,37 @@
 package de.bklaiber.inference;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
 public abstract class AbstractClassifier implements Classifier {
+
+	Properties properties = null;
+
+	public AbstractClassifier() {
+		if (!isConfigurable()) {
+			return;
+		}
+
+		properties = new Properties();
+		try {
+			BufferedInputStream in = new BufferedInputStream(
+					new FileInputStream("ressources/config/" + this.getClass().getName() + ".properties"));
+			properties.load(in);
+			in.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	public Collection<Collection<RelationalConditional>> classify(
 			Collection<RelationalConditional> probabilisticGroundInstances) {
@@ -55,6 +81,11 @@ public abstract class AbstractClassifier implements Classifier {
 	public boolean isEquivalent(RelationalConditional probGroundInsA, RelationalConditional probGroundInsB,
 			Collection<RelationalConditional> probabilisticGroundInstances) {
 		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isConfigurable() {
 		return false;
 	}
 }
