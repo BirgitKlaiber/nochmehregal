@@ -18,4 +18,6 @@ public interface Classifier {
 	 *         transitive
 	 */
 	public boolean isTransitive();
+
+	public boolean isConfigurable();
 }
