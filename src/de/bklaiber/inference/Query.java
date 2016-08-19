@@ -174,7 +174,7 @@ public class Query {
 				e.printStackTrace();
 			}
 			*/
-			epState.printCurrentProbabilities();
+			//epState.printCurrentProbabilities();
 
 			System.out.println("");
 

@@ -14,7 +14,8 @@ public abstract class AbstractClassifier implements Classifier {
 			return classifyTransitively(probabilisticGroundInstances);
 		}
 
-		return null;
+		throw new UnsupportedOperationException("Classifier not transitive and not implementing classify");
+
 	}
 
 	public Collection<Collection<RelationalConditional>> classifyTransitively(

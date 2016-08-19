@@ -83,6 +83,7 @@ public class Inference {
 	private Collection<RelationalConditional> classify(RelationalConditional c,
 			Collection<RelationalConditional> groundInstances) {
 		Collection<RelationalConditional> probabilisticGroundInstances = compute(groundInstances);
+
 		probabilisticGroundInstances = generalize(c, probabilisticGroundInstances);
 
 		return probabilisticGroundInstances;
