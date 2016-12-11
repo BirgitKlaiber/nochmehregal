@@ -16,10 +16,8 @@ import edu.cs.ai.log4KR.relational.util.RelationalUtils;
 import edu.cs.ai.log4KR.structuredLogics.GroundingSemantics;
 import edu.cs.ai.log4KR.structuredLogics.reasoning.RelationalOptimumEntropyEpistemicStateLBFGS;
 
-public class QueryMisanthrope
-{
-	public static void main(String[] args)
-	{
+public class QueryMisanthrope {
+	public static void main(String[] args) {
 		String spacebetween = new String();
 		double possible = -1;
 
@@ -33,16 +31,12 @@ public class QueryMisanthrope
 		Collection<Constant> constants = reader.getConstants();
 		// Collection<Predicate> predicates = reader.getPredicates();
 		//Collection<RelationalConditional> conditionals = reader
-			//	.getConditionals();
-		Collection<RelationalConditional> knowledgebase = reader
-				.getKnowledgeBase("kb");
-		Collection<RelationalConditional> queryLikesUV = reader
-				.getKnowledgeBase("kb1");
-		Collection<RelationalConditional> queryLikesaV = reader
-				.getKnowledgeBase("kb2");
-		Collection<RelationalConditional> queryLikesUVLikesVU = reader
-				.getKnowledgeBase("kb3");
-		
+		//	.getConditionals();
+		Collection<RelationalConditional> knowledgebase = reader.getKnowledgeBase("kb");
+		Collection<RelationalConditional> queryLikesUV = reader.getKnowledgeBase("query1");
+		Collection<RelationalConditional> queryLikesaV = reader.getKnowledgeBase("query2");
+		Collection<RelationalConditional> queryLikesUVLikesVU = reader.getKnowledgeBase("query3");
+
 		GroundingOperator gop = new ConstraintBasedGroundingOperator();
 		GroundingSemantics semantics = new GroundingSemantics(gop, constants);
 		RelationalOptimumEntropyEpistemicStateLBFGS epState = new RelationalOptimumEntropyEpistemicStateLBFGS(
@@ -51,50 +45,35 @@ public class QueryMisanthrope
 		PossibleWorldFactory<RelationalAtom> worldFactory = new RelationalPossibleWorldMapRepresentationFactory();
 
 		Interpretation<RelationalAtom>[] possibleWorlds = worldFactory
-				.createPossibleWorlds(RelationalUtils
-						.getAtomsFromKnowledgeBase(knowledgebase, constants,
-								gop));
+				.createPossibleWorlds(RelationalUtils.getAtomsFromKnowledgeBase(knowledgebase, constants, gop));
 
 		epState.initialize(possibleWorlds, knowledgebase);
 
-		Collection<RelationalConditional> groundKnowledgeBaseLikesUV = gop
-				.groundKnowledgeBase(queryLikesUV, constants);
-		Collection<RelationalConditional> groundKnowledgeBaseLikesaV = gop
-				.groundKnowledgeBase(queryLikesaV, constants);
+		Collection<RelationalConditional> groundKnowledgeBaseLikesUV = gop.groundKnowledgeBase(queryLikesUV, constants);
+		Collection<RelationalConditional> groundKnowledgeBaseLikesaV = gop.groundKnowledgeBase(queryLikesaV, constants);
 		Collection<RelationalConditional> groundKnowledgeBaseLikesUVLikesVU = gop
 				.groundKnowledgeBase(queryLikesUVLikesVU, constants);
-		
-		for (RelationalConditional relationalConditional : groundKnowledgeBaseLikesUV)
-		{
 
-			Collection<RelationalConditional> groundCond = gop
-					.groundConditional(relationalConditional, constants);
+		for (RelationalConditional relationalConditional : groundKnowledgeBaseLikesUV) {
 
-			for (RelationalConditional groundConditional : groundCond)
-			{
-				Formula<RelationalAtom> formulaCons = groundConditional
-						.getConsequence();
-				Formula<RelationalAtom> formulaAnt = groundConditional
-						.getAntecedence();
-				
-				possible = epState
-						.queryConditionalProbability(formulaCons, formulaAnt);
+			Collection<RelationalConditional> groundCond = gop.groundConditional(relationalConditional, constants);
 
-							
-					if (possible == -1)
-					{
-						System.out.println("unzulässige Anfrage: " + "P("
-								+ formulaCons + " " + "|" + " " + formulaAnt + " )  ");
-					} else {
+			for (RelationalConditional groundConditional : groundCond) {
+				Formula<RelationalAtom> formulaCons = groundConditional.getConsequence();
+				Formula<RelationalAtom> formulaAnt = groundConditional.getAntecedence();
 
+				possible = epState.queryConditionalProbability(formulaCons, formulaAnt);
 
+				if (possible == -1) {
+					System.out.println(
+							"unzulaessige Anfrage: " + "P(" + formulaCons + " " + "|" + " " + formulaAnt + " )  ");
+				} else {
 
-				System.out.print("P(");
-				System.out.print(groundConditional.toString());
-				System.out.print(") = ");
-				System.out.println(epState.queryConditionalProbability(
-						formulaCons, formulaAnt));
-					}
+					System.out.print("P(");
+					System.out.print(groundConditional.toString());
+					System.out.print(") = ");
+					System.out.println(epState.queryConditionalProbability(formulaCons, formulaAnt));
+				}
 
 			}
 
@@ -102,105 +81,66 @@ public class QueryMisanthrope
 
 		System.out.println(spacebetween);
 
-		for (RelationalConditional relationalConditional : groundKnowledgeBaseLikesaV)
-		{
+		for (RelationalConditional relationalConditional : groundKnowledgeBaseLikesaV) {
 
-			Collection<RelationalConditional> groundCond = gop
-					.groundConditional(relationalConditional, constants);
+			Collection<RelationalConditional> groundCond = gop.groundConditional(relationalConditional, constants);
 
-			for (RelationalConditional groundConditional : groundCond)
-			{
-				Formula<RelationalAtom> formulaCons = groundConditional
-						.getConsequence();
-				Formula<RelationalAtom> formulaAnt = groundConditional
-						.getAntecedence();
+			for (RelationalConditional groundConditional : groundCond) {
+				Formula<RelationalAtom> formulaCons = groundConditional.getConsequence();
+				Formula<RelationalAtom> formulaAnt = groundConditional.getAntecedence();
 
-				possible = epState
-						.queryConditionalProbability(formulaCons, formulaAnt);
+				possible = epState.queryConditionalProbability(formulaCons, formulaAnt);
 
-							
-					if (possible == -1)
-					{
-						System.out.println("unzulässige Anfrage: " + "P("
-								+ formulaCons + " " + "|" + " " + formulaAnt + " )  ");
-					} else {
+				if (possible == -1) {
+					System.out.println(
+							"unzulaessige Anfrage: " + "P(" + formulaCons + " " + "|" + " " + formulaAnt + " )  ");
+				} else {
 
-				System.out.print("P(");
-				System.out.print(groundConditional.toString());
-				System.out.print(") = ");
-				System.out.println(epState.queryConditionalProbability(
-						formulaCons, formulaAnt));
-					}
+					System.out.print("P(");
+					System.out.print(groundConditional.toString());
+					System.out.print(") = ");
+					System.out.println(epState.queryConditionalProbability(formulaCons, formulaAnt));
+				}
 
 			}
 
 		}
 		System.out.println(spacebetween);
 
-		for (RelationalConditional relationalConditional : groundKnowledgeBaseLikesUVLikesVU)
-		{
+		for (RelationalConditional relationalConditional : groundKnowledgeBaseLikesUVLikesVU) {
 
 			//Collection<RelationalConditional> groundCond = gop
-				//	.groundConditional(relationalConditional, constants);
+			//	.groundConditional(relationalConditional, constants);
 
-			
-			Formula<RelationalAtom> formulaCons = relationalConditional
-					.getConsequence();
-			Formula<RelationalAtom> formAnt = relationalConditional
-					.getAntecedence();
+			Formula<RelationalAtom> formulaCons = relationalConditional.getConsequence();
+			Formula<RelationalAtom> formAnt = relationalConditional.getAntecedence();
 
-			
-			
-			
-			possible = epState
-					.queryConditionalProbability(formulaCons, formAnt);
+			possible = epState.queryConditionalProbability(formulaCons, formAnt);
 
-						
-				if (possible == -1)
+			if (possible == -1) {
+				System.out.println("unzulaessige Anfrage: " + "P(" + formulaCons + " " + "|" + " " + formAnt + " )  ");
+			} else {
+				System.out.println("P(" + formulaCons + " " + "|" + " " + formAnt + " ) = "
+						+ epState.queryConditionalProbability(formulaCons, formAnt));
+			}
+
+			//}// endforQuery1
+
+			/*	for (RelationalConditional groundConditional : groundCond)
 				{
-					System.out.println("unzulässige Anfrage: " + "P("
-							+ formulaCons + " " + "|" + " " + formAnt + " )  ");
-				} else 
-				{
-					System.out.println("P("
-							+ formulaCons
-							+ " "
-							+ "|"
-							+ " "
-							+ formAnt
-							+ " ) = "
-							+ epState.queryConditionalProbability(formulaCons,
-									formAnt));
-				}
+					Formula<RelationalAtom> formulaCons = groundConditional
+							.getConsequence();
+					Formula<RelationalAtom> formulaAnt = groundConditional
+							.getAntecedence();
 			
-
-		//}// endforQuery1
-
-			
-			
-			
-			
-			
-			
-		/*	for (RelationalConditional groundConditional : groundCond)
-			{
-				Formula<RelationalAtom> formulaCons = groundConditional
-						.getConsequence();
-				Formula<RelationalAtom> formulaAnt = groundConditional
-						.getAntecedence();
-
-*/				/*System.out.print("P(");
+			*/ /*System.out.print("P(");
 				System.out.print(groundConditional.toString());
 				System.out.print(") = ");
 				System.out.println(epState.queryConditionalProbability(
 						formulaCons, formulaAnt));
+				
+				*/ } // endfor
 
-*/			}// endfor
+	}// endfor
 
-		}// endfor
-
-	
-
-	}// endof main
-
-
+}// endof main
