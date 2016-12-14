@@ -21,8 +21,11 @@ import edu.cs.ai.log4KR.structuredLogics.reasoning.RelationalOptimumEntropyEpist
 
 /**
  * 
- * 
  * @author klaiber
+ * 
+ *         Given an unconditioned relational FO-PCL Conditional it returns
+ *         classes of relational conditoned contitionals ande the computed
+ *         related probaility.
  *
  */
 public class Inference {
@@ -35,10 +38,20 @@ public class Inference {
 	GroundingOperator gop = null;
 	Classifier classifier = null;
 
+	/**
+	 * Getter for classifier.
+	 * 
+	 * @return classifier
+	 */
 	public Classifier getClassifier() {
 		return classifier;
 	}
 
+	/**
+	 * Setter for Classifier.
+	 * 
+	 * @param classifier
+	 */
 	public void setClassifier(Classifier classifier) {
 		this.classifier = classifier;
 	}
@@ -77,8 +90,11 @@ public class Inference {
 	/**
 	 * 
 	 * @param c
+	 *            conditional without probability
 	 * @param groundInstances
-	 * @return
+	 * 
+	 * @return generalized probabilistic ground instances of the conditional of
+	 *         the query
 	 */
 	private Collection<RelationalConditional> classify(RelationalConditional c,
 			Collection<RelationalConditional> groundInstances) {
@@ -101,7 +117,8 @@ public class Inference {
 	 * Calls Log4KR to compute the probability for each grounded conditional
 	 * 
 	 * @param groundedQuery
-	 * @return
+	 * @return list of relational probabilistic condtionals with their computed
+	 *         probability
 	 */
 	private Collection<RelationalConditional> compute(Collection<RelationalConditional> groundedQuery) {
 
@@ -124,7 +141,8 @@ public class Inference {
 	/**
 	 * 
 	 * @param c
-	 * @return
+	 *            relational unconditioned conditional of the query
+	 * @return grounded query conditional
 	 */
 	private Collection<RelationalConditional> ground(RelationalConditional c) {
 		if (kb == null) {
