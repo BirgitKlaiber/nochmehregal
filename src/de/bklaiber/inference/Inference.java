@@ -37,6 +37,15 @@ public class Inference {
 
 	GroundingOperator gop = null;
 	Classifier classifier = null;
+	Generalization generalization = null;
+
+	public Generalization getGeneralization() {
+		return generalization;
+	}
+
+	public void setGeneralization(Generalization generalization) {
+		this.generalization = generalization;
+	}
 
 	/**
 	 * Getter for classifier.
@@ -81,7 +90,8 @@ public class Inference {
 	public Collection<RelationalConditional> queryConditional(RelationalConditional c) {
 
 		Collection<RelationalConditional> groundInstances = ground(c);
-		Collection<RelationalConditional> generalizedClasses = classify(c, groundInstances);
+		Collection<Collection<RelationalConditional>> classifiedClasses = classify(c, groundInstances);
+		Collection<RelationalConditional> generalizedClasses = generalize(c, classifiedClasses);
 
 		return generalizedClasses;
 
@@ -96,28 +106,30 @@ public class Inference {
 	 * @return generalized probabilistic ground instances of the conditional of
 	 *         the query
 	 */
-	private Collection<RelationalConditional> classify(RelationalConditional c,
+	private Collection<Collection<RelationalConditional>> classify(RelationalConditional c,
 			Collection<RelationalConditional> groundInstances) {
 		Collection<RelationalConditional> probabilisticGroundInstances = compute(groundInstances);
 
-		probabilisticGroundInstances = generalize(c, probabilisticGroundInstances);
-
-		return probabilisticGroundInstances;
-	}
-
-	private Collection<RelationalConditional> generalize(RelationalConditional c,
-			Collection<RelationalConditional> probabilisticGroundInstances) {
 		Collection<Collection<RelationalConditional>> equivalenceClasses = classifier
 				.classify(probabilisticGroundInstances);
 
-		return probabilisticGroundInstances;
+		return equivalenceClasses;
+	}
+
+	private Collection<RelationalConditional> generalize(RelationalConditional c,
+			Collection<Collection<RelationalConditional>> equivalenceClasses) {
+
+		Collection<RelationalConditional> classesAfterGeneralization = generalization.generalize(equivalenceClasses);
+
+		return classesAfterGeneralization;
+
 	}
 
 	/**
 	 * Calls Log4KR to compute the probability for each grounded conditional
 	 * 
 	 * @param groundedQuery
-	 * @return list of relational probabilistic condtionals with their computed
+	 * @return list of relational probabilistic conditionals with their computed
 	 *         probability
 	 */
 	private Collection<RelationalConditional> compute(Collection<RelationalConditional> groundedQuery) {

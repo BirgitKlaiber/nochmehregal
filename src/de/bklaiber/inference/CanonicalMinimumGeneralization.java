@@ -4,6 +4,9 @@ import java.util.Collection;
 
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
+/*
+ * This class is
+ */
 public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	@Override

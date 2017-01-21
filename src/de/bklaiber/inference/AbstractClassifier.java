@@ -10,10 +10,19 @@ import java.util.Properties;
 
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
+/*
+ * This class is used to...
+ * 
+ * @author klaiber
+ * 
+ */
 public abstract class AbstractClassifier implements Classifier {
 
 	Properties properties = null;
 
+	/*
+	 * 
+	 */
 	public AbstractClassifier() {
 		if (!isConfigurable()) {
 			return;
@@ -44,6 +53,9 @@ public abstract class AbstractClassifier implements Classifier {
 
 	}
 
+	/*
+	 * 
+	 */
 	public Collection<Collection<RelationalConditional>> classifyTransitively(
 			Collection<RelationalConditional> probabilisticGroundInstances) {
 

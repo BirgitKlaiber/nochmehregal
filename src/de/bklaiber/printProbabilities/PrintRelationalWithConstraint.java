@@ -18,8 +18,7 @@ import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.Relation
  * @author klaiber
  *
  */
-public class PrintRelationalWithConstraint implements
-		PrintConditionalProbabilities {
+public class PrintRelationalWithConstraint implements PrintConditionalProbabilities {
 	private RelationalConditional relationalConditional;
 	private ProbabilityConditional probalilityConditional;
 	private Collection<Atom<RelationalAtom>> relationalAtoms;
@@ -76,12 +75,10 @@ public class PrintRelationalWithConstraint implements
 	 * 
 	 * @param probalilityConditional
 	 */
-	public PrintRelationalWithConstraint(
-			ProbabilityConditional probalilityConditional) {
+	public PrintRelationalWithConstraint(ProbabilityConditional probalilityConditional) {
 		super();
 		this.probalilityConditional = probalilityConditional;
-		this.relationalConditional = probalilityConditional
-				.getRelationalConditional();
+		this.relationalConditional = probalilityConditional.getRelationalConditional();
 		this.relationalAtoms = relationalConditional.getAtoms();
 		variables = new HashSet<Variable>();
 		variablesCons = new HashSet<Variable>();
@@ -91,57 +88,51 @@ public class PrintRelationalWithConstraint implements
 	public String toString() {
 		StringBuilder probCond = new StringBuilder();
 
-		// if the probability is Null, look at the atoms of the consequence,
+		// if the probability is Zero, look at the atoms of the consequence,
 		// because the probability of the consequence is Null
 		// get all the variables; later used for intersection
 
 		if (isNull) {
-			atomsOfConsequence = relationalConditional.getConsequence()
-					.getAtoms();
+			atomsOfConsequence = relationalConditional.getConsequence().getAtoms();
 			for (Atom<RelationalAtom> atom : atomsOfConsequence) {
-				Collection<Variable> variablesOfConsequence = ((RelationalAtom) atom)
-						.getVariables();
+				Collection<Variable> variablesOfConsequence = ((RelationalAtom) atom).getVariables();
 				for (Variable variable : variablesOfConsequence) {
 					// System.out.println(variable.toString());
 					variables.add(variable);
-				}// endfor
+				} // endfor
 
-			}// endfor
+			} // endfor
 
 		} else {
 			// if the probability is -1, then have a look at the atoms of the
-			// antecedence, because the probability of the antecedence is Null
+			// antecedence, because the probability of the antecedence is Zero
 			if (!possible || ant) {
 
-				atomsOfAntecendence = relationalConditional.getAntecedence()
-						.getAtoms();
+				atomsOfAntecendence = relationalConditional.getAntecedence().getAtoms();
 				for (Atom<RelationalAtom> atom : atomsOfAntecendence) {
-					Collection<Variable> variablesOfAntecendence = ((RelationalAtom) atom)
-							.getVariables();
+					Collection<Variable> variablesOfAntecendence = ((RelationalAtom) atom).getVariables();
 					for (Variable variable : variablesOfAntecendence) {
 						// System.out.println(variable.toString());
 						variables.add(variable);
-					}// endfor
+					} // endfor
 
-				}// endfor
+				} // endfor
 
-			}// endif
+			} // endif
 				// else
 				// {
 
 			// get all the variables; later used for intersection
 			if (cons) {
-				atomsOfConsequence = relationalConditional.getConsequence()
-						.getAtoms();
+				atomsOfConsequence = relationalConditional.getConsequence().getAtoms();
 				for (Atom<RelationalAtom> atom : atomsOfConsequence) {
-					Collection<Variable> variablesOfConsequence = ((RelationalAtom) atom)
-							.getVariables();
+					Collection<Variable> variablesOfConsequence = ((RelationalAtom) atom).getVariables();
 					for (Variable variable : variablesOfConsequence) {
 						// System.out.println(variable.toString());
 						variablesCons.add(variable);
-					}// endfor
+					} // endfor
 
-				}// endfor
+				} // endfor
 
 			}
 			// else
@@ -149,28 +140,25 @@ public class PrintRelationalWithConstraint implements
 			// get the variables; later used for generating the exceptions
 			if (possible && !ant && !cons) {
 				for (Atom<RelationalAtom> atom : relationalAtoms) {
-					Collection<Variable> variablesOfAtom = ((RelationalAtom) atom)
-							.getVariables();
+					Collection<Variable> variablesOfAtom = ((RelationalAtom) atom).getVariables();
 					// System.out.println("Anzahl Variablen: " +
 					// variablesOfAtom.size());
 					// System.out.println(variablesOfAtom.toString());
 					for (Variable variable : variablesOfAtom) {
 						// System.out.println(variable.toString());
 						variables.add(variable);
-					}// endfor
+					} // endfor
 
-				}// endfor
+				} // endfor
 			}
 			// }//endelse
 			// }
-		}// endelse
+		} // endelse
 
 		probCond.append(probalilityConditional.relationalToString(true));
 		if (possible) {
 			// probCond.append(probalilityConditional.relationalToString(true));
-			probCond.append("["
-					+ Math.rint(probalilityConditional.getProbability() * 1000)
-					/ 1000 + "]");
+			probCond.append("[" + Math.rint(probalilityConditional.getProbability() * 1000) / 1000 + "]");
 		} else {
 			probCond.append(" ist keine zulaessige Anfrage fuer ");
 		}
@@ -189,8 +177,7 @@ public class PrintRelationalWithConstraint implements
 			// ArrayList<Variable> variablesListCons = new
 			// ArrayList<>(variablesCons);
 			for (int i = 0; i < variablesCons.size(); i++) {
-				ArrayList<Variable> variablesListCons = new ArrayList<>(
-						variablesCons);
+				ArrayList<Variable> variablesListCons = new ArrayList<>(variablesCons);
 				// System.out.println("i: " + variablesListCons.get(i));
 
 				// for (Variable otherVariable : variables)
@@ -200,8 +187,7 @@ public class PrintRelationalWithConstraint implements
 					// System.out.println("j: " + variablesListCons.get(j));
 
 					// if(!(variablesList.get(i).toString().equals((variablesList).get(j).toString())));
-					if (variablesListCons.get(i).toString() != variablesListCons
-							.get(j).toString()) {
+					if (variablesListCons.get(i).toString() != variablesListCons.get(j).toString()) {
 						probCond.append("<" + variablesListCons.get(i));
 						if (equal) {
 							probCond.append("=" + variablesListCons.get(j));
@@ -209,13 +195,13 @@ public class PrintRelationalWithConstraint implements
 						} else {
 							probCond.append("!=" + variablesListCons.get(j));
 							probCond.append("> * ");
-						}// endelse
+						} // endelse
 
-					}// endif
-				}// endfor
-			}// endfor
+					} // endif
+				} // endfor
+			} // endfor
 
-		}// endif
+		} // endif
 
 		for (int i = 0; i < variables.size(); i++) {
 
@@ -229,8 +215,7 @@ public class PrintRelationalWithConstraint implements
 
 				// if(!(variablesList.get(i).toString().equals((variablesList).get(j).toString())));
 				if (variablesList.size() == 2 || j < variablesList.size() - 1) {
-					if (variablesList.get(i).toString() != variablesList.get(j)
-							.toString()) {
+					if (variablesList.get(i).toString() != variablesList.get(j).toString()) {
 						probCond.append("<" + variablesList.get(i));
 						if (equal) {
 							probCond.append("=" + variablesList.get(j));
@@ -238,13 +223,13 @@ public class PrintRelationalWithConstraint implements
 						} else {
 							probCond.append("!=" + variablesList.get(j));
 							probCond.append("> * ");
-						}// endelse
+						} // endelse
 
-					}// endif
+					} // endif
 
-				}// endif
-			}// endfor
-		}// endfor
+				} // endif
+			} // endfor
+		} // endfor
 			// ArrayList<Variable> variablesListCons;
 			// = new ArrayList<>(variablesCons);
 
