@@ -91,7 +91,7 @@ public class Inference {
 
 		Collection<RelationalConditional> groundInstances = ground(c);
 		Collection<Collection<RelationalConditional>> classifiedClasses = classify(c, groundInstances);
-		Collection<RelationalConditional> generalizedClasses = generalize(c, classifiedClasses);
+		Collection<RelationalConditional> generalizedClasses = generalization.generalize(c, classifiedClasses);
 
 		return generalizedClasses;
 
@@ -114,15 +114,6 @@ public class Inference {
 				.classify(probabilisticGroundInstances);
 
 		return equivalenceClasses;
-	}
-
-	private Collection<RelationalConditional> generalize(RelationalConditional c,
-			Collection<Collection<RelationalConditional>> equivalenceClasses) {
-
-		Collection<RelationalConditional> classesAfterGeneralization = generalization.generalize(equivalenceClasses);
-
-		return classesAfterGeneralization;
-
 	}
 
 	/**
