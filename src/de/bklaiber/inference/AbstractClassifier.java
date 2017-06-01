@@ -11,7 +11,7 @@ import java.util.Properties;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
 /*
- * This class is used to...
+ * This class is used to classify the ground conditionals of the relational conditional of the query.
  * 
  * @author klaiber
  * 
@@ -21,7 +21,7 @@ public abstract class AbstractClassifier implements Classifier {
 	Properties properties = null;
 
 	/*
-	 * 
+	 * Tests if the conifguration is in a correct form.
 	 */
 	public AbstractClassifier() {
 		if (!isConfigurable()) {
@@ -42,6 +42,11 @@ public abstract class AbstractClassifier implements Classifier {
 
 	}
 
+	/**
+	 * The method classify calls classifyTransitively to compare the
+	 * conditionals and decide which ones are equal and which ones need to be
+	 * put in a new class)
+	 */
 	public Collection<Collection<RelationalConditional>> classify(
 			Collection<RelationalConditional> probabilisticGroundInstances) {
 

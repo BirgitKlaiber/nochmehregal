@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import java.util.Vector;
 
+import de.bklaiber.inference.CanonicalMinimumGeneralization;
 import de.bklaiber.inference.Inference;
 import de.bklaiber.inference.SimpleRoundingClassifier;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
@@ -43,6 +44,7 @@ public abstract class AbstractQueryTest {
 	public void setup() {
 		inference = new Inference();
 		inference.setClassifier(new SimpleRoundingClassifier());
+		inference.setGeneralization(new CanonicalMinimumGeneralization());
 	}
 
 }

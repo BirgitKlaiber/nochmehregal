@@ -24,8 +24,8 @@ import edu.cs.ai.log4KR.structuredLogics.reasoning.RelationalOptimumEntropyEpist
  * @author klaiber
  * 
  *         Given an unconditioned relational FO-PCL Conditional it returns
- *         classes of relational conditoned contitionals ande the computed
- *         related probaility.
+ *         classes of relational conditioned conditionals and the computed
+ *         related probability.
  *
  */
 public class Inference {
@@ -39,6 +39,11 @@ public class Inference {
 	Classifier classifier = null;
 	Generalization generalization = null;
 
+	/**
+	 * Getter for generalization.
+	 * 
+	 * @return generalization
+	 */
 	public Generalization getGeneralization() {
 		return generalization;
 	}

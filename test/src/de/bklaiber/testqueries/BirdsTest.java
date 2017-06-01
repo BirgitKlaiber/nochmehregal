@@ -50,7 +50,7 @@ public class BirdsTest extends AbstractQueryTest {
 	public void checkGeneralization() {
 		Vector<RelationalConditional> generalization = new Vector<RelationalConditional>(
 				inference.queryConditional(queries.elementAt(0)));
-		//System.out.println(generalization.elementAt(0).toString());
+		System.out.println(generalization.elementAt(0).toString());
 
 	}
 
