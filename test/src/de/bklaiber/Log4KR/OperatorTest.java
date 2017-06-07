@@ -29,6 +29,9 @@ public class OperatorTest {
 		Formula<AtomicConstraint> constraintAndOrAnd = constraintAnd1.and(constraint3);
 		Formula<AtomicConstraint> constraintAndAnd = constraint1.and(constraint2);
 		Formula<AtomicConstraint> constraintAndOrOrAndOr = constraintAnd1.or(constraintAnd2);
+		Formula<AtomicConstraint> constraintOrOrOr1 = constraint1.or(constraint2).or(constraint3).or(constraint1);
+		Formula<AtomicConstraint> constraintOrOrOr2 = constraint1.or(constraint2.or(constraint3).or(constraint1));
+		Formula<AtomicConstraint> constraintOrOrOr3 = constraint1.or(constraint2.or(constraint3.or(constraint1)));
 
 		assertEquals(constraintAnd1.toString(), "(X=Y * (Y=Z + X=Z))");
 		assertEquals(constraintAndOrAnd.toString(), "((X=Y * (Y=Z + X=Z)) * X=Z)");
@@ -37,6 +40,10 @@ public class OperatorTest {
 		System.out.println(constraintAnd1);
 		System.out.println(constraintAnd2);
 		System.out.println(constraintAndOrOrAndOr);
+		System.out.println(constraintOrOrOr1 + "1");
+		System.out.println(constraintOrOrOr2);
+		System.out.println(constraintOrOrOr3);
+
 	}
 
 }

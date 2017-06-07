@@ -1,5 +1,7 @@
 package de.bklaiber.testqueries;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.util.Vector;
 
@@ -48,8 +50,15 @@ public class BirdsTest extends AbstractQueryTest {
 	 */
 	@Test
 	public void checkGeneralization() {
+		Vector<String> generalizations = new Vector<String>();
+		generalizations.addElement("(flies(X))[0.6636034383842102]<((X=Bully + X =Kirby) + X=Sylvester)> ");
+		generalizations.addElement("(flies(X))[0.0]<Tweety> ");
 		Vector<RelationalConditional> generalization = new Vector<RelationalConditional>(
 				inference.queryConditional(queries.elementAt(0)));
+		assertEquals(generalizations.elementAt(0), generalization.elementAt(0).toString());
+		assertEquals(generalizations.elementAt(1), generalization.elementAt(1).toString());
+		assertEquals(generalizations.size(), generalization.size());
+
 		System.out.println(generalization.elementAt(0).toString());
 
 	}
