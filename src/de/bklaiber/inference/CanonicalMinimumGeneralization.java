@@ -120,44 +120,70 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				} //end else
 			} //end for
 
+			Term[] argsOfQuery = null;
+			ArrayList<Term> argsOfCond = new ArrayList<Term>();
+			ArrayList<Term> allTermsOfClass = new ArrayList<Term>();
+			ArrayList<EqualityConstraint> listOfConstraintsOfClass = new ArrayList<EqualityConstraint>();
+
 			for (Iterator<Collection<Atom<RelationalAtom>>> atomElements = atomsOfClass.iterator(); atomElements
 					.hasNext();) {
 				Collection<Atom<RelationalAtom>> collectionOfAtoms = (Collection<Atom<RelationalAtom>>) atomElements
 						.next();
-				Collection<EqualityConstraint> listOfConstraintsOfClass = new ArrayList<EqualityConstraint>();
+				Term[] argsOfClass = null;
+
 				for (Iterator<Atom<RelationalAtom>> atomElement = collectionOfAtoms.iterator(); atomElement
 						.hasNext();) {
 					Atom<RelationalAtom> atomOfClass = (Atom<RelationalAtom>) atomElement.next();
 					for (Iterator<Atom<RelationalAtom>> queryAtoms = atomsOfConditional.iterator(); queryAtoms
 							.hasNext();) {
 						Atom<RelationalAtom> atomOfConditional = (Atom<RelationalAtom>) queryAtoms.next();
-						if (atomOfClass.equals(atomOfConditional)) {
+						argsOfQuery = ((RelationalAtom) atomOfConditional).getArguments();
+						if (((RelationalAtom) atomOfClass).getPredicate()
+								.equals(((RelationalAtom) atomOfConditional).getPredicate())) {
 
-							Term[] argsOfCond = ((RelationalAtom) atomOfConditional).getArguments();
-							Term[] argsOfClass = ((RelationalAtom) atomOfClass).getArguments();
-							EqualityConstraint[] arrayOfConstraints = null;
+							argsOfClass = ((RelationalAtom) atomOfClass).getArguments();
 
 							for (int i = 0; i < argsOfClass.length; i++) {
-								for (int j = 0; j < argsOfCond.length; j++) {
+								argsOfCond.add(argsOfClass[i]);
 
-									Variable var = new Variable(argsOfCond[j].toString(), argsOfCond[j].getType());
-									Constant cons = new Constant(argsOfClass[i].toString(), argsOfClass[i].getType());
-									EqualityConstraint equalConstraint = new EqualityConstraint(var, cons);
-									listOfConstraintsOfClass.add(equalConstraint);
-									listOfConstraintsOfClass.toArray(arrayOfConstraints);
-									//Formula<AtomicConstraint> constraintOr = arrayOfConstraints[0];
-
-									constraint = arrayOfConstraints[0];
-
-									for (int k = 1; k < argsOfClass.length; k++) {
-
-										constraint = constraint.or(arrayOfConstraints[k]);
-										k++;
-
-									}
-								}
 							}
+
 						}
+
+					}
+
+					/*
+					for (int i = 0; i < argsOfCond.size(); i++) {
+					
+						Term termOfClass = argsOfCond.get(i);
+						allTermsOfClass.add(termOfClass);
+					}
+					*/
+
+					//for (int i = 0; i < allTermsOfClass.size(); i++) {
+
+					for (int i = 0; i < argsOfCond.size(); i++) {
+						for (int j = 0; j < argsOfQuery.length; j++) {
+
+							Variable var = new Variable(argsOfQuery[j].toString(), argsOfQuery[j].getType());
+							Constant cons = new Constant((argsOfCond.get(i)).toString(), (argsOfCond.get(i)).getType());
+							EqualityConstraint equalConstraint = new EqualityConstraint(var, cons);
+							listOfConstraintsOfClass.add(equalConstraint);
+
+						}
+					}
+					for (int i = 0; i < listOfConstraintsOfClass.size(); i++) {
+						constraint = (Formula<AtomicConstraint>) listOfConstraintsOfClass.get(i);
+
+					}
+
+					for (int k = 1; k < argsOfClass.length; k++) {
+
+						if (!(listOfConstraintsOfClass.size() > 1)) {
+							break;
+						}
+						constraint = constraint.or((Formula<AtomicConstraint>) listOfConstraintsOfClass.get(k));
+						k++;
 
 					}
 
