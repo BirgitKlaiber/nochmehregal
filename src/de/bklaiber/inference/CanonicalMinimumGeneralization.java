@@ -26,19 +26,20 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
 		Collection<Collection<Atom<RelationalAtom>>> atomsOfClasses = getAtomOfClasses(classifiedClasses);
+		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
 
-		for (Iterator iterator = atomsOfClasses.iterator(); iterator.hasNext();) {
+		for (Iterator<Collection<Atom<RelationalAtom>>> iterator = atomsOfClasses.iterator(); iterator.hasNext();) {
 			Collection<Atom<RelationalAtom>> classification = (Collection<Atom<RelationalAtom>>) iterator.next();
-			generalize(classification, atomsOfQuery);
+			RelationalConditional generalizationOfClass = generalize(classification, atomsOfQuery);
+			generalization.add(generalizationOfClass);
 		}
 
-		//ArrayList<EqualityConstraint> listOfConstraintsOfClass = getListOfConstraintsOfClass();
-
-		return null;
+		return generalization;
 	}
 
-	private void generalize(Collection<Atom<RelationalAtom>> classification,
+	private RelationalConditional generalize(Collection<Atom<RelationalAtom>> classification,
 			Collection<Atom<RelationalAtom>> atomsOfQuery) {
+		return null;
 		// TODO Auto-generated method stub
 
 	}
