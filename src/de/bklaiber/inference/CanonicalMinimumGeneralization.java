@@ -21,6 +21,51 @@ import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.Relation
  */
 public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
+	public Collection<RelationalConditional> generalize2(RelationalConditional c,
+			Collection<Collection<RelationalConditional>> classifiedClasses) {
+
+		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
+		Collection<Collection<Atom<RelationalAtom>>> atomsOfClasses = getAtomOfClasses(classifiedClasses);
+
+		for (Iterator iterator = atomsOfClasses.iterator(); iterator.hasNext();) {
+			Collection<Atom<RelationalAtom>> classification = (Collection<Atom<RelationalAtom>>) iterator.next();
+			generalize(classification, atomsOfQuery);
+		}
+
+		//ArrayList<EqualityConstraint> listOfConstraintsOfClass = getListOfConstraintsOfClass();
+
+		return null;
+	}
+
+	private void generalize(Collection<Atom<RelationalAtom>> classification,
+			Collection<Atom<RelationalAtom>> atomsOfQuery) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private Collection<Collection<Atom<RelationalAtom>>> getAtomOfClasses(
+			Collection<Collection<RelationalConditional>> classifiedClasses) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Collection<Atom<RelationalAtom>> getAtomsOfQuery(RelationalConditional c) {
+
+		Collection<Atom<RelationalAtom>> atomsOfConditional = new ArrayList<Atom<RelationalAtom>>();
+
+		if (c instanceof RelationalFact) {
+
+			atomsOfConditional = c.getConsequence().getAtoms();
+
+		} else {
+
+			atomsOfConditional = c.getAntecedence().getAtoms();
+
+		} //end else
+
+		return atomsOfConditional;
+	}
+
 	@Override
 	public Collection<RelationalConditional> generalize(RelationalConditional c,
 			Collection<Collection<RelationalConditional>> classifiedClasses) {
@@ -82,7 +127,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		Collection<Atom<RelationalAtom>> atomsOfConditional = new ArrayList<Atom<RelationalAtom>>();
 
-		if (c instanceof RelationalFact) {
+		if (classifiedClasses instanceof RelationalFact) {
 
 			atomsOfConditional = c.getConsequence().getAtoms();
 
@@ -108,7 +153,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				probability = element.getProbability();//TODO Mittelwert berechnen
 
 				//if the relational conditional is a fact, look at the consequence, else look at the antecedence
-				if (c instanceof RelationalFact) {
+				if (classifiedClasses instanceof RelationalFact) {
 
 					atomsOfElement = element.getConsequence().getAtoms();
 					atomsOfClass.add(atomsOfElement);
@@ -171,26 +216,25 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 							listOfConstraintsOfClass.add(equalConstraint);
 
 						}
+
 					}
 					for (int i = 0; i < listOfConstraintsOfClass.size(); i++) {
 						constraint = (Formula<AtomicConstraint>) listOfConstraintsOfClass.get(i);
 
-					}
+						for (int k = 1; k < argsOfClass.length; k++) {
 
-					for (int k = 1; k < argsOfClass.length; k++) {
-
-						if (!(listOfConstraintsOfClass.size() > 1)) {
-							break;
+							if (!(listOfConstraintsOfClass.size() > 1)) {
+								break;
+							}
+							constraint = constraint.or((Formula<AtomicConstraint>) listOfConstraintsOfClass.get(k));
+							k++;
 						}
-						constraint = constraint.or((Formula<AtomicConstraint>) listOfConstraintsOfClass.get(k));
-						k++;
-
 					}
 
 				}
 			}
 
-			if (c instanceof RelationalFact) {
+			if (classifiedClasses instanceof RelationalFact) {
 				RelationalFact relationalConditionalOfClass = new RelationalFact(consequence, probability, constraint);
 				generalizedClasses.add(relationalConditionalOfClass);
 			} else {
