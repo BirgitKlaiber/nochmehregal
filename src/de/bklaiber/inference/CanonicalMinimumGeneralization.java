@@ -16,87 +16,79 @@ import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Variable;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalFact;
 
-/*
- * This class is
+/**
+ * This class is used to generalize the classes
+ * 
  */
 public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
+	/**
+	 * @param c
+	 * @param classifiedClasses
+	 * @return generalization
+	 */
 	public Collection<RelationalConditional> generalize2(RelationalConditional c,
 			Collection<Collection<RelationalConditional>> classifiedClasses) {
 
 		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
-		Collection<Collection<Atom<RelationalAtom>>> atomsOfClasses = getAtomOfClasses(classifiedClasses);
 		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
 		Formula<RelationalAtom> consequence = c.getConsequence();
 		Formula<RelationalAtom> antecedence = c.getAntecedence();
-		Fraction probability = new Fraction(0);
 
-		//woher bekomme ich die Wahrscheinlichkeit? 
+		for (Iterator<Collection<RelationalConditional>> iterator = classifiedClasses.iterator(); iterator.hasNext();) {
+			Collection<RelationalConditional> classification = iterator.next();
 
-		for (Iterator<Collection<RelationalConditional>> condOfClass = classifiedClasses.iterator(); condOfClass
-				.hasNext();) {
-			RelationalConditional relationalConditional = (RelationalConditional) condOfClass.next();
-			ArrayList<Fraction> probabilityOfClass = new ArrayList<Fraction>();
-			Fraction probabilityOfCond = relationalConditional.getProbability();
-			probabilityOfClass.add(probabilityOfCond);
-			probability = intersection(probabilityOfClass);
-
-		}
-
-		for (Iterator<Collection<Atom<RelationalAtom>>> iterator = atomsOfClasses.iterator(); iterator.hasNext();) {
-			Collection<Atom<RelationalAtom>> classification = (Collection<Atom<RelationalAtom>>) iterator.next();
-
-			/*
-			 * ware es nicht sinnvoller pro klasse einen constraint zu erzeugen und dann das conditional
-			 * also:
-			 * 
-			 * Formula<AtomicConstraint> constraintOfClass = generateConstraint(classification, atomsOfQuery);
-			 * RelationalConditional generalizationOfClass = generateConditional(constraintOfClass, consequence, antecedence, probability);
-			 * 
-			 */
-
-			RelationalConditional generalizationOfClass = generalize(classification, atomsOfQuery, consequence,
+			Collection<Atom<RelationalAtom>> atomsOfClass = getAtomOfClass(classification);
+			Formula<AtomicConstraint> constraintOfClass = generateConstraint(atomsOfClass, atomsOfQuery);
+			Fraction probability = getProbabilitiesOfClass(classification);
+			RelationalConditional generalizationOfClass = generateConditional(constraintOfClass, consequence,
 					antecedence, probability);
 			generalization.add(generalizationOfClass);
+
 		}
 
 		return generalization;
 	}
 
-	private Fraction intersection(ArrayList<Fraction> probabilityOfClass) {
-		Fraction intersect = new Fraction(0);
+	/**
+	 * @param classification
+	 * @return the average probability of the class
+	 */
+	private Fraction getProbabilitiesOfClass(Collection<RelationalConditional> classification) {
+
 		Fraction sum = new Fraction(0);
-		Fraction denom = new Fraction(probabilityOfClass.size());
-		for (Iterator<Fraction> fract = probabilityOfClass.iterator(); fract.hasNext();) {
-			Fraction fraction = (Fraction) fract.next();
-			sum = Fraction.addition(sum, fraction);
-			intersect = Fraction.division(sum, denom);
+
+		for (Iterator<RelationalConditional> condOfClass = classification.iterator(); condOfClass.hasNext();) {
+			RelationalConditional relationalConditional = (RelationalConditional) condOfClass.next();
+
+			Fraction probabilityOfCond = relationalConditional.getProbability();
+			sum = Fraction.addition(sum, probabilityOfCond);
+
 		}
 
-		return intersect;
+		return Fraction.division(sum, new Fraction(classification.size()));
 	}
 
-	private RelationalConditional generalize(Collection<Atom<RelationalAtom>> classification,
-			Collection<Atom<RelationalAtom>> atomsOfQuery, Formula<RelationalAtom> consequence,
-			Formula<RelationalAtom> antecedence, Fraction probability) {
-
-		Formula<AtomicConstraint> constraintOfClass = generateConstraint(classification, atomsOfQuery);
-		//Fraction probability = new Fraction(1, 10);
-
-		RelationalConditional conditionalOfClass = generateConditional(constraintOfClass, consequence, antecedence,
-				probability);
-		return conditionalOfClass;
-		// TODO Auto-generated method stub
-
-	}
-
-	private Formula<AtomicConstraint> generateConstraint(Collection<Atom<RelationalAtom>> classification,
+	/**
+	 * 
+	 * @param atomsOfClass
+	 * @param atomsOfQuery
+	 * @return
+	 */
+	private Formula<AtomicConstraint> generateConstraint(Collection<Atom<RelationalAtom>> atomsOfClass,
 			Collection<Atom<RelationalAtom>> atomsOfQuery) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	//FRAGE: macht es mehr Sinn c zu übergeben oder die Consequence und antecedence?
+	/**
+	 * 
+	 * @param constraintOfClass
+	 * @param consequence
+	 * @param antecedence
+	 * @param probability
+	 * @return
+	 */
 	private RelationalConditional generateConditional(Formula<AtomicConstraint> constraintOfClass,
 			Formula<RelationalAtom> consequence, Formula<RelationalAtom> antecedence, Fraction probability) {
 		// TODO Auto-generated method stub
@@ -105,12 +97,40 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return conditionalOfClass;
 	}
 
-	private Collection<Collection<Atom<RelationalAtom>>> getAtomOfClasses(
-			Collection<Collection<RelationalConditional>> classifiedClasses) {
-		// TODO Auto-generated method stub
+	/**
+	 * 
+	 * @param classifiedClasses
+	 * @return
+	 */
+	private Collection<Atom<RelationalAtom>> getAtomOfClass(Collection<RelationalConditional> classifiedClasses) {
+
+		//take each conditional in the equivalence class, get the relational atoms of the class
+		for (Iterator<RelationalConditional> element = classifiedClasses.iterator(); element.hasNext();) {
+			RelationalConditional conditional = (RelationalConditional) element.next();
+			Collection<Atom<RelationalAtom>> atomsOfElement = new ArrayList<Atom<RelationalAtom>>();
+			Collection<Atom<RelationalAtom>> atomsOfClass = new ArrayList<Atom<RelationalAtom>>();
+
+			//if the relational conditional is a fact, look at the consequence, else look at the antecedence
+			if (conditional instanceof RelationalFact) {
+
+				atomsOfElement = conditional.getConsequence().getAtoms();
+				atomsOfClass.addAll(atomsOfElement);
+
+			} else {
+
+				atomsOfElement = conditional.getAntecedence().getAtoms();
+				atomsOfClass.addAll(atomsOfElement);
+			} //end else
+		} //end for
+
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param c
+	 * @return
+	 */
 	private Collection<Atom<RelationalAtom>> getAtomsOfQuery(RelationalConditional c) {
 
 		Collection<Atom<RelationalAtom>> atomsOfConditional = new ArrayList<Atom<RelationalAtom>>();
@@ -131,54 +151,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	@Override
 	public Collection<RelationalConditional> generalize(RelationalConditional c,
 			Collection<Collection<RelationalConditional>> classifiedClasses) {
-
-		//alter Quellcode
-		/*
-		Collection<RelationalConditional> generalizedClasses = null;
-		Collection<RelationalAtom> atomsOfClass = new Vector<RelationalAtom>();
-		Collection<Atom<RelationalAtom>> atomsOfConditional = new Vector<Atom<RelationalAtom>>();
-		Collection<Constant> constants = new Vector<Constant>();
-		Collection<Constant> constantsOfClass = new Vector<Constant>();
-		Collection<Variable> variables = new Vector<Variable>();
-		Formula<RelationalAtom> consequence = null;
-		Formula<RelationalAtom> antecedence = null;
-		Formula<AtomicConstraint> constraint = null;
-		
-		atomsOfConditional = c.getAtoms();
-		
-		for (Iterator<Atom<RelationalAtom>> atoms = atomsOfConditional.iterator(); atoms.hasNext();) {
-			Variable variable = (Variable) atoms.next();
-			variables.add(variable);
-		}
-		
-		for (Iterator<Collection<RelationalConditional>> iterator = classifiedClasses.iterator(); iterator.hasNext();) {
-			Collection<RelationalConditional> equivalenceClass = iterator.next();
-		
-			for (Iterator<RelationalConditional> elements = equivalenceClass.iterator(); elements.hasNext();) {
-				RelationalConditional element = (RelationalConditional) elements.next();
-		
-				atomsOfClass.add((RelationalAtom) element.getAtoms());
-				for (Iterator<RelationalAtom> atomAt = atomsOfClass.iterator(); atomAt.hasNext();) {
-		
-					constants = (atomAt.next()).getConstants();
-					constantsOfClass.addAll(constants);
-				}
-				consequence = c.getConsequence();
-				antecedence = c.getAntecedence();
-		
-				for (Iterator allConstants = constantsOfClass.iterator(); allConstants.hasNext();) {
-					Constant constant = (Constant) allConstants.next();
-		
-				}
-		
-				RelationalConditional RelationalConditionalOfClass = new RelationalConditional(consequence, antecedence,
-						constraint);
-		
-				generalizedClasses.add(RelationalConditionalOfClass);
-		
-			}
-		}
-		*/
 
 		Collection<RelationalConditional> generalizedClasses = new ArrayList<RelationalConditional>();
 
