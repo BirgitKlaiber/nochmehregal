@@ -27,21 +27,82 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
 		Collection<Collection<Atom<RelationalAtom>>> atomsOfClasses = getAtomOfClasses(classifiedClasses);
 		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
+		Formula<RelationalAtom> consequence = c.getConsequence();
+		Formula<RelationalAtom> antecedence = c.getAntecedence();
+		Fraction probability = new Fraction(0);
+
+		//woher bekomme ich die Wahrscheinlichkeit? 
+
+		for (Iterator<Collection<RelationalConditional>> condOfClass = classifiedClasses.iterator(); condOfClass
+				.hasNext();) {
+			RelationalConditional relationalConditional = (RelationalConditional) condOfClass.next();
+			ArrayList<Fraction> probabilityOfClass = new ArrayList<Fraction>();
+			Fraction probabilityOfCond = relationalConditional.getProbability();
+			probabilityOfClass.add(probabilityOfCond);
+			probability = intersection(probabilityOfClass);
+
+		}
 
 		for (Iterator<Collection<Atom<RelationalAtom>>> iterator = atomsOfClasses.iterator(); iterator.hasNext();) {
 			Collection<Atom<RelationalAtom>> classification = (Collection<Atom<RelationalAtom>>) iterator.next();
-			RelationalConditional generalizationOfClass = generalize(classification, atomsOfQuery);
+
+			/*
+			 * ware es nicht sinnvoller pro klasse einen constraint zu erzeugen und dann das conditional
+			 * also:
+			 * 
+			 * Formula<AtomicConstraint> constraintOfClass = generateConstraint(classification, atomsOfQuery);
+			 * RelationalConditional generalizationOfClass = generateConditional(constraintOfClass, consequence, antecedence, probability);
+			 * 
+			 */
+
+			RelationalConditional generalizationOfClass = generalize(classification, atomsOfQuery, consequence,
+					antecedence, probability);
 			generalization.add(generalizationOfClass);
 		}
 
 		return generalization;
 	}
 
+	private Fraction intersection(ArrayList<Fraction> probabilityOfClass) {
+		Fraction intersect = new Fraction(0);
+		Fraction sum = new Fraction(0);
+		Fraction denom = new Fraction(probabilityOfClass.size());
+		for (Iterator<Fraction> fract = probabilityOfClass.iterator(); fract.hasNext();) {
+			Fraction fraction = (Fraction) fract.next();
+			sum = Fraction.addition(sum, fraction);
+			intersect = Fraction.division(sum, denom);
+		}
+
+		return intersect;
+	}
+
 	private RelationalConditional generalize(Collection<Atom<RelationalAtom>> classification,
-			Collection<Atom<RelationalAtom>> atomsOfQuery) {
-		return null;
+			Collection<Atom<RelationalAtom>> atomsOfQuery, Formula<RelationalAtom> consequence,
+			Formula<RelationalAtom> antecedence, Fraction probability) {
+
+		Formula<AtomicConstraint> constraintOfClass = generateConstraint(classification, atomsOfQuery);
+		//Fraction probability = new Fraction(1, 10);
+
+		RelationalConditional conditionalOfClass = generateConditional(constraintOfClass, consequence, antecedence,
+				probability);
+		return conditionalOfClass;
 		// TODO Auto-generated method stub
 
+	}
+
+	private Formula<AtomicConstraint> generateConstraint(Collection<Atom<RelationalAtom>> classification,
+			Collection<Atom<RelationalAtom>> atomsOfQuery) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	//FRAGE: macht es mehr Sinn c zu übergeben oder die Consequence und antecedence?
+	private RelationalConditional generateConditional(Formula<AtomicConstraint> constraintOfClass,
+			Formula<RelationalAtom> consequence, Formula<RelationalAtom> antecedence, Fraction probability) {
+		// TODO Auto-generated method stub
+		RelationalConditional conditionalOfClass = new RelationalConditional(consequence, antecedence, probability,
+				constraintOfClass);
+		return conditionalOfClass;
 	}
 
 	private Collection<Collection<Atom<RelationalAtom>>> getAtomOfClasses(
