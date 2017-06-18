@@ -110,7 +110,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return constraint;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Formula<AtomicConstraint> generateConstraintOfClass(Collection<EqualityConstraint> argsOfClass) {
 
 		Formula<AtomicConstraint> constraint = null;
@@ -119,14 +118,14 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		constraint = equiCons.next();
 		if (!(argsOfClass.size() > 1)) {
 
-			return (Formula<AtomicConstraint>) equiCons;
+			return constraint;
 
 		}
 
 		while (equiCons.hasNext()) {
 			EqualityConstraint equalityConstraint = equiCons.next();
 
-			constraint = constraint.or((Formula<AtomicConstraint>) equalityConstraint);
+			constraint = constraint.or( equalityConstraint.getInterpretable());
 
 		}
 		return constraint;
