@@ -11,6 +11,7 @@ import edu.cs.ai.log4KR.math.types.Fraction;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.RelationalAtom;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.constraints.AtomicConstraint;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.constraints.EqualityConstraint;
+import edu.cs.ai.log4KR.relational.classicalLogic.syntax.constraints.InequalityConstraint;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Constant;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Term;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Variable;
@@ -46,6 +47,100 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		}
 
 		return generalization;
+	}
+
+	/**
+	 * In this method the classes are sorted by size, biggest class first. In
+	 * the biggest class there are inequality constraints for all of the
+	 * elements of the other classes, when the number of the elements of the
+	 * other classes is smaller than the size of the biggest class. For the
+	 * elements of the smaller classes there will be equality constraints
+	 * 
+	 * @param atomsOfClass
+	 * @param atomsOfQuery
+	 * @return
+	 */
+	public Collection<RelationalConditional> generalizeNegative(RelationalConditional c,
+			Collection<Collection<RelationalConditional>> classifiedClasses) {
+
+		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
+		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
+
+		//if the size of the biggest class smaller than the sum of the sizes of the other classes than: negative constraint for biggest class with all elements of the other classes
+		//else positive constraint 
+		//for the smaller classses positive constraints
+
+		for (Iterator<Collection<RelationalConditional>> iterator = classifiedClasses.iterator(); iterator.hasNext();) {
+			Collection<RelationalConditional> classification = iterator.next();
+
+			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = getAtomOfClass(classification);
+			Fraction probability = getProbabilitiesOfClass(classification);
+			Formula<AtomicConstraint> constraintOfClass = generateMixedConstraint(atomsOfClass, atomsOfQuery);
+			RelationalConditional generalizationOfClass = generateConditional(c, constraintOfClass, probability);
+			generalization.add(generalizationOfClass);
+
+		}
+
+		return generalization;
+	}
+
+	/*
+	 * Creates a
+	 */
+	private Formula<AtomicConstraint> generateMixedConstraint(Collection<Collection<Atom<RelationalAtom>>> atomsOfClass,
+			Collection<Atom<RelationalAtom>> atomsOfQuery) {
+
+		Collection<InequalityConstraint> negativeArgsOfClass = new ArrayList<InequalityConstraint>();
+		Collection<EqualityConstraint> positiveArgsOfClass = new ArrayList<EqualityConstraint>();
+		ArrayList<InequalityConstraint> elementsOfNegativeConstraintsOfClass = new ArrayList<InequalityConstraint>();
+		ArrayList<EqualityConstraint> elementsOfPositiveConstraintsOfClass = new ArrayList<EqualityConstraint>();
+		Formula<AtomicConstraint> constraint = null;
+
+		//get the arguments for each conditional
+		//take each collection for the conditional
+		for (Iterator<Collection<Atom<RelationalAtom>>> atoms = atomsOfClass.iterator(); atoms.hasNext();) {
+			Collection<Atom<RelationalAtom>> atomOfCondtional = atoms.next();
+			//take each atom of each conditional
+			for (Iterator<Atom<RelationalAtom>> element = atomOfCondtional.iterator(); element.hasNext();) {
+				Atom<RelationalAtom> atom = (Atom<RelationalAtom>) element.next();
+				//get the arguments of each atom of the conditional
+				for (Iterator<Atom<RelationalAtom>> iteratorOfQuery = atomsOfQuery.iterator(); iteratorOfQuery
+						.hasNext();) {
+					Atom<RelationalAtom> atomOfQuery = (Atom<RelationalAtom>) iteratorOfQuery.next();
+
+					if (((RelationalAtom) atom).getPredicate().equals(((RelationalAtom) atomOfQuery).getPredicate())) {
+
+						Term[] argsOfQueryAtom = ((RelationalAtom) atomOfQuery).getArguments();
+						Term[] argsOfConditional = ((RelationalAtom) atom).getArguments();
+						elementsOfNegativeConstraintsOfClass = generateElementsOfNegativeConstraint(argsOfConditional,
+								argsOfQueryAtom);
+						negativeArgsOfClass.addAll(elementsOfNegativeConstraintsOfClass);
+						elementsOfPositiveConstraintsOfClass = generateElementsOfConstraint(argsOfConditional,
+								argsOfQueryAtom);
+						positiveArgsOfClass.addAll(elementsOfPositiveConstraintsOfClass);
+						constraint = generateMixedConstraintOfClass(negativeArgsOfClass, positiveArgsOfClass);
+					}
+
+				}
+
+			}
+
+		}
+
+		return constraint;
+
+	}
+
+	private Formula<AtomicConstraint> generateMixedConstraintOfClass(Collection<InequalityConstraint> argsOfClass,
+			Collection<EqualityConstraint> positiveArgsOfClass) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private ArrayList<InequalityConstraint> generateElementsOfNegativeConstraint(Term[] argsOfConditional,
+			Term[] argsOfQueryAtom) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
@@ -125,7 +220,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		while (equiCons.hasNext()) {
 			EqualityConstraint equalityConstraint = equiCons.next();
 
-			constraint = constraint.or( equalityConstraint.getInterpretable());
+			constraint = constraint.or(equalityConstraint.getInterpretable());
 
 		}
 		return constraint;
@@ -234,146 +329,5 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		return atomsOfConditional;
 	}
-
-	/*
-	
-	@Override
-	public Collection<RelationalConditional> generalize1(RelationalConditional c,
-			Collection<Collection<RelationalConditional>> classifiedClasses) {
-	
-		Collection<RelationalConditional> generalizedClasses = new ArrayList<RelationalConditional>();
-	
-		Formula<RelationalAtom> consequence = c.getConsequence();
-		Formula<RelationalAtom> antecedence = c.getAntecedence();
-		Formula<AtomicConstraint> constraint = null;
-		Fraction probability = null;
-	
-		Collection<Atom<RelationalAtom>> atomsOfConditional = new ArrayList<Atom<RelationalAtom>>();
-	
-		if (classifiedClasses instanceof RelationalFact) {
-	
-			atomsOfConditional = c.getConsequence().getAtoms();
-	
-		} else {
-	
-			atomsOfConditional = c.getAntecedence().getAtoms();
-	
-		} //end else
-	
-		//((A(a) v B(b))[0,2]; (A(b) v B(c))[0,2]); (A(c) v B(d)[0,8]) Praedikat: A und Terme a und Praedikat B und Term b 
-		//(A(X) v B(Y)[0,2]<(X=a und Y=b) oder (X=b und Y=c)>); (A(X) v B(Y)[0,8]<X=c und Y=d>);
-	
-		//for each equivalence class in classifiedClasses create a relational conditional with constraint
-		for (Iterator<Collection<RelationalConditional>> iterator = classifiedClasses.iterator(); iterator.hasNext();) {
-			Collection<RelationalConditional> equivalenceClass = iterator.next();
-	
-			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
-	
-			//take each conditional in the equivalence class, get the relational atoms of the class
-			for (Iterator<RelationalConditional> elements = equivalenceClass.iterator(); elements.hasNext();) {
-				RelationalConditional element = (RelationalConditional) elements.next();
-				Collection<Atom<RelationalAtom>> atomsOfElement = new ArrayList<Atom<RelationalAtom>>();
-				probability = element.getProbability();//TODO Mittelwert berechnen
-	
-				//if the relational conditional is a fact, look at the consequence, else look at the antecedence
-				if (classifiedClasses instanceof RelationalFact) {
-	
-					atomsOfElement = element.getConsequence().getAtoms();
-					atomsOfClass.add(atomsOfElement);
-	
-				} else {
-	
-					atomsOfElement = element.getAntecedence().getAtoms();
-					atomsOfClass.add(atomsOfElement);
-				} //end else
-			} //end for
-	
-			Term[] argsOfQuery = null;
-			ArrayList<Term> argsOfCond = new ArrayList<Term>();
-			ArrayList<Term> allTermsOfClass = new ArrayList<Term>();
-			ArrayList<EqualityConstraint> listOfConstraintsOfClass = new ArrayList<EqualityConstraint>();
-	
-			for (Iterator<Collection<Atom<RelationalAtom>>> atomElements = atomsOfClass.iterator(); atomElements
-					.hasNext();) {
-				Collection<Atom<RelationalAtom>> collectionOfAtoms = (Collection<Atom<RelationalAtom>>) atomElements
-						.next();
-				Term[] argsOfClass = null;
-	
-				for (Iterator<Atom<RelationalAtom>> atomElement = collectionOfAtoms.iterator(); atomElement
-						.hasNext();) {
-					Atom<RelationalAtom> atomOfClass = (Atom<RelationalAtom>) atomElement.next();
-					for (Iterator<Atom<RelationalAtom>> queryAtoms = atomsOfConditional.iterator(); queryAtoms
-							.hasNext();) {
-						Atom<RelationalAtom> atomOfConditional = (Atom<RelationalAtom>) queryAtoms.next();
-						argsOfQuery = ((RelationalAtom) atomOfConditional).getArguments();
-						if (((RelationalAtom) atomOfClass).getPredicate()
-								.equals(((RelationalAtom) atomOfConditional).getPredicate())) {
-	
-							argsOfClass = ((RelationalAtom) atomOfClass).getArguments();
-	
-							for (int i = 0; i < argsOfClass.length; i++) {
-								argsOfCond.add(argsOfClass[i]);
-	
-							}
-	
-						}
-	
-					}
-	
-					
-					for (int i = 0; i < argsOfCond.size(); i++) {
-					
-						Term termOfClass = argsOfCond.get(i);
-						allTermsOfClass.add(termOfClass);
-					}
-					
-	
-					//for (int i = 0; i < allTermsOfClass.size(); i++) {
-	
-					for (int i = 0; i < argsOfCond.size(); i++) {
-						for (int j = 0; j < argsOfQuery.length; j++) {
-	
-							Variable var = new Variable(argsOfQuery[j].toString(), argsOfQuery[j].getType());
-							Constant cons = new Constant((argsOfCond.get(i)).toString(), (argsOfCond.get(i)).getType());
-							EqualityConstraint equalConstraint = new EqualityConstraint(var, cons);
-							listOfConstraintsOfClass.add(equalConstraint);
-	
-						}
-	
-					}
-					for (int i = 0; i < listOfConstraintsOfClass.size(); i++) {
-						constraint = (Formula<AtomicConstraint>) listOfConstraintsOfClass.get(i);
-	
-						for (int k = 1; k < argsOfClass.length; k++) {
-	
-							if (!(listOfConstraintsOfClass.size() > 1)) {
-								break;
-							}
-							constraint = constraint.or((Formula<AtomicConstraint>) listOfConstraintsOfClass.get(k));
-							k++;
-						}
-					}
-	
-				}
-			}
-	
-			if (classifiedClasses instanceof RelationalFact) {
-				RelationalFact relationalConditionalOfClass = new RelationalFact(consequence, probability, constraint);
-				generalizedClasses.add(relationalConditionalOfClass);
-			} else {
-	
-				RelationalConditional relationalConditionalOfClass = new RelationalConditional(consequence, antecedence,
-						probability, constraint);
-				generalizedClasses.add(relationalConditionalOfClass);
-			} //end else
-	
-		} //end for
-	
-		return generalizedClasses;
-	}// end for
-	
-	
-	
-	*/
 
 }//end generalize

@@ -53,7 +53,7 @@ public class BirdsTest extends AbstractQueryTest {
 		Vector<String> generalizations = new Vector<String>();
 
 		generalizations.addElement("(flies(X))[0.6636034383842102]<((X=Sylvester + X=Kirby) + X=Bully)> ");
-		generalizations.addElement("(flies(X))[0.02494332918283484]<Tweety> ");
+		generalizations.addElement("(flies(X))[0.02494332918283484]<X=Tweety> ");
 		Vector<RelationalConditional> generalization = new Vector<RelationalConditional>(
 				inference.queryConditional(queries.elementAt(0)));
 		assertEquals(generalizations.elementAt(0), generalization.elementAt(0).toString());
@@ -64,6 +64,28 @@ public class BirdsTest extends AbstractQueryTest {
 
 	}
 
+	/**
+	 * Tests if the generalization produces the results expected.
+	 */
+	/*
+	@Test
+	public void checkGeneralizationNegative() {
+		Vector<String> generalizations = new Vector<String>();
+	
+		generalizations.addElement("(flies(X))[0.6636034383842102]<((X!=Tweety> ");
+		generalizations.addElement("(flies(X))[0.02494332918283484]<X=Tweety> ");
+		Vector<RelationalConditional> generalization = new Vector<RelationalConditional>(
+				inference.queryConditional(queries.elementAt(0)));
+		assertEquals(generalizations.elementAt(0), generalization.elementAt(0).toString());
+		assertEquals(generalizations.elementAt(1), generalization.elementAt(1).toString());
+		assertEquals(generalizations.size(), generalization.size());
+	
+		System.out.println(generalization.elementAt(0).toString());
+	
+	}
+	
+	/*
+	
 	/**
 	 * Tests if the runtime is below expected threshold.
 	 */

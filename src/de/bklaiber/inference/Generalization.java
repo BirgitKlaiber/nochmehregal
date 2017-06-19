@@ -8,4 +8,7 @@ public interface Generalization {
 
 	public Collection<RelationalConditional> generalize(RelationalConditional c,
 			Collection<Collection<RelationalConditional>> classification);
+
+	public Collection<RelationalConditional> generalizeNegative(RelationalConditional c,
+			Collection<Collection<RelationalConditional>> classification);
 }
