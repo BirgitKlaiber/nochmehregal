@@ -2,6 +2,8 @@ package de.bklaiber.inference;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import edu.cs.ai.log4KR.logical.syntax.Atom;
@@ -63,20 +65,57 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	public Collection<RelationalConditional> generalizeNegative(RelationalConditional c,
 			Collection<Collection<RelationalConditional>> classifiedClasses) {
 
+		//TODO ordentlich umschreiben
+
+		ArrayList<Collection<RelationalConditional>> classifiedClassesList = new ArrayList<>(classifiedClasses);
 		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
 		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
 
+		Comparator<Collection> compareSize = new Comparator<Collection>() {
+
+			@Override
+			public int compare(Collection o1, Collection o2) {
+				Integer size1 = o1.size();
+				Integer size2 = o2.size();
+				return size2.compareTo(size1);
+			}
+
+		};
+
+		//sorts the classes by size, descendant
+		Collections.sort(classifiedClassesList, compareSize);
+
 		//if the size of the biggest class smaller than the sum of the sizes of the other classes than: negative constraint for biggest class with all elements of the other classes
 		//else positive constraint 
-		//for the smaller classses positive constraints
+		//for the smaller classes positive constraints
 
-		for (Iterator<Collection<RelationalConditional>> iterator = classifiedClasses.iterator(); iterator.hasNext();) {
+		Iterator<Collection<RelationalConditional>> iterator = classifiedClassesList.iterator();
+		Collection<RelationalConditional> biggestClass = iterator.next();
+		Collection<Collection<Atom<RelationalAtom>>> atomsOfBiggestClass = getAtomOfClass(biggestClass);
+		int numberOfElements = 0;
+		RelationalConditional generalizationOfClass = null;
+
+		while (iterator.hasNext()) {
 			Collection<RelationalConditional> classification = iterator.next();
+			numberOfElements = numberOfElements + classification.size();
+		}
 
+		if (biggestClass.size() < numberOfElements) {
+			Fraction probability = getProbabilitiesOfClass(biggestClass);
+			Formula<AtomicConstraint> constraintOfClass = generateNegativeConstraint(atomsOfBiggestClass, atomsOfQuery);
+			generalizationOfClass = generateConditional(c, constraintOfClass, probability);
+		} else {
+			Fraction probability = getProbabilitiesOfClass(biggestClass);
+			Formula<AtomicConstraint> constraintOfBiggestClass = generateConstraint(atomsOfBiggestClass, atomsOfQuery);
+			generalizationOfClass = generateConditional(c, constraintOfBiggestClass, probability);
+		}
+
+		while (iterator.hasNext()) {
+			Collection<RelationalConditional> classification = iterator.next();
 			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = getAtomOfClass(classification);
 			Fraction probability = getProbabilitiesOfClass(classification);
-			Formula<AtomicConstraint> constraintOfClass = generateMixedConstraint(atomsOfClass, atomsOfQuery);
-			RelationalConditional generalizationOfClass = generateConditional(c, constraintOfClass, probability);
+			Formula<AtomicConstraint> constraintOfClass = generateConstraint(atomsOfClass, atomsOfQuery);
+			generalizationOfClass = generateConditional(c, constraintOfClass, probability);
 			generalization.add(generalizationOfClass);
 
 		}
@@ -87,8 +126,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	/*
 	 * Creates a
 	 */
-	private Formula<AtomicConstraint> generateMixedConstraint(Collection<Collection<Atom<RelationalAtom>>> atomsOfClass,
-			Collection<Atom<RelationalAtom>> atomsOfQuery) {
+	private Formula<AtomicConstraint> generateNegativeConstraint(
+			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass, Collection<Atom<RelationalAtom>> atomsOfQuery) {
 
 		Collection<InequalityConstraint> negativeArgsOfClass = new ArrayList<InequalityConstraint>();
 		Collection<EqualityConstraint> positiveArgsOfClass = new ArrayList<EqualityConstraint>();
@@ -118,7 +157,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 						elementsOfPositiveConstraintsOfClass = generateElementsOfConstraint(argsOfConditional,
 								argsOfQueryAtom);
 						positiveArgsOfClass.addAll(elementsOfPositiveConstraintsOfClass);
-						constraint = generateMixedConstraintOfClass(negativeArgsOfClass, positiveArgsOfClass);
+						constraint = generateNegativeConstraintOfClass(negativeArgsOfClass);
 					}
 
 				}
@@ -131,16 +170,46 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	}
 
-	private Formula<AtomicConstraint> generateMixedConstraintOfClass(Collection<InequalityConstraint> argsOfClass,
-			Collection<EqualityConstraint> positiveArgsOfClass) {
-		// TODO Auto-generated method stub
-		return null;
+	private Formula<AtomicConstraint> generateNegativeConstraintOfClass(Collection<InequalityConstraint> argsOfClass) {
+
+		Formula<AtomicConstraint> constraint = null;
+
+		Iterator<InequalityConstraint> equiCons = argsOfClass.iterator();
+		constraint = equiCons.next();
+		if (!(argsOfClass.size() > 1)) {
+
+			return constraint;
+
+		}
+
+		while (equiCons.hasNext()) {
+			InequalityConstraint inequalityConstraint = equiCons.next();
+
+			constraint = constraint.and(inequalityConstraint.getInterpretable());
+
+		}
+		return constraint;
+
 	}
 
-	private ArrayList<InequalityConstraint> generateElementsOfNegativeConstraint(Term[] argsOfConditional,
+	private ArrayList<InequalityConstraint> generateElementsOfNegativeConstraint(Term[] argsOfCond,
 			Term[] argsOfQueryAtom) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<InequalityConstraint> listOfConstraints = new ArrayList<InequalityConstraint>();
+
+		for (int i = 0; i < argsOfCond.length; i++) {
+			for (int j = 0; j < argsOfQueryAtom.length; j++) {
+
+				Variable var = new Variable(argsOfQueryAtom[j].toString(), argsOfQueryAtom[j].getType());
+				Constant cons = new Constant(argsOfCond[i].toString(), argsOfCond[i].getType());
+				InequalityConstraint inequalConstraint = new InequalityConstraint(var, cons);
+				listOfConstraints.add(inequalConstraint);
+
+			}
+
+		}
+
+		return listOfConstraints;
+
 	}
 
 	/**
