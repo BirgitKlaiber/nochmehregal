@@ -26,12 +26,58 @@ import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.Relation
  */
 public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
+	@Override
+	public Collection<RelationalConditional> generalize(RelationalConditional c,
+			Collection<Collection<RelationalConditional>> classifiedClasses) {
+
+		ArrayList<Collection<RelationalConditional>> classifiedClassesList = new ArrayList<>(classifiedClasses);
+
+		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
+
+		Comparator<Collection> compareSize = new Comparator<Collection>() {
+
+			@Override
+			public int compare(Collection o1, Collection o2) {
+				Integer size1 = o1.size();
+				Integer size2 = o2.size();
+				return size2.compareTo(size1);
+			}
+
+		};
+
+		//sorts the classes by size, descendant
+		Collections.sort(classifiedClassesList, compareSize);
+
+		//if the size of the biggest class smaller than the sum of the sizes of the other classes than: negative constraint for biggest class with all elements of the other classes
+		//else positive constraint 
+		//for the smaller classes positive constraints
+
+		Iterator<Collection<RelationalConditional>> iterator = classifiedClassesList.iterator();
+		Collection<RelationalConditional> biggestClass = iterator.next();
+
+		int numberOfElements = 0;
+
+		while (iterator.hasNext()) {
+			Collection<RelationalConditional> classification = iterator.next();
+			numberOfElements = numberOfElements + classification.size();
+		}
+
+		if (biggestClass.size() > numberOfElements) {
+			generalization = generalizeNegative(c, classifiedClassesList);
+
+		} else {
+			generalization = generalizePositive(c, classifiedClasses);
+		}
+
+		return generalization;
+	}
+
 	/**
 	 * @param c
 	 * @param classifiedClasses
 	 * @return generalization
 	 */
-	public Collection<RelationalConditional> generalize(RelationalConditional c,
+	private Collection<RelationalConditional> generalizePositive(RelationalConditional c,
 			Collection<Collection<RelationalConditional>> classifiedClasses) {
 
 		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
@@ -62,60 +108,39 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	 * @param atomsOfQuery
 	 * @return
 	 */
-	public Collection<RelationalConditional> generalizeNegative(RelationalConditional c,
-			Collection<Collection<RelationalConditional>> classifiedClasses) {
+	private Collection<RelationalConditional> generalizeNegative(RelationalConditional c,
+			ArrayList<Collection<RelationalConditional>> classifiedClassesList) {
 
 		//TODO ordentlich umschreiben
 
-		ArrayList<Collection<RelationalConditional>> classifiedClassesList = new ArrayList<>(classifiedClasses);
 		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
 		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
-
-		Comparator<Collection> compareSize = new Comparator<Collection>() {
-
-			@Override
-			public int compare(Collection o1, Collection o2) {
-				Integer size1 = o1.size();
-				Integer size2 = o2.size();
-				return size2.compareTo(size1);
-			}
-
-		};
-
-		//sorts the classes by size, descendant
-		Collections.sort(classifiedClassesList, compareSize);
-
-		//if the size of the biggest class smaller than the sum of the sizes of the other classes than: negative constraint for biggest class with all elements of the other classes
-		//else positive constraint 
-		//for the smaller classes positive constraints
 
 		Iterator<Collection<RelationalConditional>> iterator = classifiedClassesList.iterator();
 		Collection<RelationalConditional> biggestClass = iterator.next();
 		Collection<Collection<Atom<RelationalAtom>>> atomsOfBiggestClass = getAtomOfClass(biggestClass);
-		int numberOfElements = 0;
+		Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
+
 		RelationalConditional generalizationOfClass = null;
 
-		while (iterator.hasNext()) {
-			Collection<RelationalConditional> classification = iterator.next();
-			numberOfElements = numberOfElements + classification.size();
-		}
-
-		if (biggestClass.size() < numberOfElements) {
-			Fraction probability = getProbabilitiesOfClass(biggestClass);
-			Formula<AtomicConstraint> constraintOfClass = generateNegativeConstraint(atomsOfBiggestClass, atomsOfQuery);
-			generalizationOfClass = generateConditional(c, constraintOfClass, probability);
-		} else {
-			Fraction probability = getProbabilitiesOfClass(biggestClass);
-			Formula<AtomicConstraint> constraintOfBiggestClass = generateConstraint(atomsOfBiggestClass, atomsOfQuery);
-			generalizationOfClass = generateConditional(c, constraintOfBiggestClass, probability);
-		}
+		Fraction probability = getProbabilitiesOfClass(biggestClass);
 
 		while (iterator.hasNext()) {
 			Collection<RelationalConditional> classification = iterator.next();
-			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = getAtomOfClass(classification);
-			Fraction probability = getProbabilitiesOfClass(classification);
-			Formula<AtomicConstraint> constraintOfClass = generateConstraint(atomsOfClass, atomsOfQuery);
-			generalizationOfClass = generateConditional(c, constraintOfClass, probability);
+			atomsOfClass.addAll(getAtomOfClass(classification));
+
+		}
+
+		Formula<AtomicConstraint> constraintOfClass = generateNegativeConstraint(atomsOfClass, atomsOfQuery);
+		generalizationOfClass = generateConditional(c, constraintOfClass, probability);
+		generalization.add(generalizationOfClass);
+
+		while (iterator.hasNext()) {
+			Collection<RelationalConditional> classification = iterator.next();
+			atomsOfClass.addAll(getAtomOfClass(classification));
+			Fraction probOfOtherClass = getProbabilitiesOfClass(classification);
+			Formula<AtomicConstraint> constraintOfOtherClass = generateConstraint(atomsOfBiggestClass, atomsOfQuery);
+			generalizationOfClass = generateConditional(c, constraintOfOtherClass, probOfOtherClass);
 			generalization.add(generalizationOfClass);
 
 		}
