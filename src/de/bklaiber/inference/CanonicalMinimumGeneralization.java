@@ -33,6 +33,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		ArrayList<Collection<RelationalConditional>> classifiedClassesList = new ArrayList<>(classifiedClasses);
 
 		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
+		Collection<RelationalConditional> generalizationNegative = new ArrayList<RelationalConditional>();
+		Collection<RelationalConditional> generalizationPositive = new ArrayList<RelationalConditional>();
 
 		Comparator<Collection> compareSize = new Comparator<Collection>() {
 
@@ -68,6 +70,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		} else {
 			generalization = generalizePositive(c, classifiedClasses);
 		}
+
+		//generalizationNegative = generalizeNegative(c, classifiedClassesList);
+		//generalizationPositive = generalizePositive(c, classifiedClasses);
 
 		return generalization;
 	}
@@ -120,6 +125,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Collection<RelationalConditional> biggestClass = iterator.next();
 		Collection<Collection<Atom<RelationalAtom>>> atomsOfBiggestClass = getAtomOfClass(biggestClass);
 		Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
+		Collection<Collection<Atom<RelationalAtom>>> atomsOfOtherClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
 
 		RelationalConditional generalizationOfClass = null;
 
@@ -135,11 +141,13 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		generalizationOfClass = generateConditional(c, constraintOfClass, probability);
 		generalization.add(generalizationOfClass);
 
+		iterator = classifiedClassesList.iterator();
+		iterator.next();
 		while (iterator.hasNext()) {
 			Collection<RelationalConditional> classification = iterator.next();
-			atomsOfClass.addAll(getAtomOfClass(classification));
+			atomsOfOtherClass.addAll(getAtomOfClass(classification));
 			Fraction probOfOtherClass = getProbabilitiesOfClass(classification);
-			Formula<AtomicConstraint> constraintOfOtherClass = generateConstraint(atomsOfBiggestClass, atomsOfQuery);
+			Formula<AtomicConstraint> constraintOfOtherClass = generateConstraint(atomsOfOtherClass, atomsOfQuery);
 			generalizationOfClass = generateConditional(c, constraintOfOtherClass, probOfOtherClass);
 			generalization.add(generalizationOfClass);
 
@@ -155,9 +163,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass, Collection<Atom<RelationalAtom>> atomsOfQuery) {
 
 		Collection<InequalityConstraint> negativeArgsOfClass = new ArrayList<InequalityConstraint>();
-		Collection<EqualityConstraint> positiveArgsOfClass = new ArrayList<EqualityConstraint>();
+		//Collection<EqualityConstraint> positiveArgsOfClass = new ArrayList<EqualityConstraint>();
 		ArrayList<InequalityConstraint> elementsOfNegativeConstraintsOfClass = new ArrayList<InequalityConstraint>();
-		ArrayList<EqualityConstraint> elementsOfPositiveConstraintsOfClass = new ArrayList<EqualityConstraint>();
+		//ArrayList<EqualityConstraint> elementsOfPositiveConstraintsOfClass = new ArrayList<EqualityConstraint>();
 		Formula<AtomicConstraint> constraint = null;
 
 		//get the arguments for each conditional
@@ -176,12 +184,15 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 						Term[] argsOfQueryAtom = ((RelationalAtom) atomOfQuery).getArguments();
 						Term[] argsOfConditional = ((RelationalAtom) atom).getArguments();
+
 						elementsOfNegativeConstraintsOfClass = generateElementsOfNegativeConstraint(argsOfConditional,
 								argsOfQueryAtom);
 						negativeArgsOfClass.addAll(elementsOfNegativeConstraintsOfClass);
-						elementsOfPositiveConstraintsOfClass = generateElementsOfConstraint(argsOfConditional,
-								argsOfQueryAtom);
-						positiveArgsOfClass.addAll(elementsOfPositiveConstraintsOfClass);
+						/*
+							elementsOfPositiveConstraintsOfClass = generateElementsOfConstraint(argsOfConditional,
+									argsOfQueryAtom);
+							positiveArgsOfClass.addAll(elementsOfPositiveConstraintsOfClass);
+							*/
 						constraint = generateNegativeConstraintOfClass(negativeArgsOfClass);
 					}
 

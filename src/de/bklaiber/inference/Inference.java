@@ -96,11 +96,9 @@ public class Inference {
 
 		Collection<RelationalConditional> groundInstances = ground(c);
 		Collection<Collection<RelationalConditional>> classifiedClasses = classify(c, groundInstances);
-		//Collection<RelationalConditional> generalizedClasses = generalization.generalize(c, classifiedClasses);
-		Collection<RelationalConditional> negativeGeneralizedClasses = generalization.generalize(c, classifiedClasses);
+		Collection<RelationalConditional> generalizedClasses = generalization.generalize(c, classifiedClasses);
 
-		//return generalizedClasses;
-		return negativeGeneralizedClasses;
+		return generalizedClasses;
 	}
 
 	/**
