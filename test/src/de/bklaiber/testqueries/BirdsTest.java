@@ -58,10 +58,12 @@ public class BirdsTest extends AbstractQueryTest {
 				inference.queryConditional(queries.elementAt(0)));
 		assertEquals(generalizations.elementAt(0), generalization.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalization.elementAt(1).toString());
+
 		assertEquals(generalizations.size(), generalization.size());
 
 		System.out.println(generalization.elementAt(0).toString());
-
+		System.out.println(generalization.elementAt(1).toString());
+		System.out.println(generalizations.elementAt(1).toString());
 	}
 
 	/**

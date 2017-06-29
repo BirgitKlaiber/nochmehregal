@@ -20,8 +20,13 @@ import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Variable;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalFact;
 
+//TODO test, ob generische Konditionale mit der gleichen Wahrscheinlichkeit auch zusammengefasst werden
+
+//TODO reflexives Wissen rausfiltern 
+
 /**
- * This class is used to generalize the classes
+ * This class is used to generalize the classes.
+ * 
  * 
  */
 public class CanonicalMinimumGeneralization extends AbstractGeneralization {
@@ -77,7 +82,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return generalization;
 	}
 
-	/**
+	/*
 	 * @param c
 	 * @param classifiedClasses
 	 * @return generalization
@@ -102,7 +107,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return generalization;
 	}
 
-	/**
+	/*
 	 * In this method the classes are sorted by size, biggest class first. In
 	 * the biggest class there are inequality constraints for all of the
 	 * elements of the other classes, when the number of the elements of the
@@ -123,7 +128,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		Iterator<Collection<RelationalConditional>> iterator = classifiedClassesList.iterator();
 		Collection<RelationalConditional> biggestClass = iterator.next();
-		Collection<Collection<Atom<RelationalAtom>>> atomsOfBiggestClass = getAtomOfClass(biggestClass);
 		Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
 		Collection<Collection<Atom<RelationalAtom>>> atomsOfOtherClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
 
@@ -157,15 +161,13 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	}
 
 	/*
-	 * Creates a
+	 * Creates a conjunction of InequalityConstraints
 	 */
 	private Formula<AtomicConstraint> generateNegativeConstraint(
 			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass, Collection<Atom<RelationalAtom>> atomsOfQuery) {
 
 		Collection<InequalityConstraint> negativeArgsOfClass = new ArrayList<InequalityConstraint>();
-		//Collection<EqualityConstraint> positiveArgsOfClass = new ArrayList<EqualityConstraint>();
 		ArrayList<InequalityConstraint> elementsOfNegativeConstraintsOfClass = new ArrayList<InequalityConstraint>();
-		//ArrayList<EqualityConstraint> elementsOfPositiveConstraintsOfClass = new ArrayList<EqualityConstraint>();
 		Formula<AtomicConstraint> constraint = null;
 
 		//get the arguments for each conditional
@@ -180,6 +182,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 						.hasNext();) {
 					Atom<RelationalAtom> atomOfQuery = (Atom<RelationalAtom>) iteratorOfQuery.next();
 
+					//the predicate of the query and the predicate of the ground instance are equal create 
+					//inequalityconstraints and a conjunction of the inequalityconstraints
 					if (((RelationalAtom) atom).getPredicate().equals(((RelationalAtom) atomOfQuery).getPredicate())) {
 
 						Term[] argsOfQueryAtom = ((RelationalAtom) atomOfQuery).getArguments();
@@ -188,11 +192,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 						elementsOfNegativeConstraintsOfClass = generateElementsOfNegativeConstraint(argsOfConditional,
 								argsOfQueryAtom);
 						negativeArgsOfClass.addAll(elementsOfNegativeConstraintsOfClass);
-						/*
-							elementsOfPositiveConstraintsOfClass = generateElementsOfConstraint(argsOfConditional,
-									argsOfQueryAtom);
-							positiveArgsOfClass.addAll(elementsOfPositiveConstraintsOfClass);
-							*/
 						constraint = generateNegativeConstraintOfClass(negativeArgsOfClass);
 					}
 
@@ -206,6 +205,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	}
 
+	/*
+	 * This method generates a conjunction of InequalityConstraints
+	 */
 	private Formula<AtomicConstraint> generateNegativeConstraintOfClass(Collection<InequalityConstraint> argsOfClass) {
 
 		Formula<AtomicConstraint> constraint = null;
@@ -228,6 +230,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	}
 
+	/*
+	 * Creates an InequalityConstraint using the variables of the query and constants of the generated conditionals
+	 */
 	private ArrayList<InequalityConstraint> generateElementsOfNegativeConstraint(Term[] argsOfCond,
 			Term[] argsOfQueryAtom) {
 		ArrayList<InequalityConstraint> listOfConstraints = new ArrayList<InequalityConstraint>();
@@ -248,7 +253,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	}
 
-	/**
+	/*
 	 * @param classification
 	 * @return the average probability of the class
 	 */
@@ -267,11 +272,11 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return Fraction.division(sum, new Fraction(classification.size()));
 	}
 
-	/**
+	/*
 	 * 
 	 * @param atomsOfClass
 	 * @param atomsOfQuery
-	 * @return
+	 * @return constraint
 	 */
 	private Formula<AtomicConstraint> generateConstraint(Collection<Collection<Atom<RelationalAtom>>> atomsOfClass,
 			Collection<Atom<RelationalAtom>> atomsOfQuery) {
@@ -310,6 +315,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return constraint;
 	}
 
+	/*
+	 * Creates a disjunction of EqualityConstraints.
+	 */
 	private Formula<AtomicConstraint> generateConstraintOfClass(Collection<EqualityConstraint> argsOfClass) {
 
 		Formula<AtomicConstraint> constraint = null;
@@ -331,6 +339,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return constraint;
 	}
 
+	/*
+	 * Creates an EqualityConstraint using the variables of the query and constants of the generated conditionals.
+	 */
 	private ArrayList<EqualityConstraint> generateElementsOfConstraint(Term[] argsOfCond, Term[] argsOfQueryAtom) {
 
 		ArrayList<EqualityConstraint> listOfConstraints = new ArrayList<EqualityConstraint>();
@@ -350,7 +361,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return listOfConstraints;
 	}
 
-	/**
+	/*
+	 * Generates a conditional out of the relationalConditonal of the query, the generated connstraint and 
+	 * the probability.
 	 * 
 	 * @param constraintOfClass
 	 * @param consequence
@@ -361,7 +374,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	private RelationalConditional generateConditional(RelationalConditional c,
 			Formula<AtomicConstraint> constraintOfClass, Fraction probability) {
 
-		//RelationalConditional conditionalOfClass;
 		Formula<RelationalAtom> consequence = c.getConsequence();
 
 		if (c instanceof RelationalFact) {
@@ -379,8 +391,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	} //end for
 
-	/**
-	 * Get the atoms for each conditional of a class
+	/*
+	 * Get the atoms for each conditional of a class.
 	 * 
 	 * @param classifiedClasses
 	 * @return
@@ -413,10 +425,11 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return atomsOfClass;
 	}
 
-	/**
+	/*
+	 * Returns the atoms of the conditional of the query.
 	 * 
 	 * @param c
-	 * @return
+	 * @return atomsOfConditional
 	 */
 	private Collection<Atom<RelationalAtom>> getAtomsOfQuery(RelationalConditional c) {
 

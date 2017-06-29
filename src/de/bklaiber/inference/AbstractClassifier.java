@@ -10,8 +10,9 @@ import java.util.Properties;
 
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
-/*
- * This class is used to classify the ground conditionals of the relational conditional of the query.
+/**
+ * This class is used to classify the ground conditionals of the relational
+ * conditional of the query.
  * 
  * @author klaiber
  * 
@@ -58,7 +59,7 @@ public abstract class AbstractClassifier implements Classifier {
 
 	}
 
-	/*
+	/**
 	 * 
 	 */
 	public Collection<Collection<RelationalConditional>> classifyTransitively(
@@ -90,6 +91,9 @@ public abstract class AbstractClassifier implements Classifier {
 		return equivalenceClasses;
 	}
 
+	/**
+	 * 
+	 */
 	public boolean isTransitive() {
 		return true;
 	}
