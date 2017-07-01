@@ -161,13 +161,56 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	}
 
 	/*
+	 * 
+	 * @param atomsOfClass
+	 * @param atomsOfQuery
+	 * @return constraint
+	 */
+	private Formula<AtomicConstraint> generateConstraint(Collection<Collection<Atom<RelationalAtom>>> atomsOfClass,
+			Collection<Atom<RelationalAtom>> atomsOfQuery) {
+
+		Collection<Formula<AtomicConstraint>> argsOfClass = new ArrayList<Formula<AtomicConstraint>>();
+		ArrayList<EqualityConstraint> elementsOfConstraintsOfClass = new ArrayList<EqualityConstraint>();
+		Formula<AtomicConstraint> constraint = null;
+
+		//get the arguments for each conditional
+		//take each collection for the conditional
+		for (Iterator<Collection<Atom<RelationalAtom>>> atoms = atomsOfClass.iterator(); atoms.hasNext();) {
+			Collection<Atom<RelationalAtom>> atomOfCondtional = atoms.next();
+			//take each atom of each conditional
+			for (Iterator<Atom<RelationalAtom>> element = atomOfCondtional.iterator(); element.hasNext();) {
+				Atom<RelationalAtom> atom = (Atom<RelationalAtom>) element.next();
+				//get the arguments of each atom of the conditional
+				for (Iterator<Atom<RelationalAtom>> iteratorOfQuery = atomsOfQuery.iterator(); iteratorOfQuery
+						.hasNext();) {
+					Atom<RelationalAtom> atomOfQuery = (Atom<RelationalAtom>) iteratorOfQuery.next();
+
+					if (((RelationalAtom) atom).getPredicate().equals(((RelationalAtom) atomOfQuery).getPredicate())) {
+
+						Term[] argsOfQueryAtom = ((RelationalAtom) atomOfQuery).getArguments();
+						Term[] argsOfConditional = ((RelationalAtom) atom).getArguments();
+						elementsOfConstraintsOfClass = generateElementsOfConstraint(argsOfConditional, argsOfQueryAtom);
+						argsOfClass.addAll(elementsOfConstraintsOfClass);
+						constraint = generateDisjunctionConstraint(argsOfClass);
+					}
+
+				}
+
+			}
+
+		}
+
+		return constraint;
+	}
+
+	/*
 	 * Creates a conjunction of InequalityConstraints
 	 */
 	private Formula<AtomicConstraint> generateNegativeConstraint(
 			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass, Collection<Atom<RelationalAtom>> atomsOfQuery) {
 
-		Collection<InequalityConstraint> negativeArgsOfClass = new ArrayList<InequalityConstraint>();
-		ArrayList<InequalityConstraint> elementsOfNegativeConstraintsOfClass = new ArrayList<InequalityConstraint>();
+		Collection<Formula<AtomicConstraint>> negativeArgsOfClass = new ArrayList<Formula<AtomicConstraint>>();
+		ArrayList<Formula<AtomicConstraint>> elementsOfNegativeConstraintsOfClass = new ArrayList<Formula<AtomicConstraint>>();
 		Formula<AtomicConstraint> constraint = null;
 
 		//get the arguments for each conditional
@@ -192,7 +235,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 						elementsOfNegativeConstraintsOfClass = generateElementsOfNegativeConstraint(argsOfConditional,
 								argsOfQueryAtom);
 						negativeArgsOfClass.addAll(elementsOfNegativeConstraintsOfClass);
-						constraint = generateNegativeConstraintOfClass(negativeArgsOfClass);
+						constraint = generateDisjunctionConstraint(negativeArgsOfClass);
+						//constraint = generateConjunctionConstraint(negativeArgsOfClass);
+
 					}
 
 				}
@@ -206,13 +251,13 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	}
 
 	/*
-	 * This method generates a conjunction of InequalityConstraints
+	 * This method generates a conjunction of Constraints
 	 */
-	private Formula<AtomicConstraint> generateNegativeConstraintOfClass(Collection<InequalityConstraint> argsOfClass) {
+	private Formula<AtomicConstraint> generateConjunctionConstraint(Collection<Formula<AtomicConstraint>> argsOfClass) {
 
 		Formula<AtomicConstraint> constraint = null;
 
-		Iterator<InequalityConstraint> equiCons = argsOfClass.iterator();
+		Iterator<Formula<AtomicConstraint>> equiCons = argsOfClass.iterator();
 		constraint = equiCons.next();
 		if (!(argsOfClass.size() > 1)) {
 
@@ -221,9 +266,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		}
 
 		while (equiCons.hasNext()) {
-			InequalityConstraint inequalityConstraint = equiCons.next();
-
-			constraint = constraint.and(inequalityConstraint.getInterpretable());
+			Formula<AtomicConstraint> cons = equiCons.next();
+			constraint = constraint.and(cons);
 
 		}
 		return constraint;
@@ -231,9 +275,33 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	}
 
 	/*
+	 * Creates a disjunction of Constraints.
+	 */
+	private Formula<AtomicConstraint> generateDisjunctionConstraint(Collection<Formula<AtomicConstraint>> argsOfClass) {
+
+		Formula<AtomicConstraint> constraint = null;
+
+		Iterator<Formula<AtomicConstraint>> cons = argsOfClass.iterator();
+		constraint = cons.next();
+		if (!(argsOfClass.size() > 1)) {
+
+			return constraint;
+
+		}
+
+		while (cons.hasNext()) {
+			Formula<AtomicConstraint> elementOfConstraint = cons.next();
+
+			constraint = constraint.or(elementOfConstraint);
+
+		}
+		return constraint;
+	}
+
+	/*
 	 * Creates an InequalityConstraint using the variables of the query and constants of the generated conditionals
 	 */
-	private ArrayList<InequalityConstraint> generateElementsOfNegativeConstraint(Term[] argsOfCond,
+	private ArrayList<InequalityConstraint> generateElementsOfNegativeConstraint2(Term[] argsOfCond,
 			Term[] argsOfQueryAtom) {
 		ArrayList<InequalityConstraint> listOfConstraints = new ArrayList<InequalityConstraint>();
 
@@ -251,6 +319,42 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		return listOfConstraints;
 
+	}
+	//TODO nullstelliges Prädikat abfangen
+
+	private ArrayList<Formula<AtomicConstraint>> generateElementsOfNegativeConstraint(Term[] argsOfCond,
+			Term[] argsOfQueryAtom) {
+		ArrayList<Formula<AtomicConstraint>> listOfConstraints = new ArrayList<Formula<AtomicConstraint>>();
+		Collection<Formula<AtomicConstraint>> listOfInequalityConstraints = new ArrayList<Formula<AtomicConstraint>>();
+
+		/*
+		 * Creates an InequalityConstraint using the variables of the query and constants of the generated conditionals
+		 * if the artity of the predicate is 1 then create an InequalityConstraint, else 
+		 */
+
+		for (int i = 0; i < argsOfCond.length; i++) {
+			for (int j = 0; j < argsOfQueryAtom.length; j++) {
+
+				Variable var = new Variable(argsOfQueryAtom[j].toString(), argsOfQueryAtom[j].getType());
+				Constant cons = new Constant(argsOfCond[i].toString(), argsOfCond[i].getType());
+				if (argsOfCond.length == 1) {
+					InequalityConstraint atomicConstraint = new InequalityConstraint(var, cons);
+					listOfConstraints.add(atomicConstraint);
+
+				}
+				if (argsOfCond.length > 1) {
+					InequalityConstraint atomicConstraint = new InequalityConstraint(var, cons);
+					listOfInequalityConstraints.add(atomicConstraint);
+				}
+			}
+
+		}
+		for (int i = 0; i < listOfInequalityConstraints.size(); i++) {
+			Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(listOfInequalityConstraints);
+			listOfConstraints.add(conjunction);
+		}
+
+		return listOfConstraints;
 	}
 
 	/*
@@ -270,73 +374,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		}
 
 		return Fraction.division(sum, new Fraction(classification.size()));
-	}
-
-	/*
-	 * 
-	 * @param atomsOfClass
-	 * @param atomsOfQuery
-	 * @return constraint
-	 */
-	private Formula<AtomicConstraint> generateConstraint(Collection<Collection<Atom<RelationalAtom>>> atomsOfClass,
-			Collection<Atom<RelationalAtom>> atomsOfQuery) {
-
-		Collection<EqualityConstraint> argsOfClass = new ArrayList<EqualityConstraint>();
-		ArrayList<EqualityConstraint> elementsOfConstraintsOfClass = new ArrayList<EqualityConstraint>();
-		Formula<AtomicConstraint> constraint = null;
-
-		//get the arguments for each conditional
-		//take each collection for the conditional
-		for (Iterator<Collection<Atom<RelationalAtom>>> atoms = atomsOfClass.iterator(); atoms.hasNext();) {
-			Collection<Atom<RelationalAtom>> atomOfCondtional = atoms.next();
-			//take each atom of each conditional
-			for (Iterator<Atom<RelationalAtom>> element = atomOfCondtional.iterator(); element.hasNext();) {
-				Atom<RelationalAtom> atom = (Atom<RelationalAtom>) element.next();
-				//get the arguments of each atom of the conditional
-				for (Iterator<Atom<RelationalAtom>> iteratorOfQuery = atomsOfQuery.iterator(); iteratorOfQuery
-						.hasNext();) {
-					Atom<RelationalAtom> atomOfQuery = (Atom<RelationalAtom>) iteratorOfQuery.next();
-
-					if (((RelationalAtom) atom).getPredicate().equals(((RelationalAtom) atomOfQuery).getPredicate())) {
-
-						Term[] argsOfQueryAtom = ((RelationalAtom) atomOfQuery).getArguments();
-						Term[] argsOfConditional = ((RelationalAtom) atom).getArguments();
-						elementsOfConstraintsOfClass = generateElementsOfConstraint(argsOfConditional, argsOfQueryAtom);
-						argsOfClass.addAll(elementsOfConstraintsOfClass);
-						constraint = generateConstraintOfClass(argsOfClass);
-					}
-
-				}
-
-			}
-
-		}
-
-		return constraint;
-	}
-
-	/*
-	 * Creates a disjunction of EqualityConstraints.
-	 */
-	private Formula<AtomicConstraint> generateConstraintOfClass(Collection<EqualityConstraint> argsOfClass) {
-
-		Formula<AtomicConstraint> constraint = null;
-
-		Iterator<EqualityConstraint> equiCons = argsOfClass.iterator();
-		constraint = equiCons.next();
-		if (!(argsOfClass.size() > 1)) {
-
-			return constraint;
-
-		}
-
-		while (equiCons.hasNext()) {
-			EqualityConstraint equalityConstraint = equiCons.next();
-
-			constraint = constraint.or(equalityConstraint.getInterpretable());
-
-		}
-		return constraint;
 	}
 
 	/*
