@@ -46,7 +46,6 @@ public class FriendshipTest extends AbstractQueryTest {
 
 		Vector<RelationalConditional> generalization = new Vector<RelationalConditional>(
 				inference.queryConditional(queries.elementAt(0)));
-
 		assertEquals(generalizations.elementAt(0), generalization.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalization.elementAt(1).toString());
 		assertEquals(generalizations.size(), generalization.size());

@@ -76,8 +76,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			generalization = generalizePositive(c, classifiedClasses);
 		}
 
-		//generalizationNegative = generalizeNegative(c, classifiedClassesList);
-		//generalizationPositive = generalizePositive(c, classifiedClasses);
+		generalizationNegative = generalizeNegative(c, classifiedClassesList);
+		generalizationPositive = generalizePositive(c, classifiedClasses);
 
 		return generalization;
 	}
@@ -139,11 +139,16 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			Collection<RelationalConditional> classification = iterator.next();
 			atomsOfClass.addAll(getAtomOfClass(classification));
 
-		}
+			Formula<AtomicConstraint> constraintOfClass = null;
+			if (probability.toFloatingPoint() == 0.0) {
+				constraintOfClass = generateReflexiveConstraint(atomsOfClass, atomsOfQuery);
+			} else {
+				constraintOfClass = generateNegativeConstraint(atomsOfClass, atomsOfQuery);
+			}
 
-		Formula<AtomicConstraint> constraintOfClass = generateNegativeConstraint(atomsOfClass, atomsOfQuery);
-		generalizationOfClass = generateConditional(c, constraintOfClass, probability);
-		generalization.add(generalizationOfClass);
+			generalizationOfClass = generateConditional(c, constraintOfClass, probability);
+			generalization.add(generalizationOfClass);
+		}
 
 		iterator = classifiedClassesList.iterator();
 		iterator.next();
@@ -151,13 +156,27 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			Collection<RelationalConditional> classification = iterator.next();
 			atomsOfOtherClass.addAll(getAtomOfClass(classification));
 			Fraction probOfOtherClass = getProbabilitiesOfClass(classification);
-			Formula<AtomicConstraint> constraintOfOtherClass = generateConstraint(atomsOfOtherClass, atomsOfQuery);
+			//Formula<AtomicConstraint> constraintOfClass;
+
+			//reflexive 
+			Formula<AtomicConstraint> constraintOfOtherClass = null;
+			if (probability.toFloatingPoint() == 0.0) {
+				generateReflexiveConstraint(atomsOfOtherClass, atomsOfQuery);
+			} else {
+				constraintOfOtherClass = generateConstraint(atomsOfOtherClass, atomsOfQuery);
+			}
 			generalizationOfClass = generateConditional(c, constraintOfOtherClass, probOfOtherClass);
 			generalization.add(generalizationOfClass);
 
 		}
 
 		return generalization;
+	}
+
+	private Formula<AtomicConstraint> generateReflexiveConstraint(
+			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass, Collection<Atom<RelationalAtom>> atomsOfQuery) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/*
@@ -236,7 +255,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 								argsOfQueryAtom);
 						negativeArgsOfClass.addAll(elementsOfNegativeConstraintsOfClass);
 						constraint = generateDisjunctionConstraint(negativeArgsOfClass);
-						//constraint = generateConjunctionConstraint(negativeArgsOfClass);
 
 					}
 
