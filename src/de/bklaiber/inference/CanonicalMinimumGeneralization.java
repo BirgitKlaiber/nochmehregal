@@ -87,7 +87,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		}
 		*/
 
-		generalizationNegative = generalizeNegative(c, classifiedClassesList);
+		//generalizationNegative = generalizeNegative(c, classifiedClassesList);
 		generalizationPositive = generalizePositive(c, classifiedClasses);
 
 		//TODO hier muss noch zwischen den Generalisierungen ausgewählt werden; im Moment wird nur die psoitive zurückgegeben
@@ -112,7 +112,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = getAtomOfClass(classification);
 			Fraction probability = getProbabilitiesOfClass(classification);
 			Formula<AtomicConstraint> constraintOfClass = null;
-			if (testIfIsreflexive(classification)) {
+			if (isReflexive(classification)) {
 				//TODO wenn alle Elemente der Klasse gleich sind
 				constraintOfClass = generateReflexiveConstraint(atomsOfClass, atomsOfQuery);
 			} else {
@@ -234,27 +234,27 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		//else positive constraint 
 		//for the smaller classes positive constraints
 
-		Iterator<Collection<RelationalConditional>> iteratorCount = classifiedClassesList.iterator();
+		iterator = classifiedClassesList.iterator();
 		//Collection<RelationalConditional> biggestClass2 = iteratorCount.next();
 
 		int numberOfElements = 0;
 
-		while (iteratorCount.hasNext()) {
+		while (iterator.hasNext()) {
 			Collection<RelationalConditional> classification = iterator.next();
 
-			if (!testIfIsreflexive(classification)) {
+			if (!isReflexive(classification)) {
 				numberOfElements = numberOfElements + classification.size();
 			}
 		}
 
-		if (!testIfIsreflexive(biggestClass) && numberOfElements < biggestClass.size()) {
+		if (!isReflexive(biggestClass) && numberOfElements < biggestClass.size()) {
 
 			while (iterator.hasNext()) {
 				Collection<RelationalConditional> classification = iterator.next();
 				atomsOfClass.addAll(getAtomOfClass(classification));
 
 				Formula<AtomicConstraint> constraintOfClass = null;
-				if (testIfIsreflexive(classification)) {
+				if (isReflexive(classification)) {
 					//TODO wenn alle Elemente der Klasse gleich sind
 					constraintOfClass = generateReflexiveConstraint(atomsOfClass, atomsOfQuery);
 				} else {
@@ -266,14 +266,14 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			}
 		}
 
-		if (testIfIsreflexive(biggestClass)) {
+		if (isReflexive(biggestClass)) {
 			while (iterator.hasNext()) {
 				Collection<RelationalConditional> biggestClassNext = iterator.next();
 				Collection<RelationalConditional> classification = iterator.next();
 				atomsOfClass.addAll(getAtomOfClass(classification));
 
 				Formula<AtomicConstraint> constraintOfClass = null;
-				if (testIfIsreflexive(classification)) {
+				if (isReflexive(classification)) {
 					//TODO wenn alle Elemente der Klasse gleich sind
 					constraintOfClass = generateReflexiveConstraint(atomsOfClass, atomsOfQuery);
 				} else {
@@ -661,7 +661,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	} //end for
 
-	private boolean testIfIsreflexive(Collection<RelationalConditional> classifiedClass) {
+	private boolean isReflexive(Collection<RelationalConditional> classifiedClass) {
 
 		if ((getProbabilitiesOfClass(classifiedClass)).toFloatingPoint() == 0.0)
 			return true;
@@ -669,7 +669,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			return false;
 	}
 
-	private boolean testIfIsimpossible(Collection<RelationalConditional> classifiedClass) {
+	private boolean isImpossible(Collection<RelationalConditional> classifiedClass) {
 		if ((getProbabilitiesOfClass(classifiedClass)).toFloatingPoint() == -1)
 
 			return true;

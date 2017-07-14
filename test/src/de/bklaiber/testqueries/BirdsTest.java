@@ -69,19 +69,20 @@ public class BirdsTest extends AbstractQueryTest {
 
 	}
 
+	/*
 	@Test
 	public void checkGeneralizationNegative() {
 		Vector<String> generalizations = new Vector<String>();
-
+	
 		generalizations.addElement("(flies(X))[0.6636035435403175]<X!=Tweety>");
 		generalizations.addElement("(flies(X))[3.9682291970525344E-9]<X=Tweety>");
-
+	
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
 				groundInstances);
 		CanonicalMinimumGeneralization generalization = (CanonicalMinimumGeneralization) inference.getGeneralization();
-
-		/*
+	
+		
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
 			generalization.generalizeNegative(queries.elementAt(0), classifiedClasses));
 		
@@ -89,9 +90,9 @@ public class BirdsTest extends AbstractQueryTest {
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
 		
 		assertEquals(generalizations.size(), generalizedClasses.size());
-		*/
+		
 	}
-
+	*/
 	/*
 	 * Tests if the generalization produces the results expected.
 	 
