@@ -1,5 +1,5 @@
 package de.bklaiber.inference;
 
-public abstract class AbstractGeneralization implements Generalization {
+public abstract class AbstractGeneralization implements Generalization, CompositeGeneralization {
 
 }

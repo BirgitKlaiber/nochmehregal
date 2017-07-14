@@ -110,7 +110,7 @@ public class Inference {
 	 * @return generalized probabilistic ground instances of the conditional of
 	 *         the query
 	 */
-	private Collection<Collection<RelationalConditional>> classify(RelationalConditional c,
+	public Collection<Collection<RelationalConditional>> classify(RelationalConditional c,
 			Collection<RelationalConditional> groundInstances) {
 		Collection<RelationalConditional> probabilisticGroundInstances = compute(groundInstances);
 
@@ -151,7 +151,7 @@ public class Inference {
 	 *            relational unconditioned conditional of the query
 	 * @return grounded query conditional
 	 */
-	private Collection<RelationalConditional> ground(RelationalConditional c) {
+	public Collection<RelationalConditional> ground(RelationalConditional c) {
 		if (kb == null) {
 			throw new NullPointerException(MSG_NOKNOWLEDGEBASE);
 		}
