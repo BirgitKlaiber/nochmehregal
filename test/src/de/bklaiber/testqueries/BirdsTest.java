@@ -48,10 +48,10 @@ public class BirdsTest extends AbstractQueryTest {
 	}
 
 	@Test
-	public void checkGeneralizationPositive() {
+	public void checkGeneralizationNegative() {
 		Vector<String> generalizations = new Vector<String>();
 
-		generalizations.addElement("(flies(X))[0.6636035435403175]<((X=Sylvester + X=Kirby) + X=Bully)>");
+		generalizations.addElement("(flies(X))[0.6636035435403175]<X!=Tweety>");
 		generalizations.addElement("(flies(X))[3.9682291970525344E-9]<X=Tweety>");
 
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
@@ -60,7 +60,7 @@ public class BirdsTest extends AbstractQueryTest {
 		CanonicalMinimumGeneralization generalization = (CanonicalMinimumGeneralization) inference.getGeneralization();
 
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
-				generalization.generalizePositive(queries.elementAt(0), classifiedClasses));
+				generalization.generalizeNegative(queries.elementAt(0), classifiedClasses));
 
 		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
@@ -71,10 +71,10 @@ public class BirdsTest extends AbstractQueryTest {
 
 	/*
 	@Test
-	public void checkGeneralizationNegative() {
+	public void checkGeneralizationPositive() {
 		Vector<String> generalizations = new Vector<String>();
 	
-		generalizations.addElement("(flies(X))[0.6636035435403175]<X!=Tweety>");
+		generalizations.addElement("(flies(X))[0.6636035435403175]<((X=Sylvester + X=Kirby) + X=Bully)>");
 		generalizations.addElement("(flies(X))[3.9682291970525344E-9]<X=Tweety>");
 	
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
@@ -82,17 +82,16 @@ public class BirdsTest extends AbstractQueryTest {
 				groundInstances);
 		CanonicalMinimumGeneralization generalization = (CanonicalMinimumGeneralization) inference.getGeneralization();
 	
-		
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
-			generalization.generalizeNegative(queries.elementAt(0), classifiedClasses));
-		
+				generalization.generalizePositive(queries.elementAt(0), classifiedClasses));
+	
 		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
-		
+	
 		assertEquals(generalizations.size(), generalizedClasses.size());
-		
+	
 	}
-	*/
+	
 	/*
 	 * Tests if the generalization produces the results expected.
 	 
