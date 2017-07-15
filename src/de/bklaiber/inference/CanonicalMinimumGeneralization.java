@@ -216,9 +216,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			@Override
 			public int compare(Collection o1, Collection o2) {
 				Integer size1 = o1.size();
-				System.out.println(size1);
 				Integer size2 = o2.size();
-				System.out.println(size2);
 				return size2.compareTo(size1);
 			}
 
@@ -234,8 +232,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		//else positive constraint 
 		//for the smaller classes positive constraints
 
-		iterator = classifiedClassesList.iterator();
-
 		int numberOfElements = 0;
 
 		while (iterator.hasNext()) {
@@ -245,6 +241,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				numberOfElements = numberOfElements + classification.size();
 			}
 		}
+		Collections.sort(classifiedClassesList, compareSize);
+		iterator = classifiedClassesList.iterator();
+		biggestClass = iterator.next();
 
 		//if the biggest and first class is not reflexive and the probability isn´t impossible to calculate f.e. because there is a division by zero
 		//and the number of elements in the smaller classes is smaller than the size of the biggest class then get all the elements of the smaller
@@ -267,7 +266,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 			//look ad the second class of the list
 			iterator = classifiedClassesList.iterator();
-			iterator = (Iterator<Collection<RelationalConditional>>) iterator.next();
+			Collection<RelationalConditional> classOne = iterator.next();
 
 			while (iterator.hasNext()) {
 				Collection<RelationalConditional> classification = iterator.next();
