@@ -86,7 +86,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		*/
 
 		generalizationNegative = generalizeNegative(c, classifiedClasses);
-		//generalizationPositive = generalizePositive(c, classifiedClasses);
+		generalizationPositive = generalizePositive(c, classifiedClasses);
 
 		//TODO hier muss noch zwischen den Generalisierungen ausgewählt werden; im Moment wird nur die negative zurückgegeben
 
