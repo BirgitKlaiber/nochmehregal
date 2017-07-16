@@ -10,27 +10,28 @@ public class GeneralizationAsStringComperator extends AbstractGeneralizatonCompe
 	int smallest = 0;
 
 	public int compare(Collection<RelationalConditional> g1, Collection<RelationalConditional> g2) {
-		String stringOfG1 = null;
-		String stringOfG2 = null;
+		StringBuilder stringBuilderOfG1 = new StringBuilder();
+		StringBuilder stringBuilderOfG2 = new StringBuilder();
 
 		for (Iterator<RelationalConditional> iterator1 = g1.iterator(); iterator1.hasNext();) {
 			RelationalConditional conditional = iterator1.next();
 
-			stringOfG1 = conditional.getConstraint().toString();
+			String stringOfG1 = conditional.getConstraint().toString();
+			stringBuilderOfG1.append(stringOfG1);
 
 		}
 
 		for (Iterator<RelationalConditional> iterator2 = g2.iterator(); iterator2.hasNext();) {
 			RelationalConditional conditional = iterator2.next();
 
-			stringOfG2 = conditional.getConstraint().toString();
-
+			String stringOfG2 = conditional.getConstraint().toString();
+			stringBuilderOfG2.append(stringOfG2);
 		}
 
-		if (stringOfG1.length() < stringOfG2.length()) {
+		if (stringBuilderOfG1.length() < stringBuilderOfG2.length()) {
 			smallest = 1;
 		}
-		if (stringOfG2.length() < stringOfG1.length()) {
+		if (stringBuilderOfG2.length() < stringBuilderOfG1.length()) {
 			smallest = 2;
 		}
 		return smallest;
