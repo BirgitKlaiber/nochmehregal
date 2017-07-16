@@ -13,7 +13,7 @@ public class FormulaAsStringComperator extends AbstractFormulaComperator {
 		if (stringOfOfF1.length() > stringOfOfF2.length()) {
 			smallest = 1;
 		}
-		if (stringOfOfF1.length() > stringOfOfF2.length()) {
+		if (stringOfOfF2.length() > stringOfOfF1.length()) {
 			smallest = 2;
 		}
 		return smallest;

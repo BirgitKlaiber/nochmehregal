@@ -91,32 +91,25 @@ public class BirdsTest extends AbstractQueryTest {
 		assertEquals(generalizations.size(), generalizedClasses.size());
 	
 	}
-	
-	/*
-	 * Tests if the generalization produces the results expected.
+	*/
+	/* Tests if the generalization produces the results expected.
 	 
-	
+	*/
 	@Test
 	public void checkGeneralization() {
 		Vector<String> generalizations = new Vector<String>();
-	
+
 		generalizations.addElement("(flies(X))[0.6636035435403175]<X!=Tweety>");
 		generalizations.addElement("(flies(X))[3.9682291970525344E-9]<X=Tweety>");
-	
+
 		Vector<RelationalConditional> generalization = new Vector<RelationalConditional>(
 				inference.queryConditional(queries.elementAt(0)));
 		assertEquals(generalizations.elementAt(0), generalization.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalization.elementAt(1).toString());
-	
-		assertEquals(generalizations.size(), generalization.size());
-	
-	}
-	
-	*/
 
-	/**
-	 * Tests if the generalization produces the results expected.
-	 */
+		assertEquals(generalizations.size(), generalization.size());
+
+	}
 
 	/**
 	 * Tests if the runtime is below expected threshold.

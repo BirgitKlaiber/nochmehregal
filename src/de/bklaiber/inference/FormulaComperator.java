@@ -8,7 +8,7 @@ public class FormulaComperator extends AbstractFormulaComperator {
 	@Override
 	public int compare(Formula<AtomicConstraint> f1, Formula<AtomicConstraint> f2) {
 
-		return 0;
+		return super.compare(f1, f2);
 	}
 
 }

@@ -17,7 +17,7 @@ public abstract class AbstractFormulaComperator implements Comparator<Formula<At
 		if (atomsOfF1.size() > atomsOfF2.size()) {
 			smallest = 1;
 		}
-		if (atomsOfF1.size() > atomsOfF2.size()) {
+		if (atomsOfF2.size() > atomsOfF1.size()) {
 			smallest = 2;
 		}
 		return smallest;
