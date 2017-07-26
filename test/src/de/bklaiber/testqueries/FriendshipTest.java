@@ -64,7 +64,7 @@ public class FriendshipTest extends AbstractQueryTest {
 		Vector<String> generalizations = new Vector<String>();
 
 		generalizations.addElement("(likes(U,V))[0.6193173107763108]<U!=V>");
-		generalizations.addElement("(likes(U,V)[0.0]<U=V>");
+		generalizations.addElement("(likes(U,V))[0.0]<U=V>");
 
 		Vector<RelationalConditional> generalization = new Vector<RelationalConditional>(
 				inference.queryConditional(queries.elementAt(0)));
