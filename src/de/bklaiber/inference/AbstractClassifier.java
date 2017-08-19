@@ -21,8 +21,8 @@ public abstract class AbstractClassifier implements Classifier {
 
 	Properties properties = null;
 
-	/*
-	 * Tests if the conifguration is in a correct form.
+	/**
+	 * Tests if the configuration is in a correct form.
 	 */
 	public AbstractClassifier() {
 		if (!isConfigurable()) {
@@ -60,7 +60,7 @@ public abstract class AbstractClassifier implements Classifier {
 	}
 
 	/**
-	 * 
+	 * Classifies transitively.
 	 */
 	public Collection<Collection<RelationalConditional>> classifyTransitively(
 			Collection<RelationalConditional> probabilisticGroundInstances) {

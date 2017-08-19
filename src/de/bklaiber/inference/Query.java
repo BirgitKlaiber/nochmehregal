@@ -104,7 +104,7 @@ public class Query {
 
 		Collection<RelationalConditional> groundKb = gop.groundKnowledgeBase(knowledgebase, constants);
 
-		System.out.println("Grundkonditionale: ");
+		System.out.println("Grundkonditionale der Wissensbasis: ");
 
 		for (RelationalConditional relationalgroundConditional : groundKb) {
 
@@ -128,7 +128,7 @@ public class Query {
 			ArrayList<RelationalConditional> relationalConditionals = new ArrayList<RelationalConditional>();
 			int numberOfEquiClasses = 0;
 
-			System.out.println("");
+			//System.out.println("");
 			// System.out.println("Konditional mit Wahrscheinlichkeiten:");
 
 			for (RelationalConditional relationalConditional : queryCond) {
@@ -176,7 +176,7 @@ public class Query {
 			*/
 			//epState.printCurrentProbabilities();
 
-			System.out.println("");
+			//System.out.println("");
 
 			probCondsSize = probabilityConditionals.size();
 			Collections.sort(probabilityConditionals);
@@ -278,7 +278,7 @@ public class Query {
 			// same probability
 			if (numberOfEquiClasses == 1) {
 
-				System.out.println("Berechnung der Wahrscheinlichkeiten der Gundkonditionale: ");
+				System.out.println("Berechnung der Wahrscheinlichkeiten der Grundkonditionale: ");
 				for (ArrayList<ProbabilityConditional> probabilityList : listOfLists) {
 					// System.out.println("zum Vergleich");
 
@@ -292,7 +292,7 @@ public class Query {
 					} // endfor
 				}
 				System.out.println("");
-				System.out.println("Ausgabe des Programms: ");
+				System.out.println("Erwartete Ausgabe: ");
 				System.out.println("Hier sind die Wahrscheinlichkeiten des Konditionals alle gleich: ");
 				PrintAllEqualProbabilities printAllProbs1 = new PrintAllEqualProbabilities(probabilityList1);
 				System.out.println(printAllProbs1.toString());
@@ -300,7 +300,7 @@ public class Query {
 
 			// here there is more than one list
 			else {
-				System.out.println("Berechnung der Wahrscheinlichkeiten der Gundkonditionale: ");
+				System.out.println("Berechnung der Wahrscheinlichkeiten der Grundkonditionale: ");
 				for (ArrayList<ProbabilityConditional> probabilityList : listOfLists) {
 					// System.out.println("zum Vergleich");
 
@@ -328,7 +328,7 @@ public class Query {
 					// if both lists have only one ground conditional
 					if (sizeOfList1 == 1 && sizeOfList2 == 1) {
 						System.out.println("");
-						System.out.println("Ausgabe des Programms:");
+						System.out.println("Erwartete Ausgabe:");
 
 						for (int j = 0; j < listOfLists.size(); j++) {
 
@@ -380,7 +380,7 @@ public class Query {
 							}
 							PrintSingleException exception = new PrintSingleException(probabilityList1);
 							System.out.println("");
-							System.out.println("Ausgabe des Programms:");
+							System.out.println("Erwartete Ausgabe:");
 							System.out.println(exception.toString());
 							PrintWithInequality printWithSingleEx = new PrintWithInequality(probabilityList2,
 									constantsOfAtom);
@@ -527,7 +527,7 @@ public class Query {
 					// if every contional has its own probability
 					if (numberOfEquiClasses == probabilityConditionals.size()) {
 						System.out.println("");
-						System.out.println("Ausgabe des Programms:");
+						System.out.println("Erwartete Ausgabe:");
 
 						PrintNoEqualProbabilities printDifferentConditionals = new PrintNoEqualProbabilities(
 								probabilityConditionals);

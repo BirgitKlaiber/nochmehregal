@@ -5,10 +5,25 @@ import java.util.Iterator;
 
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
+/**
+ * Compares the string representation of two generalizations.
+ * 
+ * @author klaiber
+ *
+ */
 public class GeneralizationAsStringComperator extends AbstractGeneralizatonComperator {
 
 	int smallest = 0;
 
+	/**
+	 * This method compares the string representation of two generalizations.
+	 * 
+	 * @param g1
+	 *            first generalization to compare
+	 * 
+	 * @param g2
+	 *            second generalization to compare
+	 */
 	public int compare(Collection<RelationalConditional> g1, Collection<RelationalConditional> g2) {
 		StringBuffer stringBufferOfG1 = new StringBuffer();
 		StringBuffer stringBufferOfG2 = new StringBuffer();

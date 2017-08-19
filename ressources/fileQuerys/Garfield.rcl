@@ -1,0 +1,36 @@
+signature
+    Cat = {Garfield, Nermal}
+    Dog = {Butcher, Odie}
+
+    isIntelligent(Cat)
+    isStupid(Dog)
+	
+    moreIntelligent(Cat, Dog)
+
+conditionals
+	kb{
+	    (isStupid(Odie))[1.0]
+	    (isStupid(X))[0.60]<X != Odie>	    
+	    (isIntelligent(X))[0.80]
+	    (moreIntelligent(X, Y)| isStupid(Y))[0.75]
+	    (moreIntelligent(X, Y) | isIntelligent(X))[0.90]
+	    }
+
+   	query1{
+	    (isStupid(X) ) 
+	    }
+	    	
+	query2{   
+		(moreIntelligent(X, Y))
+		}
+		  
+	query3{   
+		(isIntelligent(X))
+		}
+
+	query4{   
+		(isStupid(Y) |moreIntelligent(X, Y))
+
+		}
+
+		  	

@@ -5,6 +5,13 @@ import java.util.Collection;
 import edu.cs.ai.log4KR.math.types.Fraction;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
+/**
+ * 
+ * Classifies the classes by equal probability when rounded.
+ * 
+ * @author klaiber
+ *
+ */
 public class SimpleRoundingClassifier extends AbstractClassifier {
 
 	Fraction roundScale = null;

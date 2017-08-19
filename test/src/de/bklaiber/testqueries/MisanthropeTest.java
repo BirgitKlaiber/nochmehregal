@@ -1,5 +1,7 @@
 package de.bklaiber.testqueries;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.util.Vector;
 
@@ -31,10 +33,19 @@ public class MisanthropeTest extends AbstractQueryTest {
 	 */
 	@Test
 	public void checkGeneralization() {
+		Vector<String> generalizations = new Vector<String>();
+
+		generalizations.addElement("(likes(U,V))[0.5869947844745571]<((U=c * V=b) + (U=b * V=c))>");
+		generalizations.addElement("(likes(U,V))[0.0]<U=V>");
+		//TODO how does the negative generalization have to work
+		//generalizations.addElement("(likes(U,V))[0.0500000017879257]<((((U=a * V=c) + (U=a * V=b)) + (U=b * V=a))+ (U=c * V=a))>");
+		//generalizations.addElement("(likes(U,V))[0.0500000017879257]<((U!=c + V!=b) * (U!=b + V!=c))>"); horribly wrong...but what is right??? is there a pattern???
+
 		Vector<RelationalConditional> generalization = new Vector<RelationalConditional>(
 				inference.queryConditional(queries.elementAt(0)));
-		System.out.println(generalization.elementAt(0).toString());
-
+		assertEquals(generalizations.elementAt(0), generalization.elementAt(0).toString());
+		assertEquals(generalizations.elementAt(1), generalization.elementAt(1).toString());
+		assertEquals(generalizations.size(), generalization.size());
 	}
 
 	/**

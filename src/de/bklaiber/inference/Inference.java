@@ -21,11 +21,13 @@ import edu.cs.ai.log4KR.structuredLogics.reasoning.RelationalOptimumEntropyEpist
 
 /**
  * 
- * @author klaiber
  * 
- *         Given an unconditioned relational FO-PCL Conditional it returns
- *         classes of relational conditioned conditionals and the computed
- *         related probability.
+ * 
+ * 
+ * Given an unconditioned relational FO-PCL Conditional it returns classes of
+ * relational conditioned conditionals and the computed related probability.
+ * 
+ * @author klaiber
  *
  */
 public class Inference {
@@ -48,6 +50,12 @@ public class Inference {
 		return generalization;
 	}
 
+	/**
+	 * Setter for the generalization.
+	 * 
+	 * @param generalization
+	 *            is used to set the generalization
+	 */
 	public void setGeneralization(Generalization generalization) {
 		this.generalization = generalization;
 	}
@@ -65,6 +73,8 @@ public class Inference {
 	 * Setter for Classifier.
 	 * 
 	 * @param classifier
+	 *            is set
+	 *
 	 */
 	public void setClassifier(Classifier classifier) {
 		this.classifier = classifier;
@@ -84,8 +94,8 @@ public class Inference {
 	 *  	P(flies(Kirby))=0.2
 	 *  	P(flies(Sylvester))=0.2
 	 *  returns
-	 *  	(flies(X))[0.2]<X!=Tweety>
-	 *  	(flies(Tweety))[0]
+	 *  	"(flies(X))[0.2]&lt;X!=Tweety&gt;"
+	 *  	"(flies(X))[0]&lt;X=Tweety&gt;"
 	 *  </code>
 	 * 
 	 * @param c
@@ -106,6 +116,7 @@ public class Inference {
 	 * @param c
 	 *            conditional without probability
 	 * @param groundInstances
+	 *            the ground instances of the conditional
 	 * 
 	 * @return generalized probabilistic ground instances of the conditional of
 	 *         the query
@@ -124,6 +135,8 @@ public class Inference {
 	 * Calls Log4KR to compute the probability for each grounded conditional
 	 * 
 	 * @param groundedQuery
+	 *            the grounded query
+	 * 
 	 * @return list of relational probabilistic conditionals with their computed
 	 *         probability
 	 */
@@ -149,6 +162,7 @@ public class Inference {
 	 * 
 	 * @param c
 	 *            relational unconditioned conditional of the query
+	 * 
 	 * @return grounded query conditional
 	 */
 	public Collection<RelationalConditional> ground(RelationalConditional c) {
@@ -168,7 +182,9 @@ public class Inference {
 	 * maximum entropy
 	 * 
 	 * @param reader
+	 *            reader of the file
 	 * @param kbFile
+	 *            the file where the kb is saved
 	 */
 	public void setKnowledgebase(Log4KRReader reader, File kbFile) {
 

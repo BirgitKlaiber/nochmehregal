@@ -1,0 +1,15 @@
+signature
+    Type = {a,b}
+
+    R(Type,Type)
+
+conditionals
+	kb{
+		(R(X,Y))[0.8]
+	    }
+
+   	query1{
+	    (R(X,Y) ) 
+	    }
+	    	
+	

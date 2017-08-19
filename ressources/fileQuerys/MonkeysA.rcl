@@ -9,6 +9,8 @@ conditionals
 	    (feeds(X, Y) | !hungry(X), hungry(Y))[0.80]
 	<X != Y>    ( !feeds(X, Y) | hungry(X))[0.999]
 <X!=Y>   
+(feeds(X, X))[0.0]
+
 	}
 	query1{
 	    (feeds(X, Y) | !hungry(X), hungry(Y)) } query2{  ( !feeds(X, Y) | hungry(X))  } query3{ 

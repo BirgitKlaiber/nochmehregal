@@ -7,6 +7,13 @@ import edu.cs.ai.log4KR.logical.syntax.Atom;
 import edu.cs.ai.log4KR.logical.syntax.Formula;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.constraints.AtomicConstraint;
 
+/**
+ * 
+ * This class compares two formulas by size.
+ * 
+ * @author klaiber
+ *
+ */
 public abstract class AbstractFormulaComperator implements Comparator<Formula<AtomicConstraint>> {
 
 	@Override

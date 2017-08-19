@@ -12,7 +12,9 @@ conditionals
 ( !feeds(X, Y) | !hungry(X), !hungry(Y))[0.90] 
 
  (feeds(X, charly) | !hungry(X))[0.95]
-(feeds(X, X))[0.001]
+(feeds(X, X))[0.0]
+(feeds(charly, charly))[0.0]
+
 
 	}
 	query1{

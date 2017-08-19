@@ -9,6 +9,13 @@ import edu.cs.ai.log4KR.logical.syntax.Atom;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.constraints.AtomicConstraint;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
+/**
+ * This class compares two generalizations by the size of the generalized
+ * classes
+ * 
+ * @author klaiber
+ *
+ */
 public abstract class AbstractGeneralizatonComperator implements Comparator<Collection<RelationalConditional>> {
 
 	int smallest = 0;
