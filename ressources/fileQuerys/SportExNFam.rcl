@@ -1,0 +1,40 @@
+signature
+    Person = {Anna, Bob, Chris}
+
+    sport(Person)
+    normalWeight(Person)
+    balancedDiet(Person)
+    family(Person, Person)
+
+conditionals
+kb{
+	(normalWeight(X) | sport(X))[0.80]<X != Chris>
+	(normalWeight(X) | sport(X), balancedDiet(X) )[0.90]			<X != Chris>
+ 	(sport(Chris) )[0]
+	(sport(Y) | sport(X), family(X, Y))[0.7]
+	(family(X,X) )[0]
+
+}
+
+
+query1{(sport(X)| family(X, Y )) }	
+
+query2{ (normalWeight(X)| family(X, Y ) )}  
+
+query3{ (sport(X) | normalWeight(X), family(X, Y))}
+   
+query4{ (normalWeight(X) | sport(X), family(X, Y ) )}	
+
+query5{ (normalWeight(X) | sport(X), balancedDiet(X), family(X, Y ) )}	
+
+query6{ (normalWeight(X) | balancedDiet(X), family(X, Y ) )}
+
+query7{ (balancedDiet(X) | sport(X), normalWeight(X), family(X, Y ) )}
+
+query8{ (sport(X) | balancedDiet(X), normalWeight(X), family(X, Y ) )}
+
+query9{ (sport(X) | balancedDiet(X), family(X, Y))}
+
+
+
+
