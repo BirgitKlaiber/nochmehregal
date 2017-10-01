@@ -8,8 +8,8 @@ signature
 
 conditionals
 kb{
-	(normalWeight(X) | sport(X))[0.80]<X != Chris>
-	(normalWeight(X) | sport(X), balancedDiet(X) )[0.90]			<X != Chris>
+	(normalWeight(X) | sport(X))[0.80]
+	(normalWeight(X) | sport(X), balancedDiet(X) )[0.90]	
  	(sport(Chris) )[0]
 	(sport(Y) | sport(X), family(X, Y))[0.7]
 	(family(X,X) )[0]

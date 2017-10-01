@@ -1,0 +1,17 @@
+signature
+	Person  = {anna,bob,carl}
+
+	cold(Person)
+	susceptible(Person)
+	contact(Person, Person)
+
+conditionals
+	kb{( cold(X) | contact(X, Y), cold(Y) ) [0.6] <X!=Y>
+	( cold(X) | susceptible(X) )[0.1]
+	( cold(X) )[0.05]<X != anna> 
+	( cold(anna))[0.95]
+	( contact(X,Y) | contact(Y,X) )[1.00] <X!=Y>
+	( contact(X,X) )[0.00]} 
+
+query1{( cold(X) )} 
+query2{ ( cold(X) | contact(X, Y), cold(Y) )} query3{ (contact(X, Y), cold(Y) )} query4{ (contact(X, Y))} query5{ ( cold(X) | susceptible(X) )} query6{ ( contact(X,X) )} query7{ ( contact(X,Y) | contact(Y,X) )} query8{ (susceptible(X) )}

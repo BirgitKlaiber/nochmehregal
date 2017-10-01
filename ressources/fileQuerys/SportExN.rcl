@@ -7,8 +7,8 @@ balancedDiet(Person)
 
 conditionals
 	kb{
-	    (normalWeight(X) | sport(X))[0.80]<X != Chris>
-(normalWeight(X) | sport(X), balancedDiet(X) )[0.90]<X != Chris>
+	    (normalWeight(X) | sport(X))[0.80]
+(normalWeight(X) | sport(X), balancedDiet(X) )[0.90]
  	(sport(Chris) )[0]}
    query1{
 	    (sport(X) ) }	query2{   (normalWeight(X))
