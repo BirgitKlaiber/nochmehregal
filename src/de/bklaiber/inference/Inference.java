@@ -150,6 +150,7 @@ public class Inference {
 			Formula<RelationalAtom> formAnt = relationalGroundConditional.getAntecedence();
 
 			double probability = epState.queryConditionalProbability(formulaCons, formAnt);
+			Double p = probability;
 			probabilisticConditionals
 					.add(new RelationalConditional(formulaCons, formAnt, (new Fraction(probability)).simplify()));
 

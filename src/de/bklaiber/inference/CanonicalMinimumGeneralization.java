@@ -636,7 +636,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	 */
 	private Fraction getProbabilitiesOfClass(Collection<RelationalConditional> classification) {
 
-		//The following section contains the correct handling of the probilities of class, but Log4KR is not able to compute it correctly so the heuristic here used is to return the probabilty of the first conditional of the class
+		//The following section contains the correct handling of the probabilities of class, but Log4KR is not able to compute it correctly so the heuristic here used is to return the probabilty of the first conditional of the class
 
 		/**
 		 * Fraction sum = new Fraction(0);
