@@ -636,17 +636,25 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	 */
 	private Fraction getProbabilitiesOfClass(Collection<RelationalConditional> classification) {
 
-		Fraction sum = new Fraction(0);
+		//The following section contains the correct handling of the probilities of class, but Log4KR is not able to compute it correctly so the heuristic here used is to return the probabilty of the first conditional of the class
 
-		for (Iterator<RelationalConditional> condOfClass = classification.iterator(); condOfClass.hasNext();) {
-			RelationalConditional relationalConditional = (RelationalConditional) condOfClass.next();
+		/**
+		 * Fraction sum = new Fraction(0);
+		 * 
+		 * for (Iterator<RelationalConditional> condOfClass =
+		 * classification.iterator(); condOfClass.hasNext();) {
+		 * RelationalConditional relationalConditional = (RelationalConditional)
+		 * condOfClass.next();
+		 * 
+		 * Fraction probabilityOfCond = relationalConditional.getProbability();
+		 * sum = Fraction.addition(sum, probabilityOfCond);
+		 * 
+		 * }
+		 * 
+		 * return Fraction.division(sum, new Fraction(classification.size()));
+		 */
 
-			Fraction probabilityOfCond = relationalConditional.getProbability();
-			sum = Fraction.addition(sum, probabilityOfCond);
-
-		}
-
-		return Fraction.division(sum, new Fraction(classification.size()));
+		return classification.iterator().next().getProbability();
 	}
 
 	/*
