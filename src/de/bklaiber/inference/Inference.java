@@ -179,7 +179,7 @@ public class Inference {
 	/**
 	 * 
 	 * Reads the knowledgebase from a file, initializes the epistemic state
-	 * witch is best the from the possible worlds regarding the principle of
+	 * which is best the from the possible worlds regarding the principle of
 	 * maximum entropy
 	 * 
 	 * @param reader

@@ -347,7 +347,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return generalization;
 	}
 
-	private Formula<AtomicConstraint> generateReflexiveConstraint(Collection<Atom<RelationalAtom>> atomsOfQuery) {
+	public Formula<AtomicConstraint> generateReflexiveConstraint(Collection<Atom<RelationalAtom>> atomsOfQuery) {
 
 		Collection<Formula<AtomicConstraint>> argsOfClass = new ArrayList<Formula<AtomicConstraint>>();
 		ArrayList<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new ArrayList<Formula<AtomicConstraint>>();
@@ -366,7 +366,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	}
 
-	private Formula<AtomicConstraint> generateReflexiveNegativeConstraint(
+	public Formula<AtomicConstraint> generateReflexiveNegativeConstraint(
 			Collection<Atom<RelationalAtom>> atomsOfQuery) {
 
 		Collection<Formula<AtomicConstraint>> argsOfClass = new ArrayList<Formula<AtomicConstraint>>();
@@ -638,23 +638,19 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		//The following section contains the correct handling of the probabilities of class, but Log4KR is not able to compute it correctly so the heuristic here used is to return the probabilty of the first conditional of the class
 
-		/**
-		 * Fraction sum = new Fraction(0);
-		 * 
-		 * for (Iterator<RelationalConditional> condOfClass =
-		 * classification.iterator(); condOfClass.hasNext();) {
-		 * RelationalConditional relationalConditional = (RelationalConditional)
-		 * condOfClass.next();
-		 * 
-		 * Fraction probabilityOfCond = relationalConditional.getProbability();
-		 * sum = Fraction.addition(sum, probabilityOfCond);
-		 * 
-		 * }
-		 * 
-		 * return Fraction.division(sum, new Fraction(classification.size()));
-		 */
+		Fraction sum = new Fraction(0);
 
-		return classification.iterator().next().getProbability();
+		for (Iterator<RelationalConditional> condOfClass = classification.iterator(); condOfClass.hasNext();) {
+			RelationalConditional relationalConditional = (RelationalConditional) condOfClass.next();
+
+			Fraction probabilityOfCond = relationalConditional.getProbability();
+			sum = Fraction.addition(sum, probabilityOfCond);
+
+		}
+
+		return Fraction.division(sum, new Fraction(classification.size()));
+
+		//return classification.iterator().next().getProbability();
 	}
 
 	/*
