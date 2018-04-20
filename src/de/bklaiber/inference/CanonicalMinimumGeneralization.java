@@ -118,18 +118,20 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			Fraction probability2 = null;
 			Formula<AtomicConstraint> constraintOfClass = null;
 			Formula<AtomicConstraint> constraintOfSecondClass = null;
-
+			//TODO eine Klasse dann Rückgabe das Grundkonditional mit Wahrscheinlichkeit. Ende
+			//TODO hier muss getestet werden, ob es sich um ein mehrstelliges (zweistelliges) Prädikat handelt; bei zweistelligen Prädikaten gibt es immer eine relfelxive Klasse, d.h. eine Klasse ist reflexiv, die andere negativ reflexiv zu generalisieren
 			if (classifiedClasses.size() == 2) {
 				if (isReflexive(classification)) {
 					//TODO wenn alle Elemente der Klasse gleich sind
 					constraintOfClass = generateReflexiveConstraint(atomsOfQuery);
 					constraintOfSecondClass = generateReflexiveNegativeConstraint(atomsOfQuery);
-
+					//TODO wenn die erste Klassifikation nicht reflexiv ist, ist es die andere; der else zwei muss modifiziert werden oder sogar entfernt, die beiden Klassen werden so behandelt, dass eine Klasse als reflexiv (Bsp. U=V) und die andere als nicht reflexiv (U<>V) behandelt wird.
 				} else {
 					Collection<RelationalConditional> nextClassification = iterator.next();
 					Collection<Collection<Atom<RelationalAtom>>> atomsOfSecondClass = getAtomOfClass(
 							nextClassification);
 					//if both of the classes aren´t reflexive
+					//bei zwei Klassen muss immer eine refelxiv sein, der Fall, dass beide nicht refleixv sind, kann nicht eintreten
 					if (!isReflexive(classification) && !isReflexive(nextClassification)) {
 						constraintOfClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
 						constraintOfSecondClass = generatePositiveConstraint(atomsOfSecondClass, atomsOfQuery);
@@ -714,7 +716,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	/*
 	 * Test if a class is reflexive (i.e. likes(a, a), likes (b, b), likes (c, c))
 	 */
-	private boolean isReflexive(Collection<RelationalConditional> classifiedClass) {
+	public boolean isReflexive(Collection<RelationalConditional> classifiedClass) {
 
 		boolean isreflexive = true;
 
