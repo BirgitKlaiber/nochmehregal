@@ -1,6 +1,6 @@
 package de.bklaiber.inference;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,14 +17,14 @@ import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Sort;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalFact;
 
-public class IsReflexiveTest extends AbstractQueryTest {
+public class IsNotReflexiveTest extends AbstractQueryTest {
 
 	private Sort type;
 	private Sort[] argumentSorts;
 	//Formula<AtomicConstraint> reflexiveConstraint = null;
 
 	@Test
-	public void testIsReflexive() {
+	public void testIsNotReflexive() {
 		CanonicalMinimumGeneralization generalization = new CanonicalMinimumGeneralization();
 		Collection<Atom<RelationalAtom>> atomsOfQuery = null;
 		Collection<RelationalConditional> reflexiveClassConditionals = null;
@@ -38,9 +38,9 @@ public class IsReflexiveTest extends AbstractQueryTest {
 		Constant c = new Constant("c", type);
 		String P = "P";
 
-		RelationalAtom atomAa = new RelationalAtom(new Predicate(P, argumentSorts), a, a);
-		RelationalAtom atomAb = new RelationalAtom(new Predicate(P, argumentSorts), b, b);
-		RelationalAtom atomAc = new RelationalAtom(new Predicate(P, argumentSorts), c, c);
+		RelationalAtom atomAa = new RelationalAtom(new Predicate(P, argumentSorts), a, b);
+		RelationalAtom atomAb = new RelationalAtom(new Predicate(P, argumentSorts), b, c);
+		RelationalAtom atomAc = new RelationalAtom(new Predicate(P, argumentSorts), c, a);
 
 		atomsOfQuery = new HashSet<>();
 		atomsOfQuery.add(atomAa);
@@ -56,7 +56,7 @@ public class IsReflexiveTest extends AbstractQueryTest {
 		reflexiveClassConditionals.add(bB);
 		reflexiveClassConditionals.add(cC);
 
-		assertTrue(generalization.isReflexive(reflexiveClassConditionals));
+		assertFalse(generalization.isReflexive(reflexiveClassConditionals));
 
 	}
 

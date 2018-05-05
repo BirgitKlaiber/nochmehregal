@@ -52,7 +52,7 @@ public class BirdsTest extends AbstractQueryTest {
 		Vector<String> generalizations = new Vector<String>();
 
 		generalizations.addElement("(flies(X))[0.6636035435403175]<X!=Tweety>");
-		generalizations.addElement("(flies(X))[0.008344314635674319]<X=Tweety>");
+		generalizations.addElement("(flies(Tweety))[0.008344314635674319]");
 
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
@@ -74,7 +74,7 @@ public class BirdsTest extends AbstractQueryTest {
 		Vector<String> generalizations = new Vector<String>();
 
 		generalizations.addElement("(flies(X))[0.6636035435403175]<((X=Sylvester + X=Kirby) + X=Bully)>");
-		generalizations.addElement("(flies(X))[0.008344314635674319]<X=Tweety>");
+		generalizations.addElement("(flies(Tweety))[0.008344314635674319]");
 
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
@@ -91,15 +91,14 @@ public class BirdsTest extends AbstractQueryTest {
 
 	}
 
-	/* Tests if the generalization produces the results expected.
-	 
-	*/
+	//Tests if the generalization produces the results expected.
+
 	@Test
 	public void checkGeneralization() {
 		Vector<String> generalizations = new Vector<String>();
 
 		generalizations.addElement("(flies(X))[0.6636035435403175]<X!=Tweety>");
-		generalizations.addElement("(flies(X))[0.008344314635674319]<X=Tweety>");
+		generalizations.addElement("(flies(Tweety))[0.008344314635674319");
 
 		Vector<RelationalConditional> generalization = new Vector<RelationalConditional>(
 				inference.queryConditional(queries.elementAt(0)));
