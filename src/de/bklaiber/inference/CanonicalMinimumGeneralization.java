@@ -134,9 +134,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				if (iterator1.hasNext()) {
 					con = (RelationalConditional) iterator1.next();
 				}
-				//RelationalConditional generalizationOfClass = generateConditionalForOne(con, probability);
-				//generalization.add(generalizationOfClass);
-				generalization.add(con);
+				RelationalConditional generalizationOfClass = generateConditionalForOne(con, probability);
+				generalization.add(generalizationOfClass);
+				//generalization.add(con);
 				//classification = iterator.next();
 			}
 
@@ -147,9 +147,27 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					constraintOfSecondClass = generateReflexiveNegativeConstraint(atomsOfQuery);
 					//TODO wenn die erste Klassifikation nicht reflexiv ist, ist es die andere; der else Zweig muss modifiziert werden oder sogar entfernt, die beiden Klassen werden so behandelt, dass eine Klasse als reflexiv (Bsp. U=V) und die andere als nicht reflexiv (U<>V) behandelt wird.
 				} else {
-					Collection<RelationalConditional> nextClassification = iterator.next();
+					Collection<RelationalConditional> nextClassification = null;
+					if (iterator.hasNext()) {
+						nextClassification = iterator.next();
+					}
 					Collection<Collection<Atom<RelationalAtom>>> atomsOfSecondClass = getAtomOfClass(
 							nextClassification);
+					//if the class only contains one conditional 
+					if (nextClassification.size() == 1) {
+						RelationalConditional con = null;
+						Iterator<RelationalConditional> iterator1 = classification.iterator();
+						if (iterator1.hasNext()) {
+							con = (RelationalConditional) iterator1.next();
+						}
+						RelationalConditional generalizationOfClass = generateConditionalForOne(con, probability);
+						generalization.add(generalizationOfClass);
+						generalization.add(con);
+						if (iterator.hasNext()) {
+							classification = iterator.next();
+						}
+					}
+
 					//if both of the classes aren´t reflexive
 					//bei zwei Klassen muss immer eine refelxiv sein, der Fall, dass beide nicht refleixv sind, kann nicht eintreten
 					if (!isReflexive(classification) && !isReflexive(nextClassification)) {
@@ -181,13 +199,13 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 				generalization.add(generalizationOfClass);
 			}
-			if (classification.size() > 1) {
+			/*if (classification.size() > 1) {
 				if (constraintOfSecondClass != null) {
 					RelationalConditional generalizationOfSecondClass = generateConditional(c, constraintOfSecondClass,
 							probability2);
 					generalization.add(generalizationOfSecondClass);
 				}
-			}
+			}*/
 
 		}
 
@@ -479,7 +497,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 						Term[] argsOfConditional = ((RelationalAtom) atom).getArguments();
 						elementsOfConstraintsOfClass = generateElementsOfConstraint(argsOfConditional, argsOfQueryAtom);
 						argsOfClass.addAll(elementsOfConstraintsOfClass);
-						if (argsOfQueryAtom.length > 1) {
+						if (argsOfClass.size() > 1) {
 							constraintTemp = generateDisjunctionConstraint(argsOfClass);
 						}
 					}
