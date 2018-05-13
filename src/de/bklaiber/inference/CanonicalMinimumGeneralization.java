@@ -169,7 +169,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					}
 
 					//if both of the classes aren´t reflexive
-					//bei zwei Klassen muss immer eine refelxiv sein, der Fall, dass beide nicht refleixv sind, kann nicht eintreten
+					//bei zweistelligen Pädikaten Klassen muss immer eine refelxiv sein, der Fall, dass beide nicht refleixv sind, kann da nicht eintreten
 					if (!isReflexive(classification) && !isReflexive(nextClassification)) {
 						constraintOfClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
 						constraintOfSecondClass = generatePositiveConstraint(atomsOfSecondClass, atomsOfQuery);
@@ -193,19 +193,19 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				}
 			}
 
+			//dies gilt fuer zweistellige Prädikate, für einstellige muss das untere gelten
 			if (classification.size() > 1) {
 
 				RelationalConditional generalizationOfClass = generateConditional(c, constraintOfClass, probability);
 
 				generalization.add(generalizationOfClass);
-			}
-			/*if (classification.size() > 1) {
+
 				if (constraintOfSecondClass != null) {
 					RelationalConditional generalizationOfSecondClass = generateConditional(c, constraintOfSecondClass,
 							probability2);
 					generalization.add(generalizationOfSecondClass);
 				}
-			}*/
+			}
 
 		}
 
