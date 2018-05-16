@@ -26,7 +26,6 @@ public class GeneralizePositiveTest extends AbstractQueryTest {
 
 	}
 
-	//test
 	@Test
 	public void checkGeneralizationPositive() {
 		Vector<String> generalizations = new Vector<String>();
