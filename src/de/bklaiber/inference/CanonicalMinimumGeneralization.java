@@ -508,7 +508,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 							constraintTemp = generateDisjunctionConstraint(argsOfClass);
 						}
 					}
-					if (((RelationalAtom) atom).getArguments().length > 1) {
+
+					if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
 						predicateMore = true;
 					}
 
@@ -794,16 +795,20 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		if (c instanceof RelationalFact) {
 
-			RelationalFact conditionalOfClass = new RelationalFact(consequence, probability, constraintOfClass);
-			return conditionalOfClass;
+			RelationalFact conditionalOfClass = null;
 
+			if (constraintOfClass != null) {
+				conditionalOfClass = new RelationalFact(consequence, probability, constraintOfClass);
+			} else {
+				conditionalOfClass = new RelationalFact(consequence, probability);
+			}
+			return conditionalOfClass;
 		} else {
+			RelationalConditional conditionalOfClass = null;
 			Formula<RelationalAtom> antecedence = c.getAntecedence();
-			RelationalConditional conditionalOfClass = new RelationalConditional(consequence, antecedence, probability,
-					constraintOfClass);
+			conditionalOfClass = new RelationalConditional(consequence, antecedence, probability, constraintOfClass);
 			return conditionalOfClass;
-
-		} //end else
+		}
 
 	} //end
 
@@ -812,13 +817,26 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Formula<RelationalAtom> consequence = c.getConsequence();
 
 		if (c instanceof RelationalFact) {
-
-			RelationalFact conditionalOfClass = new RelationalFact(consequence, probability);
+			RelationalFact conditionalOfClass = null;
+			if (c.getConstraint() != null) {
+				conditionalOfClass = new RelationalFact(consequence, probability, c.getConstraint());
+			} else {
+				conditionalOfClass = new RelationalFact(consequence, probability);
+			}
 			return conditionalOfClass;
 
 		} else {
 			Formula<RelationalAtom> antecedence = c.getAntecedence();
-			RelationalConditional conditionalOfClass = new RelationalConditional(consequence, antecedence, probability);
+			RelationalConditional conditionalOfClass = null;
+			if (antecedence instanceof Tautology<?>) {
+				if (c.getConstraint() != null) {
+					conditionalOfClass = new RelationalFact(consequence, probability, c.getConstraint());
+				} else {
+					conditionalOfClass = new RelationalFact(consequence, probability);
+				}
+			} else {
+				conditionalOfClass = new RelationalConditional(consequence, antecedence, probability);
+			}
 			return conditionalOfClass;
 
 		} //end else
