@@ -17,6 +17,7 @@ import edu.cs.ai.log4KR.relational.classicalLogic.syntax.constraints.AtomicConst
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.constraints.EqualityConstraint;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.constraints.InequalityConstraint;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Constant;
+import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Predicate;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Term;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Variable;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
@@ -194,12 +195,18 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			}
 
 			//dies gilt fuer zweistellige Prädikate, für einstellige muss das untere gelten
-			if (classification.size() > 1) {
 
-				RelationalConditional generalizationOfClass = generateConditional(c, constraintOfClass, probability);
+			if (classifiedClasses.size() > 1) {
 
-				generalization.add(generalizationOfClass);
+				Formula<RelationalAtom> con = c.getConsequence();
+				Predicate pred = ((RelationalAtom) con).getPredicate();
 
+				if (pred.getArity() > 1) {
+					RelationalConditional generalizationOfClass = generateConditional(c, constraintOfClass,
+							probability);
+
+					generalization.add(generalizationOfClass);
+				}
 				if (constraintOfSecondClass != null) {
 					RelationalConditional generalizationOfSecondClass = generateConditional(c, constraintOfSecondClass,
 							probability2);

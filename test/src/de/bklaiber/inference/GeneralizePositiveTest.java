@@ -41,7 +41,7 @@ public class GeneralizePositiveTest extends AbstractQueryTest {
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
 				generalization.generalizePositive(queries.elementAt(0), classifiedClasses));
 
-		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(1).toString());
+		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
 
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
 
