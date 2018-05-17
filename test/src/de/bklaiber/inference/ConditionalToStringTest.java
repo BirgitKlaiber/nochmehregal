@@ -40,15 +40,15 @@ public class ConditionalToStringTest {
 		constraint = new Disjunction<>(new Disjunction<>(sylvester, kirby), bully);
 
 		RelationalConditional fact = new RelationalFact(fliesX, new Fraction(1, 2), constraint);
-		RelationalConditional tweetyFact = new RelationalFact(fliesTweety, new Fraction(0, 1));
+		RelationalConditional tweetyFact = new RelationalFact(fliesTweety, 1.714933484583285E-4);
 
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>();
 		generalizedClasses.add(tweetyFact);
 		generalizedClasses.add(fact);
 
 		assertEquals("(flies(X))[0.5]<((X=Sylvester + X=Kirby) + X=Bully)>", fact.toString());
-		assertEquals("(flies(Tweety))[0.0]", tweetyFact.toString());
-		assertEquals("(flies(Tweety))[0.0]", generalizedClasses.elementAt(0).toString());
+		assertEquals("(flies(Tweety))[1.714933484583285E-4]", tweetyFact.toString());
+		assertEquals("(flies(Tweety))[1.714933484583285E-4]", generalizedClasses.elementAt(0).toString());
 		assertEquals("(flies(X))[0.5]<((X=Sylvester + X=Kirby) + X=Bully)>",
 				generalizedClasses.elementAt(1).toString());
 
