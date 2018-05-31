@@ -27,7 +27,7 @@ public class ConditionalToStringTest {
 		Sort bird = new Sort("bird");
 
 		Variable x = new Variable("X", bird);
-		Variable tweety = new Variable("Tweety", bird);
+		Constant tweety = new Constant("Tweety", bird);
 		Predicate flies = new Predicate("flies", bird);
 		RelationalAtom fliesX = new RelationalAtom(flies, x);
 		RelationalAtom fliesTweety = new RelationalAtom(flies, tweety);

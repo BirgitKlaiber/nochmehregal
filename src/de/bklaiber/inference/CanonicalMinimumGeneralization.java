@@ -254,6 +254,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Collection<Collection<Atom<RelationalAtom>>> atomsOfTheNextBiggestClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
 
 		RelationalConditional generalizationOfClass = null;
+		RelationalConditional generalizationOfClassOne = null;
+		RelationalConditional generalizationOfClassOneCond = null;
 
 		boolean oneConditional = false;
 
@@ -338,7 +340,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				//if there is olny one class: quantified conditional with probability = qualified conditional 
 				// wenn eine Klasse dann Rückgabe das quantifizierte Konditional mit Wahrscheinlichkeit
 				if (classifiedClasses.size() == 1) {
-					RelationalConditional generalizationOfClassOne = generateConditionalForOne(c, probability);
+					generalizationOfClassOne = generateConditionalForOne(c, probability);
 					generalization.add(generalizationOfClassOne);
 				}
 
@@ -351,7 +353,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					if (con.getAntecedence() instanceof Tautology<?>) {
 						con = new RelationalFact(con.getConsequence());
 					}
-					RelationalConditional generalizationOfClassOneCond = generateConditionalForOne(con, probability);
+					generalizationOfClassOneCond = generateConditionalForOne(con, probability);
 					generalization.add(generalizationOfClassOneCond);
 				}
 
