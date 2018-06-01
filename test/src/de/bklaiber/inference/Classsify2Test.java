@@ -21,15 +21,15 @@ import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Sort;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.kbParser.log4KRReader.Log4KRReader;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
-public class ClasssifyTest extends AbstractQueryTest {
+public class Classsify2Test extends AbstractQueryTest {
 
 	@Before
 	public void setup() {
 		super.setup();
 
-		inference.setKnowledgebase(new Log4KRReader(), new File("test/res/Birds.rcl"));
+		inference.setKnowledgebase(new Log4KRReader(), new File("test/res/BirdsProb.rcl"));
 
-		queries = new Vector<RelationalConditional>(QueryReader.readQueries(new File("test/res/Birds.rcl")));
+		queries = new Vector<RelationalConditional>(QueryReader.readQueries(new File("test/res/BirdsProb.rcl")));
 
 	}
 
@@ -50,11 +50,10 @@ public class ClasssifyTest extends AbstractQueryTest {
 		RelationalAtom fliesBully = new RelationalAtom(flies, bully);
 		RelationalAtom fliesTweety = new RelationalAtom(flies, tweety);
 
-		double probability1 = 0.6636033970821146;
-		double probability2 = 0.6636037951546276;
-		double probability3 = 0.6636034383842102;
-		double probabilityTweety = 0.008344314635674319;
-		//double probabilityTweety = 1.714933484583285E-4;
+		double probability1 = 0.6636034167458533;
+		double probability2 = 0.6636034153533433;
+		double probability3 = 0.6636034143602854;
+		double probabilityTweety = 0.01000003389233424;
 
 		RelationalConditional sylvesterCond = new RelationalConditional(fliesSylvester, Tautology.create(),
 				new Fraction(probability1));
