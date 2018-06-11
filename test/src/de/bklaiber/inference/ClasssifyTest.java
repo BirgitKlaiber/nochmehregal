@@ -78,11 +78,10 @@ public class ClasssifyTest extends AbstractQueryTest {
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
 				groundInstances);
-		System.out.println(classifications.toString());
-		System.out.println(classifiedClasses.toString());
+		System.out.println("Klassifizierte Klassen, Soll: " + classifications.toString());
+		System.out.println("Klassifizierte Klassen, Ist : " + classifiedClasses.toString());
 
 		assertEquals(classifications.toString(), classifiedClasses.toString());
-		//assertEquals(classifications, classifiedClasses);
 
 		assertEquals(classifications.size(), classifiedClasses.size());
 

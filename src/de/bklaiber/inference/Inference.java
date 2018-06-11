@@ -123,11 +123,12 @@ public class Inference {
 	 */
 	public Collection<Collection<RelationalConditional>> classify(RelationalConditional c,
 			Collection<RelationalConditional> groundInstances) {
+		//probabilisticGroundInstances ist eine ArrayList
 		Collection<RelationalConditional> probabilisticGroundInstances = compute(groundInstances);
 
 		Collection<Collection<RelationalConditional>> equivalenceClasses = classifier
 				.classify(probabilisticGroundInstances);
-
+		//equivalenceClasses ist eine ArrayList
 		return equivalenceClasses;
 	}
 
@@ -150,7 +151,7 @@ public class Inference {
 			Formula<RelationalAtom> formAnt = relationalGroundConditional.getAntecedence();
 
 			double probability = epState.queryConditionalProbability(formulaCons, formAnt);
-			System.out.println("p" + probability);
+			System.out.println("p " + probability);
 			Double p = probability;
 			probabilisticConditionals
 					.add(new RelationalConditional(formulaCons, formAnt, (new Fraction(probability)).simplify()));
