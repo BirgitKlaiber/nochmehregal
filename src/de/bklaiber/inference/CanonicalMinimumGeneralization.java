@@ -132,6 +132,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			//Collection<RelationalConditional> classification = iterator.next();
 			System.out.println("classificationTwo: " + classificationTwo.toString());
 			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = getAtomOfClass(classificationTwo);
+			System.out.println("AtomsOfFirstClass" + atomsOfClass.toString());
 			Fraction probability = getProbabilitiesOfClass(classificationTwo);
 			Fraction probability2 = null;
 			Formula<AtomicConstraint> constraintOfFirstClass = null;
@@ -148,11 +149,18 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					probability2 = getProbabilitiesOfClass(nextClassification);
 				}
 				System.out.println("nextClassification: " + nextClassification.toString());
-
+				/*
+								if (isReflexive(nextClassification)) {
+									constraintOfFirstClass = generateReflexiveConstraint(atomsOfQuery);
+									constraintOfSecondClass = generateReflexiveNegativeConstraint(atomsOfQuery);
+									//TODO wenn die erste Klassifikation nicht reflexiv ist, ist es die andere; der else Zweig muss modifiziert werden oder sogar entfernt, die beiden Klassen werden so behandelt, dass eine Klasse als reflexiv (Bsp. U=V) und die andere als nicht reflexiv (U<>V) behandelt wird.
+								}*/
 				Collection<Collection<Atom<RelationalAtom>>> atomsOfSecondClass = getAtomOfClass(nextClassification);
 				System.out.println("AtomsOfSecondClass" + atomsOfSecondClass.toString());
 				constraintOfSecondClass = generatePositiveConstraint(atomsOfSecondClass, atomsOfQuery);
-				constraintOfSecondClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
+				System.out.println("constraint of second Class " + constraintOfSecondClass);
+				constraintOfFirstClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
+				System.out.println("constraint of first Class " + constraintOfFirstClass);
 
 				//if the class only contains one conditional 
 				if (nextClassification.size() == 1) {
@@ -175,8 +183,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					//classification = iteratorTwoClasses.next();
 					//}
 				} else {
+					System.out.println("GenNextClassificationV" + generalization.toString());
 					RelationalConditional generalizationOfSecondClass = generateConditional(c, constraintOfSecondClass,
-							probability2);
+							probability);
 
 					generalization.add(generalizationOfSecondClass);
 
@@ -203,9 +212,10 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					//classification = iteratorTwoClasses.next();
 					//}
 				} else {
-					RelationalConditional generalizationOfClass = generateConditional(c, constraintOfSecondClass,
+					RelationalConditional generalizationOfClass = generateConditional(c, constraintOfFirstClass,
 							probability);
 
+					System.out.println("GenClassificationN" + generalization.toString());
 					generalization.add(generalizationOfClass);
 
 					System.out.println("GenClassification" + generalization.toString());
