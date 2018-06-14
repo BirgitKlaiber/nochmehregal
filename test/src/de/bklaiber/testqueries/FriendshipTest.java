@@ -59,8 +59,8 @@ public class FriendshipTest extends AbstractQueryTest {
 	public void checkGeneralizationPositive() {
 		Vector<String> generalizations = new Vector<String>();
 
-		generalizations.addElement("(likes(U,V))[0.6193173107763108]<U!=V>");
 		generalizations.addElement("(likes(U,V))[0.0]<U=V>");
+		generalizations.addElement("(likes(U,V))[0.6193173107763108]<U!=V>");
 
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
@@ -80,21 +80,21 @@ public class FriendshipTest extends AbstractQueryTest {
 	/**
 	 * Tests if the generalization produces the results expected.
 	 */
-
-	@Test
-	public void checkGeneralization() {
-		Vector<String> generalizations = new Vector<String>();
-
-		generalizations.addElement("(likes(U,V))[0.6193173107763108]<U!=V>");
-		generalizations.addElement("(likes(U,V))[0.0]<U=V>");
-
-		Vector<RelationalConditional> generalization = new Vector<RelationalConditional>(
-				inference.queryConditional(queries.elementAt(0)));
-		assertEquals(generalizations.elementAt(0), generalization.elementAt(0).toString());
-		assertEquals(generalizations.elementAt(1), generalization.elementAt(1).toString());
-		assertEquals(generalizations.size(), generalization.size());
-
-	}
+	/*
+		@Test
+		public void checkGeneralization() {
+			Vector<String> generalizations = new Vector<String>();
+	
+			generalizations.addElement("(likes(U,V))[0.6193173107763108]<U!=V>");
+			generalizations.addElement("(likes(U,V))[0.0]<U=V>");
+	
+			Vector<RelationalConditional> generalization = new Vector<RelationalConditional>(
+					inference.queryConditional(queries.elementAt(0)));
+			assertEquals(generalizations.elementAt(0), generalization.elementAt(0).toString());
+			assertEquals(generalizations.elementAt(1), generalization.elementAt(1).toString());
+			assertEquals(generalizations.size(), generalization.size());
+	
+		}*/
 
 	/**
 	 * Tests if the generalization produces the results expected.
