@@ -111,7 +111,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
 		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
 
-		//NEU
 		//if there is only one class: quantified conditional with probability = qualified conditional 
 		if (classifiedClasses.size() == 1) {
 			Iterator<Collection<RelationalConditional>> iteratorOneClass = classifiedClasses.iterator();
@@ -122,80 +121,61 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			System.out.println(generalization.toString());
 		}
 
-		//NEU
 		Iterator<Collection<RelationalConditional>> iteratorTwoClasses = classifiedClasses.iterator();
 		Collection<RelationalConditional> classificationTwo = iteratorTwoClasses.next();
 
+		//if there are only two classes
 		if (classifiedClasses.size() == 2) {
 
-			//Collection<RelationalConditional> classification = iterator.next();
-			System.out.println("classificationTwo: " + classificationTwo.toString());
 			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = getAtomOfClass(classificationTwo);
-			System.out.println("AtomsOfFirstClass" + atomsOfClass.toString());
 			Fraction probability = getProbabilitiesOfClass(classificationTwo);
 			Fraction probability2 = null;
 			Formula<AtomicConstraint> constraintOfFirstClass = null;
 			Formula<AtomicConstraint> constraintOfSecondClass = null;
 
+			//if the first of the two clsssifications is reflexive
 			if (isReflexive(classificationTwo)) {
 				constraintOfFirstClass = generateReflexiveConstraint(atomsOfQuery);
 				constraintOfSecondClass = generateReflexiveNegativeConstraint(atomsOfQuery);
-				System.out.println("xxx");
-				//TODO wenn die erste Klassifikation nicht reflexiv ist, ist es die andere; der else Zweig muss modifiziert werden oder sogar entfernt, die beiden Klassen werden so behandelt, dass eine Klasse als reflexiv (Bsp. U=V) und die andere als nicht reflexiv (U<>V) behandelt wird.
 			} else {
 				Collection<RelationalConditional> nextClassification = null;
 				if (iteratorTwoClasses.hasNext()) {
 					nextClassification = iteratorTwoClasses.next();
 					probability2 = getProbabilitiesOfClass(nextClassification);
 				}
-				System.out.println("nextClassification: " + nextClassification.toString());
 
 				if (isReflexive(nextClassification)) {
 
 					constraintOfFirstClass = generateReflexiveNegativeConstraint(atomsOfQuery);
 					constraintOfSecondClass = generateReflexiveConstraint(atomsOfQuery);
-					System.out.println("constraint of second Class " + constraintOfSecondClass);
-					System.out.println("yyy");
-					//TODO wenn die erste Klassifikation nicht reflexiv ist, ist es die andere; der else Zweig muss modifiziert werden oder sogar entfernt, die beiden Klassen werden so behandelt, dass eine Klasse als reflexiv (Bsp. U=V) und die andere als nicht reflexiv (U<>V) behandelt wird.
 				} else {
 					Collection<Collection<Atom<RelationalAtom>>> atomsOfSecondClass = getAtomOfClass(
 							nextClassification);
-					System.out.println("AtomsOfSecondClass" + atomsOfSecondClass.toString());
 					constraintOfSecondClass = generatePositiveConstraint(atomsOfSecondClass, atomsOfQuery);
-					System.out.println("constraint of second Class " + constraintOfSecondClass);
 					constraintOfFirstClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
-					System.out.println("constraint of first Class " + constraintOfFirstClass);
+
 				}
 				Collection<Collection<Atom<RelationalAtom>>> atomsOfSecondClass = getAtomOfClass(nextClassification);
-				System.out.println("AtomsOfSecondClass" + atomsOfSecondClass.toString());
+
 				//if the class only contains one conditional 
 				if (nextClassification.size() == 1) {
 					RelationalConditional con = null;
 					Iterator<RelationalConditional> iterator1 = nextClassification.iterator();
 					if (iterator1.hasNext()) {
 						con = (RelationalConditional) iterator1.next();
-						System.out.println("con1" + con.toString());
+
 					}
 
-					//Fraction prob = getProbabilitiesOfClass(nextClassification);
 					RelationalConditional generalizationOfSecondClass = generateConditionalForOne(con, probability2);
-					//RelationalConditional generalizationOfClass = generateConditionalForOne(, probability);
 
 					generalization.add(generalizationOfSecondClass);
-					System.out.println("generalisation bei zwei Klassen classificaionNExt" + generalization.toString());
-					//generalization.add(con);
-
-					//if (iteratorTwoClasses.hasNext()) {
-					//classification = iteratorTwoClasses.next();
-					//}
 				} else {
-					System.out.println("GenNextClassificationV" + generalization.toString());
+
 					RelationalConditional generalizationOfSecondClass = generateConditional(c, constraintOfSecondClass,
 							probability2);
 
 					generalization.add(generalizationOfSecondClass);
 
-					System.out.println("GenNextClassification" + generalization.toString());
 				}
 
 				if (classificationTwo.size() == 1) {
@@ -203,28 +183,19 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					Iterator<RelationalConditional> iterator2 = classificationTwo.iterator();
 					if (iterator2.hasNext()) {
 						con = (RelationalConditional) iterator2.next();
-						System.out.println("con2" + con.toString());
+
 					}
 
-					//Fraction prob = getProbabilitiesOfClass(nextClassification);
 					RelationalConditional generalizationOfClass = generateConditionalForOne(con, probability);
-					//RelationalConditional generalizationOfClass = generateConditionalForOne(, probability);
 
 					generalization.add(generalizationOfClass);
-					System.out.println("generalisation bei zwei Klassen classificationTwo" + generalization.toString());
-					//generalization.add(con);
 
-					//if (iteratorTwoClasses.hasNext()) {
-					//classification = iteratorTwoClasses.next();
-					//}
 				} else {
 					RelationalConditional generalizationOfClass = generateConditional(c, constraintOfFirstClass,
 							probability);
 
-					System.out.println("GenClassificationN" + generalization.toString());
 					generalization.add(generalizationOfClass);
 
-					System.out.println("GenClassification" + generalization.toString());
 				}
 
 				//if both of the classes aren´t reflexive
@@ -238,21 +209,17 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 						//probability2 = getProbabilitiesOfClass(nextClassification);
 						constraintOfSecondClass = generateReflexiveConstraint(atomsOfQuery);
 						constraintOfFirstClass = generateReflexiveNegativeConstraint(atomsOfQuery);
-						System.out.println("zzz");
+
 					}
 				}
 			}
 
 		} else {
-			//ENDE NEU
 
-			System.out.println("Classifiedclasses" + classifiedClasses.toString());
-
-			//For NEU2
 			for (Iterator<Collection<RelationalConditional>> iterator = classifiedClasses.iterator(); iterator
 					.hasNext();) {
 				Collection<RelationalConditional> classification = iterator.next();
-				System.out.println("classificationNEU2: " + classification.toString());
+
 				Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = getAtomOfClass(classification);
 				Fraction probability = getProbabilitiesOfClass(classification);
 				Formula<AtomicConstraint> constraintOfClass = null;
@@ -266,7 +233,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					}
 
 					RelationalConditional generalizationOfClass = generateConditionalForOne(con, probability);
-					System.out.println("generalizationOfClass for one conditional" + generalizationOfClass.toString());
+
 					generalization.add(generalizationOfClass);
 				}
 				if (isReflexive(classification)) {
@@ -279,138 +246,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 			}
 
-			//For ALt
-			/*	for (Iterator<Collection<RelationalConditional>> iterator = classifiedClasses.iterator(); iterator
-						.hasNext();) {
-					Collection<RelationalConditional> classification = iterator.next();
-					System.out.println("classification1: " + classification.toString());
-					Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = getAtomOfClass(classification);
-					Fraction probability = getProbabilitiesOfClass(classification);
-					Fraction probability2 = null;
-					Formula<AtomicConstraint> constraintOfClass = null;
-					Formula<AtomicConstraint> constraintOfSecondClass = null;
-			
-					//ALT
-					//if there is only one class: quantified conditional with probability = qualified conditional 
-					// wenn eine Klasse dann Rückgabe das quantifizierte Konditional mit Wahrscheinlichkeit
-					if (classifiedClasses.size() == 1) {
-						RelationalConditional generalizationOfClass = generateConditionalForOne(c, probability);
-						generalization.add(generalizationOfClass);
-					}
-					
-			
-					//if the class only contains one conditional 
-					if (classification.size() == 1 && classifiedClasses.size() > 2) {
-			
-						RelationalConditional con = null;
-						Iterator<RelationalConditional> iterator1 = classification.iterator();
-						if (iterator1.hasNext()) {
-							con = (RelationalConditional) iterator1.next();
-						}
-						System.out.println("con: " + con.toString());
-						RelationalConditional generalizationOfClass = generateConditionalForOne(con, probability);
-						System.out.println("generalizationOfClass" + generalizationOfClass.toString());
-						generalization.add(generalizationOfClass);
-						//generalization.add(con);
-						//classification = iterator.next();
-			
-					}
-			
-					//ALT
-					//TODO hier muss getestet werden, ob es sich um ein mehrstelliges (zweistelliges) Prädikat handelt; bei zweistelligen Prädikaten gibt es immer eine relflexive Klasse, d.h. eine Klasse ist reflexiv, die andere negativ reflexiv zu generalisieren
-					if (classifiedClasses.size() == 2) {
-						if (isReflexive(classification)) {
-							constraintOfClass = generateReflexiveConstraint(atomsOfQuery);
-							constraintOfSecondClass = generateReflexiveNegativeConstraint(atomsOfQuery);
-							//TODO wenn die erste Klassifikation nicht reflexiv ist, ist es die andere; der else Zweig muss modifiziert werden oder sogar entfernt, die beiden Klassen werden so behandelt, dass eine Klasse als reflexiv (Bsp. U=V) und die andere als nicht reflexiv (U<>V) behandelt wird.
-						} else {
-							Collection<RelationalConditional> nextClassification = null;
-							if (iterator.hasNext()) {
-								nextClassification = iterator.next();
-							}
-							System.out.println("nextClassification: " + nextClassification.toString());
-					
-							Collection<Collection<Atom<RelationalAtom>>> atomsOfSecondClass = getAtomOfClass(
-									nextClassification);
-							System.out.println("AtomsOfSecondClass" + atomsOfSecondClass.toString());
-							//if the class only contains one conditional 
-							if (nextClassification.size() == 1) {
-								RelationalConditional con = null;
-								Iterator<RelationalConditional> iterator1 = nextClassification.iterator();
-								if (iterator1.hasNext()) {
-									con = (RelationalConditional) iterator1.next();
-									System.out.println("con1" + con.toString());
-								}
-								RelationalConditional generalizationOfClass = generateConditionalForOne(con, probability);
-								Fraction prob = getProbabilitiesOfClass(nextClassification);
-								//RelationalConditional generalizationOfClass = generateConditionalForOne(, probability);
-					
-								generalization.add(generalizationOfClass);
-								System.out.println("generalisation bei zwei Klassen" + generalization.toString());
-								//generalization.add(con);
-								if (iterator.hasNext()) {
-									classification = iterator.next();
-								}
-							}
-					
-							//if both of the classes aren´t reflexive
-							//bei zweistelligen Pädikaten Klassen muss immer eine refelxiv sein, der Fall, dass beide nicht refleixv sind, kann da nicht eintreten
-							if (!isReflexive(classification) && !isReflexive(nextClassification)) {
-								constraintOfClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
-								constraintOfSecondClass = generatePositiveConstraint(atomsOfSecondClass, atomsOfQuery);
-								probability2 = getProbabilitiesOfClass(nextClassification);
-							} else {
-								if (isReflexive(nextClassification)) {
-									probability2 = getProbabilitiesOfClass(nextClassification);
-									constraintOfSecondClass = generateReflexiveConstraint(atomsOfQuery);
-									constraintOfClass = generateReflexiveNegativeConstraint(atomsOfQuery);
-								}
-							}
-						}
-					
-					}
-					
-					
-					//ENDE ALT
-			
-					if (classifiedClasses.size() > 2) {
-						if (isReflexive(classification)) {
-							constraintOfClass = generateReflexiveConstraint(atomsOfQuery);
-			
-						} else {
-							constraintOfClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
-						}
-					}
-			
-					//dies gilt fuer zweistellige Prädikate, für einstellige muss das untere gelten
-					System.out.println("generalizationVorher" + generalization.toString());
-					if (classifiedClasses.size() > 1) {
-			
-						Formula<RelationalAtom> con = c.getConsequence();
-						Predicate pred = ((RelationalAtom) con).getPredicate();
-			
-						if (pred.getArity() > 1) {
-							RelationalConditional generalizationOfClass = generateConditional(c, constraintOfClass,
-									probability);
-							System.out.println("GeneralizsationofClass: " + generalizationOfClass.toString());
-			
-							generalization.add(generalizationOfClass);
-						}
-						System.out.println("constraintofSecondClass" + constraintOfClass.toString());
-			
-						//if (constraintOfSecondClass != null) {
-						RelationalConditional generalizationOfSecondClass = generateConditional(c, constraintOfSecondClass,
-								probability2);
-						System.out.println("GeneralizsationofSecondClass: " + generalizationOfSecondClass.toString());
-						generalization.add(generalizationOfSecondClass);
-						//}
-						System.out.println("generalizationNachher" + generalization.toString());
-					}
-			
-				} //endforAlt
-			*/
 		}
-		System.out.println("Generalization" + generalization.toString());
+
 		return generalization;
 
 	}

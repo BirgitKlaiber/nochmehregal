@@ -36,11 +36,11 @@ public class GeneralizePositiveTest extends AbstractQueryTest {
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
 				groundInstances);
-		System.out.println("Klassifizierte Klassen: " + classifiedClasses.toString());
+
 		CanonicalMinimumGeneralization generalization = (CanonicalMinimumGeneralization) inference.getGeneralization();
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
 				generalization.generalizePositive(queries.elementAt(0), classifiedClasses));
-		System.out.println("Generalisierte Klassen: " + generalizedClasses.toString());
+
 		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
 
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
