@@ -81,6 +81,7 @@ public class Inference {
 	}
 
 	Collection<Constant> constants = null;
+	Collection<RelationalConditional> conditionals = null;
 
 	/**
 	 * Computes the probabilities for each ground instance of the query
@@ -204,10 +205,6 @@ public class Inference {
 		epState = new RelationalOptimumEntropyEpistemicStateLBFGS(semantics);
 		epState.initialize(possibleWorlds, kb);
 
-	}
-
-	public Collection<RelationalConditional> getKb() {
-		return kb;
 	}
 
 }

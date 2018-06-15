@@ -3,13 +3,11 @@ package de.bklaiber.inference;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Vector;
 
 import org.junit.Test;
 
 import de.bklaiber.testqueries.AbstractQueryTest;
-import edu.cs.ai.log4KR.logical.syntax.Atom;
 import edu.cs.ai.log4KR.logical.syntax.Formula;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.RelationalAtom;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.constraints.AtomicConstraint;
@@ -29,7 +27,7 @@ public class GenerateSpecificConstraintTest extends AbstractQueryTest {
 
 		//generate an reflexive EqualityContraint
 		CanonicalMinimumGeneralization generalization = new CanonicalMinimumGeneralization();
-		Collection<Atom<RelationalAtom>> atomsOfQuery = null;
+
 		Collection<Constant> constants = null;
 
 		type = new Sort("letter");
@@ -42,24 +40,17 @@ public class GenerateSpecificConstraintTest extends AbstractQueryTest {
 		Constant a = new Constant("a", type);
 		String P = "P";
 
-		RelationalAtom atomUa = new RelationalAtom(new Predicate(P, argumentSorts), u, a);
-		RelationalAtom atomVa = new RelationalAtom(new Predicate(P, argumentSorts), v, a);
 		RelationalAtom atomUV = new RelationalAtom(new Predicate(P, argumentSorts), u, v);
-
-		atomsOfQuery = new HashSet<>();
-		atomsOfQuery.add(atomUa);
-		atomsOfQuery.add(atomVa);
-		atomsOfQuery.add(atomUV);
 
 		constants = new Vector<Constant>();
 		constants.add(a);
 
-		//specificConstraint = generalization.generateSpecificConstraint(atomsOfQuery, constants);
+		specificConstraint = generalization.generateSpecificConstraint(atomUV, constants);
 		Vector<Formula<AtomicConstraint>> constraints = new Vector<Formula<AtomicConstraint>>();
 		constraints.addElement(specificConstraint);
 
 		Vector<String> generalizations = new Vector<String>();
-		generalizations.addElement("((U=a + V =a) * U!=V)");
+		generalizations.addElement("((U=a + V=a) * U!=V)");
 
 		assertEquals(generalizations.elementAt(0), constraints.elementAt(0).toString());
 

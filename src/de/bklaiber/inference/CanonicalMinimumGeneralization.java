@@ -730,69 +730,90 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	}
 
-	public Formula<AtomicConstraint> generateSpecificConstraint(Collection<Atom<RelationalAtom>> atomsOfQuery,
-			Collection<Constant> constants) {
+	public Formula<AtomicConstraint> generateSpecificConstraint(RelationalAtom c, Collection<Constant> constants) {
 
-		Collection<Formula<AtomicConstraint>> argsOfClass = new ArrayList<Formula<AtomicConstraint>>();
-		ArrayList<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new ArrayList<Formula<AtomicConstraint>>();
+		Collection<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new ArrayList<Formula<AtomicConstraint>>();
 		Formula<AtomicConstraint> constraint = null;
+		Formula<AtomicConstraint> constraintTemp = null;
+		Boolean predicateMore = false;
 
-		for (Iterator<Atom<RelationalAtom>> iterator = atomsOfQuery.iterator(); iterator.hasNext();) {
-			Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
-
-			Term[] argsOfQueryAtom = ((RelationalAtom) atom).getArguments();
-			elementsOfConstraintsOfClass = generateElementsOfSpecificConstraint(argsOfQueryAtom);
-			argsOfClass.addAll(elementsOfConstraintsOfClass);
-			constraint = generateDisjunctionConstraint(argsOfClass);
-
+		Term[] argsOfQueryAtom = c.getArguments();
+		elementsOfConstraintsOfClass = generateElementsOfSpecificConstraint(argsOfQueryAtom, constants);
+		constraintTemp = generateDisjunctionConstraint(elementsOfConstraintsOfClass);
+		if (c.getPredicate().getArity() > 1) {
+			predicateMore = true;
 		}
 
-		/*if (predicateMore) {
-			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(atomsOfQuery);
-			constraint = new Conjunction<>(constraintTemp, reflexiveNegativeConstraint);
-		} else {
-			constraint = constraintTemp;
-		}*/
-
-		return constraint;
-
-	}
-
-	private ArrayList<Formula<AtomicConstraint>> generateElementsOfSpecificConstraint(Term[] argsOfQueryAtom) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Formula<AtomicConstraint> generateSpecificNegativeConstraint(Collection<Atom<RelationalAtom>> atomsOfQuery,
-			Collection<Constant> constants) {
-
-		Collection<Formula<AtomicConstraint>> argsOfClass = new ArrayList<Formula<AtomicConstraint>>();
-		ArrayList<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new ArrayList<Formula<AtomicConstraint>>();
-		Formula<AtomicConstraint> constraint = null;
-
-		for (Iterator<Atom<RelationalAtom>> iterator = atomsOfQuery.iterator(); iterator.hasNext();) {
-			Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
-
-			Term[] argsOfQueryAtom = ((RelationalAtom) atom).getArguments();
-			elementsOfConstraintsOfClass = generateElementsOfSpecificNegativeConstraint(argsOfQueryAtom);
-			argsOfClass.addAll(elementsOfConstraintsOfClass);
-			constraint = generateConjunctionConstraint(argsOfClass);
-
-		}
-		/*
 		if (predicateMore) {
-			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(atomsOfQuery);
+			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(c.getAtoms());
 			constraint = new Conjunction<>(constraintTemp, reflexiveNegativeConstraint);
 		} else {
 			constraint = constraintTemp;
-		}*/
+		}
+
 		return constraint;
 
 	}
 
-	private ArrayList<Formula<AtomicConstraint>> generateElementsOfSpecificNegativeConstraint(Term[] argsOfQueryAtom) {
-		// TODO Auto-generated method stub
-		return null;
+	private ArrayList<Formula<AtomicConstraint>> generateElementsOfSpecificConstraint(Term[] argsOfQueryAtom,
+			Collection<Constant> constants) {
+
+		ArrayList<Formula<AtomicConstraint>> listOfConstraints = new ArrayList<Formula<AtomicConstraint>>();
+
+		for (int i = 0; i < argsOfQueryAtom.length; i++) {
+			for (Iterator<Constant> iterator = constants.iterator(); iterator.hasNext();) {
+				Constant c = iterator.next();
+				Variable var = new Variable(argsOfQueryAtom[i].toString(), argsOfQueryAtom[i].getType());
+				EqualityConstraint atomicConstraint = new EqualityConstraint(var, c);
+				listOfConstraints.add(atomicConstraint);
+
+			}
+		}
+
+		return listOfConstraints;
+	}
+
+	public Formula<AtomicConstraint> generateSpecificNegativeConstraint(RelationalAtom c,
+			Collection<Constant> constants) {
+
+		Collection<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new ArrayList<Formula<AtomicConstraint>>();
+		Formula<AtomicConstraint> constraint = null;
+		Formula<AtomicConstraint> constraintTemp = null;
+		Boolean predicateMore = false;
+
+		Term[] argsOfQueryAtom = c.getArguments();
+		elementsOfConstraintsOfClass = generateElementsOfSpecificNegativeConstraint(argsOfQueryAtom, constants);
+		constraintTemp = generateConjunctionConstraint(elementsOfConstraintsOfClass);
+
+		if (c.getPredicate().getArity() > 1) {
+			predicateMore = true;
+		}
+
+		if (predicateMore) {
+			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(c.getAtoms());
+			constraint = new Conjunction<>(constraintTemp, reflexiveNegativeConstraint);
+		} else {
+			constraint = constraintTemp;
+		}
+		return constraint;
+
+	}
+
+	private ArrayList<Formula<AtomicConstraint>> generateElementsOfSpecificNegativeConstraint(Term[] argsOfQueryAtom,
+			Collection<Constant> constants) {
+		ArrayList<Formula<AtomicConstraint>> listOfConstraints = new ArrayList<Formula<AtomicConstraint>>();
+
+		for (int i = 0; i < argsOfQueryAtom.length; i++) {
+			for (Iterator<Constant> iterator = constants.iterator(); iterator.hasNext();) {
+				Constant c = iterator.next();
+				Variable var = new Variable(argsOfQueryAtom[i].toString(), argsOfQueryAtom[i].getType());
+				InequalityConstraint atomicConstraint = new InequalityConstraint(var, c);
+				listOfConstraints.add(atomicConstraint);
+
+			}
+		}
+
+		return listOfConstraints;
 	}
 
 	/*
