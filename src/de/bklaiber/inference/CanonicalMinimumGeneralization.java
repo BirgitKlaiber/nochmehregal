@@ -491,7 +491,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				probability = getProbabilitiesOfClass(classification);
 
 				Fraction probabilityOne = getProbabilitiesOfClass(biggestClass);
-				//if there is olny one class: quantified conditional with probability = qualified conditional 
+				//if there is only one class: quantified conditional with probability = qualified conditional 
 				// wenn eine Klasse dann Rückgabe das quantifizierte Konditional mit Wahrscheinlichkeit
 				if (classifiedClasses.size() == 1) {
 					generalizationOfClassOne = generateConditionalForOne(c, probability);
@@ -728,6 +728,71 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		return constraint;
 
+	}
+
+	public Formula<AtomicConstraint> generateSpecificConstraint(Collection<Atom<RelationalAtom>> atomsOfQuery,
+			Collection<Constant> constants) {
+
+		Collection<Formula<AtomicConstraint>> argsOfClass = new ArrayList<Formula<AtomicConstraint>>();
+		ArrayList<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new ArrayList<Formula<AtomicConstraint>>();
+		Formula<AtomicConstraint> constraint = null;
+
+		for (Iterator<Atom<RelationalAtom>> iterator = atomsOfQuery.iterator(); iterator.hasNext();) {
+			Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
+
+			Term[] argsOfQueryAtom = ((RelationalAtom) atom).getArguments();
+			elementsOfConstraintsOfClass = generateElementsOfSpecificConstraint(argsOfQueryAtom);
+			argsOfClass.addAll(elementsOfConstraintsOfClass);
+			constraint = generateDisjunctionConstraint(argsOfClass);
+
+		}
+
+		/*if (predicateMore) {
+			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(atomsOfQuery);
+			constraint = new Conjunction<>(constraintTemp, reflexiveNegativeConstraint);
+		} else {
+			constraint = constraintTemp;
+		}*/
+
+		return constraint;
+
+	}
+
+	private ArrayList<Formula<AtomicConstraint>> generateElementsOfSpecificConstraint(Term[] argsOfQueryAtom) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Formula<AtomicConstraint> generateSpecificNegativeConstraint(Collection<Atom<RelationalAtom>> atomsOfQuery,
+			Collection<Constant> constants) {
+
+		Collection<Formula<AtomicConstraint>> argsOfClass = new ArrayList<Formula<AtomicConstraint>>();
+		ArrayList<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new ArrayList<Formula<AtomicConstraint>>();
+		Formula<AtomicConstraint> constraint = null;
+
+		for (Iterator<Atom<RelationalAtom>> iterator = atomsOfQuery.iterator(); iterator.hasNext();) {
+			Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
+
+			Term[] argsOfQueryAtom = ((RelationalAtom) atom).getArguments();
+			elementsOfConstraintsOfClass = generateElementsOfSpecificNegativeConstraint(argsOfQueryAtom);
+			argsOfClass.addAll(elementsOfConstraintsOfClass);
+			constraint = generateConjunctionConstraint(argsOfClass);
+
+		}
+		/*
+		if (predicateMore) {
+			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(atomsOfQuery);
+			constraint = new Conjunction<>(constraintTemp, reflexiveNegativeConstraint);
+		} else {
+			constraint = constraintTemp;
+		}*/
+		return constraint;
+
+	}
+
+	private ArrayList<Formula<AtomicConstraint>> generateElementsOfSpecificNegativeConstraint(Term[] argsOfQueryAtom) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/*
@@ -1048,6 +1113,10 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		*/
 
 		return isreflexive;
+	}
+
+	private Collection<Constant> getSpecificConstants() {
+		return null;
 	}
 
 	/*

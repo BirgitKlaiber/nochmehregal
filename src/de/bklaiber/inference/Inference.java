@@ -205,4 +205,9 @@ public class Inference {
 		epState.initialize(possibleWorlds, kb);
 
 	}
+
+	public Collection<RelationalConditional> getKb() {
+		return kb;
+	}
+
 }
