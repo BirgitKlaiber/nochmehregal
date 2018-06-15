@@ -199,7 +199,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				}
 
 				//if both of the classes aren´t reflexive
-				//bei zweistelligen Pädikaten Klassen muss immer eine refelxiv sein, der Fall, dass beide nicht refleixv sind, kann da nicht eintreten
+				//bei zweistelligen Pädikaten Klassen muss immer eine reflexiv sein; der Fall, dass beide nicht reflexiv sind, kann da nicht eintreten
 				if (!isReflexive(classificationTwo) && !isReflexive(nextClassification)) {
 					constraintOfFirstClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
 					constraintOfSecondClass = generatePositiveConstraint(atomsOfSecondClass, atomsOfQuery);
@@ -250,6 +250,128 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		return generalization;
 
+	}//endofgeneralizePositive
+
+	public Collection<RelationalConditional> generalizeNegativeNeu(RelationalConditional c,
+			Collection<Collection<RelationalConditional>> classifiedClasses) {
+
+		ArrayList<Collection<RelationalConditional>> classifiedClassesList = new ArrayList<>(classifiedClasses);
+		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
+		Collection<Collection<Atom<RelationalAtom>>> atomsOfSecondClass = null;
+		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
+
+		//if there is only one class: quantified conditional with probability = qualified conditional 
+		if (classifiedClasses.size() == 1) {
+			Iterator<Collection<RelationalConditional>> iteratorOneClass = classifiedClasses.iterator();
+			Collection<RelationalConditional> classificationOne = iteratorOneClass.next();
+			Fraction probabilityOne = getProbabilitiesOfClass(classificationOne);
+			RelationalConditional generalizationOfClass = generateConditionalForOne(c, probabilityOne);
+			generalization.add(generalizationOfClass);
+			System.out.println(generalization.toString());
+		}
+		Iterator<Collection<RelationalConditional>> iteratorTwoClasses = classifiedClasses.iterator();
+		Collection<RelationalConditional> classificationTwo = iteratorTwoClasses.next();
+
+		//if there are only two classes
+		if (classifiedClasses.size() == 2) {
+
+			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = getAtomOfClass(classificationTwo);
+			Fraction probability = getProbabilitiesOfClass(classificationTwo);
+			Fraction probability2 = null;
+			Formula<AtomicConstraint> constraintOfFirstClass = null;
+			Formula<AtomicConstraint> constraintOfSecondClass = null;
+
+			//if the first of the two clsssifications is reflexive
+			if (isReflexive(classificationTwo)) {
+				constraintOfFirstClass = generateReflexiveConstraint(atomsOfQuery);
+				constraintOfSecondClass = generateReflexiveNegativeConstraint(atomsOfQuery);
+			} else {
+				Collection<RelationalConditional> nextClassification = null;
+				if (iteratorTwoClasses.hasNext()) {
+					nextClassification = iteratorTwoClasses.next();
+					probability2 = getProbabilitiesOfClass(nextClassification);
+				}
+
+				if (isReflexive(nextClassification)) {
+
+					constraintOfFirstClass = generateReflexiveNegativeConstraint(atomsOfQuery);
+					constraintOfSecondClass = generateReflexiveConstraint(atomsOfQuery);
+				} else {
+
+					atomsOfSecondClass = getAtomOfClass(nextClassification);
+					//if the second class contains more atoms, then the constraint must be first class positive, second class negativ; i.e. ([ flies(Tweety), flies(Sylvester), flies(Bully), flies(Kirby))] constraint first class (here no contraint, because of Number of elments = 1, second class <X <> Tweety>  
+					if (atomsOfSecondClass.size() > atomsOfClass.size()) {
+						// es wird keine Abfrage auf Anzahl == 1 benoetigt, da es an anderer Stelle abgefragt wird
+						constraintOfSecondClass = generateNegativeConstraint(atomsOfSecondClass, atomsOfQuery);
+						constraintOfFirstClass = generatePositiveConstraint(atomsOfSecondClass, atomsOfQuery);
+					} else {
+						constraintOfFirstClass = generateNegativeConstraint(atomsOfSecondClass, atomsOfQuery);
+						constraintOfSecondClass = generatePositiveConstraint(atomsOfSecondClass, atomsOfQuery);
+					}
+				}
+
+				//if the class only contains one conditional 
+				if (nextClassification.size() == 1) {
+					RelationalConditional con = null;
+					Iterator<RelationalConditional> iterator1 = nextClassification.iterator();
+					if (iterator1.hasNext()) {
+						con = (RelationalConditional) iterator1.next();
+
+					}
+
+					RelationalConditional generalizationOfSecondClass = generateConditionalForOne(con, probability2);
+
+					generalization.add(generalizationOfSecondClass);
+				} else {
+
+					RelationalConditional generalizationOfSecondClass = generateConditional(c, constraintOfSecondClass,
+							probability2);
+
+					generalization.add(generalizationOfSecondClass);
+
+				}
+
+				if (classificationTwo.size() == 1) {
+					RelationalConditional con = null;
+					Iterator<RelationalConditional> iterator2 = classificationTwo.iterator();
+					if (iterator2.hasNext()) {
+						con = (RelationalConditional) iterator2.next();
+
+					}
+
+					RelationalConditional generalizationOfClass = generateConditionalForOne(con, probability);
+
+					generalization.add(generalizationOfClass);
+
+				} else {
+					RelationalConditional generalizationOfClass = generateConditional(c, constraintOfFirstClass,
+							probability);
+
+					generalization.add(generalizationOfClass);
+
+				}
+
+				//if both of the classes aren´t reflexive
+				//bei zweistelligen Pädikaten Klassen muss immer eine reflexiv sein; der Fall, dass beide nicht reflexiv sind, kann da nicht eintreten
+				if (!isReflexive(classificationTwo) && !isReflexive(nextClassification)) {
+					constraintOfFirstClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
+					constraintOfSecondClass = generatePositiveConstraint(atomsOfSecondClass, atomsOfQuery);
+					probability2 = getProbabilitiesOfClass(nextClassification);
+				} else {
+					if (isReflexive(nextClassification)) {
+						//probability2 = getProbabilitiesOfClass(nextClassification);
+						constraintOfSecondClass = generateReflexiveConstraint(atomsOfQuery);
+						constraintOfFirstClass = generateReflexiveNegativeConstraint(atomsOfQuery);
+
+					}
+				}
+			}
+
+		} else {
+
+		}
+
+		return generalization;
 	}
 
 	/**
