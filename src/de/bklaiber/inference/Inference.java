@@ -207,4 +207,8 @@ public class Inference {
 
 	}
 
+	public Collection<RelationalConditional> getKnowledegbase() {
+		return kb;
+	}
+
 }

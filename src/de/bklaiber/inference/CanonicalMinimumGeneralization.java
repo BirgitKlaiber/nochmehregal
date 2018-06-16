@@ -1136,10 +1136,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return isreflexive;
 	}
 
-	private Collection<Constant> getSpecificConstants() {
-		return null;
-	}
-
 	/*
 	 * Tests if a class has the probability -1, which means the probability can not be computed becaus the marginalisation requires a division by zero.
 	 */
@@ -1225,6 +1221,48 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	public Collection<Generalization> getChildGeneralizations() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public Collection<Constant> getSpecificConstants(Collection<RelationalConditional> conditionalsOfKb) {
+
+		Collection<Constant> constantsOfKb = new ArrayList<>();
+
+		//gets all the atoms of the kb
+		for (Iterator<RelationalConditional> iterator1 = conditionalsOfKb.iterator(); iterator1.hasNext();) {
+			RelationalConditional conditional = (RelationalConditional) iterator1.next();
+
+			Collection<Atom<RelationalAtom>> atomsOfCond = new HashSet<>();
+			Collection<Atom<AtomicConstraint>> atomsOfConstraint = new HashSet<>();
+			Collection<Constant> constantsOfCond = new HashSet<Constant>();
+			Collection<Constant> constantsOfConstraint = new HashSet<Constant>();
+
+			//atoms of antecedence and atoms of consequence
+			atomsOfCond = conditional.getAtoms();
+			atomsOfCond.addAll(atomsOfCond);
+
+			//get the specific constants of the conditional
+			for (Iterator<Atom<RelationalAtom>> iterator2 = atomsOfCond.iterator(); iterator2.hasNext();) {
+				Atom<RelationalAtom> atomOfCond = (Atom<RelationalAtom>) iterator2.next();
+				constantsOfCond = ((RelationalAtom) atomOfCond).getConstants();
+				constantsOfKb.addAll(constantsOfCond);
+			}
+
+			//atoms of constraint
+			atomsOfConstraint = conditional.getConstraint().getAtoms();
+			atomsOfConstraint.addAll(atomsOfConstraint);
+
+			//get the specific constants of the constraint
+			for (Iterator<Atom<AtomicConstraint>> iterator3 = atomsOfConstraint.iterator(); iterator3.hasNext();) {
+				Atom<AtomicConstraint> atomOfConstraint = (Atom<AtomicConstraint>) iterator3.next();
+
+				Term t1 = ((AtomicConstraint) atomOfConstraint).getT1();
+				Term t2 = ((AtomicConstraint) atomOfConstraint).getT2();
+
+			}
+
+		}
+
+		return constantsOfKb;
 	}
 
 }//end generalize
