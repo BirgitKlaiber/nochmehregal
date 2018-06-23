@@ -7,6 +7,6 @@ import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.Relation
 public interface Generalization {
 
 	public Collection<RelationalConditional> generalize(RelationalConditional c,
-			Collection<Collection<RelationalConditional>> classification);
+			Collection<Collection<RelationalConditional>> classification, Collection<RelationalConditional> kb);
 
 }

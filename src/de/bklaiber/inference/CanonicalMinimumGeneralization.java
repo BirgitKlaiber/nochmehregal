@@ -55,7 +55,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	 * @return generalization
 	 */
 	public Collection<RelationalConditional> generalize(RelationalConditional c,
-			Collection<Collection<RelationalConditional>> classifiedClasses) {
+			Collection<Collection<RelationalConditional>> classifiedClasses, Collection<RelationalConditional> kb) {
 
 		Collection<RelationalConditional> generalizationNegative = new ArrayList<RelationalConditional>();
 		Collection<RelationalConditional> generalizationPositive = new ArrayList<RelationalConditional>();
@@ -367,10 +367,50 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				}
 			}
 
-		} else {
-
 		}
+		//if there are more than two classes
+		else {
 
+			Formula<AtomicConstraint> constraintOfReflexiveClass = null;
+			//if there is a reflexive Classicfication handle it and remove it from the classifiedClasses
+			for (Iterator<Collection<RelationalConditional>> classificationsMore = classifiedClasses
+					.iterator(); classificationsMore.hasNext();) {
+				Collection<RelationalConditional> classificationM = classificationsMore.next();
+				Fraction probability = getProbabilitiesOfClass(classificationM);
+
+				if (isReflexive(classificationM)) {
+					constraintOfReflexiveClass = generateReflexiveConstraint(atomsOfQuery);
+					classifiedClasses.remove(classificationM);
+					generateConditional(c, constraintOfReflexiveClass, probability);
+				}
+
+			}
+
+			//iterate over the classes which are not reflexive
+			for (Iterator<Collection<RelationalConditional>> classificationsMore2 = classifiedClasses
+					.iterator(); classificationsMore2.hasNext();) {
+				Collection<RelationalConditional> classificationM = classificationsMore2.next();
+				Fraction probability = getProbabilitiesOfClass(classificationM);
+
+				//if the classifiaction contains only one conditional
+				if (classificationM.size() == 1) {
+					RelationalConditional con = null;
+					Iterator<RelationalConditional> iterator1 = classificationM.iterator();
+					if (iterator1.hasNext()) {
+						con = (RelationalConditional) iterator1.next();
+
+					}
+
+					RelationalConditional generalizationOfClass = generateConditionalForOne(con, probability);
+
+					generalization.add(generalizationOfClass);
+				} else {
+
+				}
+
+			}
+
+		} //end else
 		return generalization;
 	}
 
