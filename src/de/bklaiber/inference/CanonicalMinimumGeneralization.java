@@ -1258,6 +1258,12 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				Term t1 = ((AtomicConstraint) atomOfConstraint).getT1();
 				Term t2 = ((AtomicConstraint) atomOfConstraint).getT2();
 
+				if (t1 instanceof Constant) {
+					constantsOfKb.add((Constant) t1);
+				}
+				if (t2 instanceof Constant) {
+					constantsOfKb.add((Constant) t1);
+				}
 			}
 
 		}
