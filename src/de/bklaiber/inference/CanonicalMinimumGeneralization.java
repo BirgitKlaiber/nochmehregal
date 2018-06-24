@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Vector;
 
 import edu.cs.ai.log4KR.logical.syntax.Atom;
 import edu.cs.ai.log4KR.logical.syntax.Conjunction;
@@ -60,11 +61,13 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Collection<RelationalConditional> generalizationNegative = new ArrayList<RelationalConditional>();
 		Collection<RelationalConditional> generalizationPositive = new ArrayList<RelationalConditional>();
 		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
+		Collection<RelationalConditional> condsOfKb = kb;
+
 		GeneralizationAsStringComperator comperator = new GeneralizationAsStringComperator();
 		int comparison = 0;
 
 		generalizationPositive = generalizePositive(c, classifiedClasses);
-		generalizationNegative = generalizeNegative(c, classifiedClasses);
+		generalizationNegative = generalizeNegative(c, classifiedClasses, condsOfKb);
 
 		comparison = comperator.compare(generalizationNegative, generalizationPositive);
 
@@ -253,7 +256,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	}//endofgeneralizePositive
 
 	public Collection<RelationalConditional> generalizeNegativeNeu(RelationalConditional c,
-			Collection<Collection<RelationalConditional>> classifiedClasses) {
+			Collection<Collection<RelationalConditional>> classifiedClasses,
+			Collection<RelationalConditional> condsOfKb) {
 
 		ArrayList<Collection<RelationalConditional>> classifiedClassesList = new ArrayList<>(classifiedClasses);
 		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
@@ -405,7 +409,41 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 					generalization.add(generalizationOfClass);
 				} else {
+					Collection<Constant> constantsOfClass = new Vector<>();
+					Collection<Constant> specificConstants = new Vector<>();
 
+					specificConstants = getSpecificConstants(condsOfKb);
+					Collection<Atom<RelationalAtom>> atomsOfClass = new Vector<>();
+
+					RelationalConditional con = null;
+					Iterator<RelationalConditional> iterator1 = classificationM.iterator();
+					if (iterator1.hasNext()) {
+						con = (RelationalConditional) iterator1.next();
+
+					}
+					//get all the constants of the classification
+					atomsOfClass = con.getAtoms();
+
+					for (Iterator iterator = atomsOfClass.iterator(); iterator.hasNext();) {
+						Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
+						constantsOfClass.addAll(((RelationalAtom) atom).getConstants());
+					}
+					//if the classification contains a specific constant, generate the constraint with specific constants
+					Formula<AtomicConstraint> constraintOfClass = null;
+					for (Iterator<Constant> constantsIterator = specificConstants.iterator(); constantsIterator
+							.hasNext();) {
+						Constant specificConstant = constantsIterator.next();
+						for (Iterator<Constant> iterator = constantsOfClass.iterator(); iterator.hasNext();) {
+							Constant constant = iterator.next();
+							if (constant.equals(specificConstant)) {
+								constraintOfClass = generateSpecificConstraint(c, atomsOfQuery, specificConstants);
+							} else {
+								constraintOfClass = generateSpecificNegativeConstraint(c, atomsOfQuery,
+										specificConstants);
+							}
+						}
+
+					}
 				}
 
 			}
@@ -433,10 +471,12 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	 *            the conditional of the query
 	 * @param classifiedClasses
 	 *            ground instances of the query classified by equal probability
+	 * @param condsOfKb
 	 * @return generalization
 	 */
 	public Collection<RelationalConditional> generalizeNegative(RelationalConditional c,
-			Collection<Collection<RelationalConditional>> classifiedClasses) {
+			Collection<Collection<RelationalConditional>> classifiedClasses,
+			Collection<RelationalConditional> condsOfKb) {
 		//TODO funktioniert nur für den Fall einstelliger Prädikate; für den Fall mehrstelliger Prädikate ergänzen
 		//TODO ordentlich umschreiben
 		ArrayList<Collection<RelationalConditional>> classifiedClassesList = new ArrayList<>(classifiedClasses);
@@ -770,19 +810,27 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	}
 
-	public Formula<AtomicConstraint> generateSpecificConstraint(RelationalAtom c, Collection<Constant> constants) {
+	public Formula<AtomicConstraint> generateSpecificConstraint(RelationalConditional c,
+			Collection<Atom<RelationalAtom>> atomsOfQuery, Collection<Constant> constants) {
 
 		Collection<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new ArrayList<Formula<AtomicConstraint>>();
 		Formula<AtomicConstraint> constraint = null;
 		Formula<AtomicConstraint> constraintTemp = null;
 		Boolean predicateMore = false;
+		Term[] args = null;
 
-		Term[] argsOfQueryAtom = c.getArguments();
-		elementsOfConstraintsOfClass = generateElementsOfSpecificConstraint(argsOfQueryAtom, constants);
-		constraintTemp = generateDisjunctionConstraint(elementsOfConstraintsOfClass);
-		if (c.getPredicate().getArity() > 1) {
-			predicateMore = true;
+		for (Iterator<Atom<RelationalAtom>> iterator = atomsOfQuery.iterator(); iterator.hasNext();) {
+			Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
+
+			if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
+				predicateMore = true;
+			}
+			args = ((RelationalAtom) atom).getArguments();
+
 		}
+
+		elementsOfConstraintsOfClass = generateElementsOfSpecificConstraint(args, constants);
+		constraintTemp = generateDisjunctionConstraint(elementsOfConstraintsOfClass);
 
 		if (predicateMore) {
 			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(c.getAtoms());
@@ -813,21 +861,48 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		return listOfConstraints;
 	}
 
-	public Formula<AtomicConstraint> generateSpecificNegativeConstraint(RelationalAtom c,
-			Collection<Constant> constants) {
+	public Formula<AtomicConstraint> generateSpecificNegativeConstraint(RelationalConditional c,
+			Collection<Atom<RelationalAtom>> atomsOfQuery, Collection<Constant> constants) {
+
+		/*Collection<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new ArrayList<Formula<AtomicConstraint>>();
+		Formula<AtomicConstraint> constraint = null;
+		Formula<AtomicConstraint> constraintTemp = null;
+		Boolean predicateMore = false;
+		*/
+		/*Term[] argsOfQueryAtom = c.getArguments();
+		elementsOfConstraintsOfClass = generateElementsOfSpecificNegativeConstraint(argsOfQueryAtom, constants);
+		constraintTemp = generateConjunctionConstraint(elementsOfConstraintsOfClass);
+		
+		if (c.getPredicate().getArity() > 1) {
+			predicateMore = true;
+		}
+		
+		if (predicateMore) {
+			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(c.getAtoms());
+			constraint = new Conjunction<>(constraintTemp, reflexiveNegativeConstraint);
+		} else {
+			constraint = constraintTemp;
+		}
+		return constraint;*/
 
 		Collection<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new ArrayList<Formula<AtomicConstraint>>();
 		Formula<AtomicConstraint> constraint = null;
 		Formula<AtomicConstraint> constraintTemp = null;
 		Boolean predicateMore = false;
+		Term[] args = null;
 
-		Term[] argsOfQueryAtom = c.getArguments();
-		elementsOfConstraintsOfClass = generateElementsOfSpecificNegativeConstraint(argsOfQueryAtom, constants);
-		constraintTemp = generateConjunctionConstraint(elementsOfConstraintsOfClass);
+		for (Iterator<Atom<RelationalAtom>> iterator = atomsOfQuery.iterator(); iterator.hasNext();) {
+			Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
 
-		if (c.getPredicate().getArity() > 1) {
-			predicateMore = true;
+			if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
+				predicateMore = true;
+			}
+			args = ((RelationalAtom) atom).getArguments();
+
 		}
+
+		elementsOfConstraintsOfClass = generateElementsOfSpecificNegativeConstraint(args, constants);
+		constraintTemp = generateDisjunctionConstraint(elementsOfConstraintsOfClass);
 
 		if (predicateMore) {
 			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(c.getAtoms());
@@ -835,8 +910,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		} else {
 			constraint = constraintTemp;
 		}
-		return constraint;
 
+		return constraint;
 	}
 
 	private ArrayList<Formula<AtomicConstraint>> generateElementsOfSpecificNegativeConstraint(Term[] argsOfQueryAtom,
