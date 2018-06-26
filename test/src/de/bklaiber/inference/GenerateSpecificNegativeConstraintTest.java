@@ -8,6 +8,7 @@ import java.util.Vector;
 import org.junit.Test;
 
 import de.bklaiber.testqueries.AbstractQueryTest;
+import edu.cs.ai.log4KR.logical.syntax.Atom;
 import edu.cs.ai.log4KR.logical.syntax.Formula;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.RelationalAtom;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.constraints.AtomicConstraint;
@@ -15,6 +16,8 @@ import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Constant;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Predicate;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Sort;
 import edu.cs.ai.log4KR.relational.classicalLogic.syntax.signature.Variable;
+import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
+import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalFact;
 
 public class GenerateSpecificNegativeConstraintTest extends AbstractQueryTest {
 
@@ -44,8 +47,11 @@ public class GenerateSpecificNegativeConstraintTest extends AbstractQueryTest {
 
 		constants = new Vector<Constant>();
 		constants.add(a);
+		RelationalConditional c = new RelationalFact(atomUV);
+		Collection<Atom<RelationalAtom>> atoms = new Vector<>();
+		atoms.add(atomUV);
 
-		specificConstraint = generalization.generateSpecificNegativeConstraint(atomUV, constants);
+		specificConstraint = generalization.generateSpecificNegativeConstraint(c, atoms, constants);
 		Vector<Formula<AtomicConstraint>> constraints = new Vector<Formula<AtomicConstraint>>();
 		constraints.addElement(specificConstraint);
 
