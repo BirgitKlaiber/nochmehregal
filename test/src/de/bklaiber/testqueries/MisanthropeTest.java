@@ -62,18 +62,17 @@ public class MisanthropeTest extends AbstractQueryTest {
 	public void checkGeneralizationNegative() {
 		Vector<String> generalizations = new Vector<String>();
 
-		generalizations.addElement("(likes(U,V))[0.5869947844745569]<((U!=a * V!=a) * U!=V)>");
-
-		generalizations.addElement("(likes(U,V))[0.05000001133151919]<((U=a + V=a) * U!=V)>");
-		generalizations.addElement("(likes(U,V))[0.0]<U=V>");
-
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
 				groundInstances);
 		CanonicalMinimumGeneralization generalization = (CanonicalMinimumGeneralization) inference.getGeneralization();
 
-		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
-				generalization.generalizePositive(queries.elementAt(0), classifiedClasses));
+		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(generalization
+				.generalizeNegative(queries.elementAt(0), classifiedClasses, inference.getKnowledegbase()));
+
+		generalizations.addElement("(likes(U,V))[0.0]<U=V>");
+		generalizations.addElement("(likes(U,V))[0.5869947844745569]<(U!=a * V!=a * U!=V)>");
+		generalizations.addElement("(likes(U,V))[0.05000001133151919]<((U=a + V=a) * U!=V)>");
 
 		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
@@ -87,12 +86,9 @@ public class MisanthropeTest extends AbstractQueryTest {
 	@Test
 	public void checkGeneralization() {
 		Vector<String> generalizations = new Vector<String>();
-
 		generalizations.addElement("(likes(U,V))[0.0]<U=V>");
-		generalizations.addElement("(likes(U,V))[0.5869947844745569]<((U=c * V=b + U=b * V=c) * U!=V)>");
-
-		generalizations.addElement(
-				"(likes(U,V))[0.05000001133151919]<((((U=c * V=a + U=b * V=a) + U=a * V=c) + U=a * V=b) * U!=V)>");
+		generalizations.addElement("(likes(U,V))[0.5869947844745569]<(U!=a * V!=a * U!=V)>");
+		generalizations.addElement("(likes(U,V))[0.05000001133151919]<((U=a + V=a) * U!=V)>");
 
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
@@ -100,7 +96,7 @@ public class MisanthropeTest extends AbstractQueryTest {
 		CanonicalMinimumGeneralization generalization = (CanonicalMinimumGeneralization) inference.getGeneralization();
 
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
-				generalization.generalizePositive(queries.elementAt(0), classifiedClasses));
+				generalization.generalize(queries.elementAt(0), classifiedClasses, inference.getKnowledegbase()));
 
 		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());

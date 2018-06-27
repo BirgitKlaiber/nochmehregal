@@ -61,7 +61,7 @@ public class BirdsTest extends AbstractQueryTest {
 		CanonicalMinimumGeneralization generalization = (CanonicalMinimumGeneralization) inference.getGeneralization();
 
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
-				generalization.generalizeNegativeNeu(queries.elementAt(0), classifiedClasses, groundInstances));
+				generalization.generalizeNegative(queries.elementAt(0), classifiedClasses, groundInstances));
 
 		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());

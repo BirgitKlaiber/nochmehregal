@@ -2,8 +2,6 @@ package de.bklaiber.inference;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
@@ -255,7 +253,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	}//endofgeneralizePositive
 
-	public Collection<RelationalConditional> generalizeNegativeNeu(RelationalConditional c,
+	public Collection<RelationalConditional> generalizeNegative(RelationalConditional c,
 			Collection<Collection<RelationalConditional>> classifiedClasses,
 			Collection<RelationalConditional> condsOfKb) {
 
@@ -377,6 +375,37 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 			Formula<AtomicConstraint> constraintOfReflexiveClass = null;
 			//if there is a reflexive Classicfication handle it and remove it from the classifiedClasses
+
+			//Iterator<Collection<RelationalConditional>> classificationsMore = classifiedClasses.iterator();
+
+			/*while (classificationsMore.hasNext()) {
+				Collection<RelationalConditional> classificationM = classificationsMore.next();
+				Fraction probability = getProbabilitiesOfClass(classificationM);
+			
+				if (isReflexive(classificationM)) {
+					constraintOfReflexiveClass = generateReflexiveConstraint(atomsOfQuery);
+			
+					generateConditional(c, constraintOfReflexiveClass, probability);
+				}
+				else{
+					//get the constants of the class and check if there is a specific constant
+					
+					Collection<Constant> constantsOfClass = null;
+					Collection<Constant> specConstants = null;
+					
+					for (Iterator<RelationalConditional> condsIterator = classificationM.iterator(); condsIterator.hasNext();) {
+						RelationalConditional rc = (RelationalConditional) condsIterator.next();
+						Collection<Atom<RelationalAtom>> rcAtoms = rc.getAtoms();
+						for (Iterator<Atom<RelationalAtom>> iterator = rcAtoms.iterator(); iterator.hasNext();) {
+							Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
+							Collection<Constant> consOfAtom = ((RelationalAtom) atom).getConstants();
+							constantsOfClass.addAll(consOfAtom);
+						}
+						
+						
+					}
+				}
+			}*/
 			for (Iterator<Collection<RelationalConditional>> classificationsMore = classifiedClasses
 					.iterator(); classificationsMore.hasNext();) {
 				Collection<RelationalConditional> classificationM = classificationsMore.next();
@@ -384,8 +413,12 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 				if (isReflexive(classificationM)) {
 					constraintOfReflexiveClass = generateReflexiveConstraint(atomsOfQuery);
-					classifiedClasses.remove(classificationM);
-					generateConditional(c, constraintOfReflexiveClass, probability);
+					//classifiedClasses.remove(classificationM);
+					RelationalConditional generalizationOfClass = generateConditional(c, constraintOfReflexiveClass,
+							probability);
+
+					generalization.add(generalizationOfClass);
+
 				}
 
 			}
@@ -409,42 +442,55 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 					generalization.add(generalizationOfClass);
 				} else {
-					Collection<Constant> constantsOfClass = new Vector<>();
-					Collection<Constant> specificConstants = new Vector<>();
+					if (!isReflexive(classificationM)) {
+						Collection<Constant> constantsOfClass = new Vector<>();
+						Collection<Constant> specificConstants = new Vector<>();
+						boolean containsSpecific = false;
 
-					specificConstants = getSpecificConstants(condsOfKb);
-					Collection<Atom<RelationalAtom>> atomsOfClass = new Vector<>();
+						specificConstants = getSpecificConstants(condsOfKb);
 
-					RelationalConditional con = null;
-					Iterator<RelationalConditional> iterator1 = classificationM.iterator();
-					if (iterator1.hasNext()) {
-						con = (RelationalConditional) iterator1.next();
+						Collection<Atom<RelationalAtom>> atomsOfClass = new Vector<>();
 
-					}
-					//get all the constants of the classification
-					atomsOfClass = con.getAtoms();
+						RelationalConditional con = null;
+						Iterator<RelationalConditional> iterator1 = classificationM.iterator();
+						if (iterator1.hasNext()) {
+							con = (RelationalConditional) iterator1.next();
 
-					for (Iterator iterator = atomsOfClass.iterator(); iterator.hasNext();) {
-						Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
-						constantsOfClass.addAll(((RelationalAtom) atom).getConstants());
-					}
-					//if the classification contains a specific constant, generate the constraint with specific constants
-					Formula<AtomicConstraint> constraintOfClass = null;
-					for (Iterator<Constant> constantsIterator = specificConstants.iterator(); constantsIterator
-							.hasNext();) {
-						Constant specificConstant = constantsIterator.next();
-						for (Iterator<Constant> iterator = constantsOfClass.iterator(); iterator.hasNext();) {
-							Constant constant = iterator.next();
-							if (constant.equals(specificConstant)) {
-								constraintOfClass = generateSpecificConstraint(c, atomsOfQuery, specificConstants);
-							} else {
-								constraintOfClass = generateSpecificNegativeConstraint(c, atomsOfQuery,
-										specificConstants);
-							}
 						}
+						//get all the constants of the classification
+						atomsOfClass = con.getAtoms();
 
-					}
-				}
+						for (Iterator<Atom<RelationalAtom>> iterator = atomsOfClass.iterator(); iterator.hasNext();) {
+							Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
+							constantsOfClass.addAll(((RelationalAtom) atom).getConstants());
+						}
+						//if the classification contains a specific constant, generate the constraint with specific constants
+						Formula<AtomicConstraint> constraintOfClass = null;
+						for (Iterator<Constant> constantsIterator = specificConstants.iterator(); constantsIterator
+								.hasNext();) {
+							Constant specificConstant = constantsIterator.next();
+							for (Iterator<Constant> iterator = constantsOfClass.iterator(); iterator.hasNext();) {
+								Constant constant = iterator.next();
+								if (constant.equals(specificConstant)) {
+									//constraintOfClass = generateSpecificConstraint(c, atomsOfQuery, specificConstants);
+									containsSpecific = true;
+								}
+							}
+
+						} //endfor
+
+						if (containsSpecific) {
+							constraintOfClass = generateSpecificConstraint(c, atomsOfQuery, specificConstants);
+						} else {
+							constraintOfClass = generateSpecificNegativeConstraint(c, atomsOfQuery, specificConstants);
+						}
+						RelationalConditional generalizationOfClass = generateConditional(c, constraintOfClass,
+								probability);
+
+						generalization.add(generalizationOfClass);
+
+					} //endif
+				} //endelse
 
 			}
 
@@ -474,7 +520,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	 * @param condsOfKb
 	 * @return generalization
 	 */
-	public Collection<RelationalConditional> generalizeNegative(RelationalConditional c,
+	/*public Collection<RelationalConditional> generalizeNegativeALT(RelationalConditional c,
 			Collection<Collection<RelationalConditional>> classifiedClasses,
 			Collection<RelationalConditional> condsOfKb) {
 		//TODO funktioniert nur für den Fall einstelliger Prädikate; für den Fall mehrstelliger Prädikate ergänzen
@@ -482,43 +528,43 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		ArrayList<Collection<RelationalConditional>> classifiedClassesList = new ArrayList<>(classifiedClasses);
 		Collection<Atom<RelationalAtom>> atomsOfQuery = getAtomsOfQuery(c);
 		Collection<RelationalConditional> generalization = new ArrayList<RelationalConditional>();
-
+	
 		Collection<Collection<Atom<RelationalAtom>>> atomsOfClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
 		Collection<Collection<Atom<RelationalAtom>>> atomsOfBiggestClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
 		Collection<Collection<Atom<RelationalAtom>>> atomsOfTheNextBiggestClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
-
+	
 		RelationalConditional generalizationOfClass = null;
 		RelationalConditional generalizationOfClassOne = null;
 		RelationalConditional generalizationOfClassOneCond = null;
-
+	
 		boolean oneConditional = false;
-
+	
 		Comparator<Collection> compareSize = new Comparator<Collection>() {
-
+	
 			@Override
 			public int compare(Collection o1, Collection o2) {
 				Integer size1 = o1.size();
 				Integer size2 = o2.size();
 				return size2.compareTo(size1);
 			}
-
+	
 		};
-
+	
 		//sorts the classes by size, descendant
 		Collections.sort(classifiedClassesList, compareSize);
 		Iterator<Collection<RelationalConditional>> iterator = classifiedClassesList.iterator();
 		Collection<RelationalConditional> biggestClass = iterator.next();
 		Fraction probability = getProbabilitiesOfClass(biggestClass);
-
+	
 		//if the size of the biggest class smaller than the sum of the sizes of the other classes than: negative constraint for biggest class with all elements of the other classes
 		//else positive constraint 
 		//for the smaller classes positive constraints
-
+	
 		int numberOfElements = 0;
-
+	
 		while (iterator.hasNext()) {
 			Collection<RelationalConditional> classification = iterator.next();
-
+	
 			if (!isReflexive(classification)) {
 				numberOfElements = numberOfElements + classification.size();
 			}
@@ -526,16 +572,16 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				oneConditional = true;
 			}
 		}
-
+	
 		Collections.sort(classifiedClassesList, compareSize);
 		iterator = classifiedClassesList.iterator();
 		biggestClass = iterator.next();
-
+	
 		//if the biggest and first class is not reflexive and the probability isn´t impossible to calculate f.e. because there is a division by zero
 		//and the number of elements in the smaller classes is smaller than the size of the biggest class then get all the elements of the smaller
 		//classes and create an conjunction of Inequality Constraints using the constants of the conditionals of the smaller classes 
 		if (!isReflexive(biggestClass) && !isImpossible(biggestClass) && numberOfElements < biggestClass.size()) {
-
+	
 			Formula<AtomicConstraint> reflexiveconstraintOfBiggestClass = null;
 			//get the atoms to generate the negative constraint for the biggest class, using the atoms of all the other classes 
 			while (iterator.hasNext()) {
@@ -546,9 +592,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					reflexiveconstraintOfBiggestClass = generateReflexiveConstraint(atomsOfQuery);
 				}
 			}
-
+	
 			Formula<AtomicConstraint> constraintOfBiggestClass = null;
-
+	
 			if (!atomsOfClass.isEmpty()) {
 				constraintOfBiggestClass = generateNegativeConstraint(atomsOfClass, atomsOfQuery);
 				if (reflexiveconstraintOfBiggestClass != null) {
@@ -557,19 +603,19 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			} else {
 				constraintOfBiggestClass = generateReflexiveNegativeConstraint(atomsOfQuery);
 			}
-
+	
 			if (!oneConditional) {
 				generalizationOfClass = generateConditional(c, constraintOfBiggestClass, probability);
 				generalization.add(generalizationOfClass);
 			}
-
+	
 			//look ad the second class of the list
 			iterator = classifiedClassesList.iterator();
 			Collection<RelationalConditional> classOne = iterator.next();
 			while (iterator.hasNext()) {
 				Collection<RelationalConditional> classification = iterator.next();
 				probability = getProbabilitiesOfClass(classification);
-
+	
 				Fraction probabilityOne = getProbabilitiesOfClass(biggestClass);
 				//if there is only one class: quantified conditional with probability = qualified conditional 
 				// wenn eine Klasse dann Rückgabe das quantifizierte Konditional mit Wahrscheinlichkeit
@@ -577,7 +623,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					generalizationOfClassOne = generateConditionalForOne(c, probability);
 					generalization.add(generalizationOfClassOne);
 				}
-
+	
 				//if the class only contains one conditional 
 				if (classification.size() == 1) {
 					oneConditional = true;
@@ -590,36 +636,36 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					generalizationOfClassOneCond = generateConditionalForOne(con, probability);
 					generalization.add(generalizationOfClassOneCond);
 				}
-
+	
 				Formula<AtomicConstraint> constraintOfClass = null;
 				if (isReflexive(classification)) {
 					constraintOfClass = generateReflexiveConstraint(atomsOfQuery);
 				} else {
 					constraintOfClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
 				}
-
+	
 				if (!oneConditional) {
 					generalizationOfClass = generateConditional(c, constraintOfClass, probability);
 					generalization.add(generalizationOfClass);
 				}
 			}
 		}
-
+	
 		//if the biggest class is reflexive, there will be no more reflexive classes
 		//generate a reflexive conditional for the biggest class 
 		if (isReflexive(biggestClass) && classifiedClassesList.size() > 2) {
-
+	
 			atomsOfBiggestClass.addAll(getAtomOfClass(biggestClass));
 			Formula<AtomicConstraint> constraintOfClass = null;
 			constraintOfClass = generateReflexiveConstraint(atomsOfQuery);
 			generalizationOfClass = generateConditional(c, constraintOfClass, probability);
 			generalization.add(generalizationOfClass);
-
+	
 			//test if the next biggest class has more elements than the other classes and the generate a negative constraint with
 			//the elements of the other classes, generate a positive constraint for each other class
 			Collection<RelationalConditional> nextBiggestClass = iterator.next();
 			atomsOfTheNextBiggestClass.addAll(getAtomOfClass(nextBiggestClass));
-
+	
 			numberOfElements = 0;
 			while (iterator.hasNext()) {
 				Collection<RelationalConditional> classification = iterator.next();
@@ -627,47 +673,47 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			}
 			atomsOfClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
 			if (numberOfElements < nextBiggestClass.size()) {
-
+	
 				while (iterator.hasNext()) {
 					Collection<RelationalConditional> classification = iterator.next();
 					if (!isReflexive(classification) && !isImpossible(classification)) {
 						atomsOfClass.addAll(getAtomOfClass(classification));
-
+	
 					}
-
+	
 				}
-
+	
 				Formula<AtomicConstraint> constraintOfNextBiggestClass = null;
 				constraintOfNextBiggestClass = generateNegativeConstraint(atomsOfClass, atomsOfQuery);
-
+	
 				generalizationOfClass = generateConditional(c, constraintOfNextBiggestClass, probability);
 				generalization.add(generalizationOfClass);
-
+	
 				while (iterator.hasNext()) {
 					Collection<RelationalConditional> classification = iterator.next();
 					atomsOfClass = new ArrayList<Collection<Atom<RelationalAtom>>>();
 					atomsOfClass.addAll(getAtomOfClass(classification));
-
+	
 					//Formula<AtomicConstraint> constraintOfClass = null;
 					if (isReflexive(classification)) {
 						constraintOfClass = generateReflexiveConstraint(atomsOfQuery);
 					} else {
 						constraintOfClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
 					}
-
+	
 					generalizationOfClass = generateConditional(c, constraintOfClass, probability);
 					generalization.add(generalizationOfClass);
 				}
-
+	
 			}
 		}
-
+	
 		if (numberOfElements == biggestClass.size()) {
 			generalizePositive(c, classifiedClasses);
 		}
 		return generalization;
 	}
-
+	*/
 	public Formula<AtomicConstraint> generateReflexiveConstraint(Collection<Atom<RelationalAtom>> atomsOfQuery) {
 
 		Collection<Formula<AtomicConstraint>> argsOfClass = new ArrayList<Formula<AtomicConstraint>>();
@@ -902,7 +948,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		}
 
 		elementsOfConstraintsOfClass = generateElementsOfSpecificNegativeConstraint(args, constants);
-		constraintTemp = generateDisjunctionConstraint(elementsOfConstraintsOfClass);
+		constraintTemp = generateConjunctionConstraint(elementsOfConstraintsOfClass);
 
 		if (predicateMore) {
 			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(c.getAtoms());
@@ -1364,20 +1410,24 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 			//atoms of constraint
 			atomsOfConstraint = conditional.getConstraint().getAtoms();
-			atomsOfConstraint.addAll(atomsOfConstraint);
+			if (atomsOfConstraint != null) {
+				atomsOfConstraint.addAll(atomsOfConstraint);
+			}
 
 			//get the specific constants of the constraint
-			for (Iterator<Atom<AtomicConstraint>> iterator3 = atomsOfConstraint.iterator(); iterator3.hasNext();) {
-				Atom<AtomicConstraint> atomOfConstraint = (Atom<AtomicConstraint>) iterator3.next();
+			if (atomsOfConstraint != null) {
+				for (Iterator<Atom<AtomicConstraint>> iterator3 = atomsOfConstraint.iterator(); iterator3.hasNext();) {
+					Atom<AtomicConstraint> atomOfConstraint = (Atom<AtomicConstraint>) iterator3.next();
 
-				Term t1 = ((AtomicConstraint) atomOfConstraint).getT1();
-				Term t2 = ((AtomicConstraint) atomOfConstraint).getT2();
+					Term t1 = ((AtomicConstraint) atomOfConstraint).getT1();
+					Term t2 = ((AtomicConstraint) atomOfConstraint).getT2();
 
-				if (t1 instanceof Constant) {
-					constantsOfKb.add((Constant) t1);
-				}
-				if (t2 instanceof Constant) {
-					constantsOfKb.add((Constant) t1);
+					if (t1 instanceof Constant) {
+						constantsOfKb.add((Constant) t1);
+					}
+					if (t2 instanceof Constant) {
+						constantsOfKb.add((Constant) t1);
+					}
 				}
 			}
 

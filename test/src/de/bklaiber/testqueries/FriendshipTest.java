@@ -37,8 +37,8 @@ public class FriendshipTest extends AbstractQueryTest {
 	public void checkGeneralizationNegative() {
 		Vector<String> generalizations = new Vector<String>();
 
-		generalizations.addElement("(likes(U,V))[0.6193173107763108]<U!=V>");
 		generalizations.addElement("(likes(U,V))[0.0]<U=V>");
+		generalizations.addElement("(likes(U,V))[0.6193173107763108]<U!=V>");
 
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
