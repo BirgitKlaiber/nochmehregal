@@ -762,7 +762,10 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Formula<AtomicConstraint> constraint = null;
 
 		Iterator<Formula<AtomicConstraint>> equiCons = argsOfClass.iterator();
-		constraint = equiCons.next();
+		if (equiCons.hasNext()) {
+			constraint = equiCons.next();
+		}
+
 		if (!(argsOfClass.size() > 1)) {
 
 			return constraint;
@@ -774,6 +777,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			constraint = constraint.and(cons);
 
 		}
+
 		return constraint;
 
 	}
@@ -786,7 +790,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Formula<AtomicConstraint> constraint = null;
 
 		Iterator<Formula<AtomicConstraint>> cons = argsOfClass.iterator();
-		constraint = cons.next();
+		if (cons.hasNext()) {
+			constraint = cons.next();
+		}
 		if (!(argsOfClass.size() > 1)) {
 
 			return constraint;
@@ -1185,7 +1191,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			RelationalConditional conditional = (RelationalConditional) iterator1.next();
 
 			Collection<Atom<RelationalAtom>> atomsOfCond = new HashSet<>();
-			Collection<Atom<AtomicConstraint>> atomsOfConstraint = new HashSet<>();
+			Collection<Atom<AtomicConstraint>> atomsOfConstraint = null;
 			Collection<Constant> constantsOfCond = new HashSet<Constant>();
 			Collection<Constant> constantsOfConstraint = new HashSet<Constant>();
 
@@ -1201,7 +1207,10 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			}
 
 			//atoms of constraint
-			atomsOfConstraint = conditional.getConstraint().getAtoms();
+			if (conditional.getConstraint() != null) {
+				atomsOfConstraint = conditional.getConstraint().getAtoms();
+			}
+
 			if (atomsOfConstraint != null) {
 				atomsOfConstraint.addAll(atomsOfConstraint);
 			}
