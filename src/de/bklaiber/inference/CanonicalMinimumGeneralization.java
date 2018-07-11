@@ -125,6 +125,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Iterator<Collection<RelationalConditional>> iteratorTwoClasses = classifiedClasses.iterator();
 		Collection<RelationalConditional> classificationTwo = iteratorTwoClasses.next();
 
+		System.out.println(classifiedClasses.size());
+		System.out.println(classifiedClasses.toString());
 		//if there are only two classes
 		if (classifiedClasses.size() == 2) {
 
@@ -216,7 +218,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			}
 
 		} else {
-
+			//there are more than two classes
 			for (Iterator<Collection<RelationalConditional>> iterator = classifiedClasses.iterator(); iterator
 					.hasNext();) {
 				Collection<RelationalConditional> classification = iterator.next();
@@ -240,6 +242,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				if (isReflexive(classification)) {
 					constraintOfClass = generateReflexiveConstraint(atomsOfQuery);
 				} else {
+
 					constraintOfClass = generatePositiveConstraint(atomsOfClass, atomsOfQuery);
 				}
 				RelationalConditional generalizationOfClass = generateConditional(c, constraintOfClass, probability);
@@ -401,7 +404,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 				if (isReflexive(classificationM)) {
 					constraintOfReflexiveClass = generateReflexiveConstraint(atomsOfQuery);
-					//classifiedClasses.remove(classificationM);
+
 					RelationalConditional generalizationOfClass = generateConditional(c, constraintOfReflexiveClass,
 							probability);
 
@@ -417,7 +420,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				Collection<RelationalConditional> classificationM = classificationsMore2.next();
 				Fraction probability = getProbabilitiesOfClass(classificationM);
 
-				//if the classifiaction contains only one conditional
+				//if the classification contains only one conditional
 				if (classificationM.size() == 1) {
 					RelationalConditional con = null;
 					Iterator<RelationalConditional> iterator1 = classificationM.iterator();
@@ -460,7 +463,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 							for (Iterator<Constant> iterator = constantsOfClass.iterator(); iterator.hasNext();) {
 								Constant constant = iterator.next();
 								if (constant.equals(specificConstant)) {
-									//constraintOfClass = generateSpecificConstraint(c, atomsOfQuery, specificConstants);
+
 									containsSpecific = true;
 								}
 							}
@@ -532,7 +535,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	 * @param atomsOfQuery
 	 * @return constraint
 	 */
-	private Formula<AtomicConstraint> generatePositiveConstraint(
+	private Formula<AtomicConstraint> generatePositiveConstraintAlt(
 			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass, Collection<Atom<RelationalAtom>> atomsOfQuery) {
 
 		Collection<Formula<AtomicConstraint>> argsOfClass = new ArrayList<Formula<AtomicConstraint>>();
@@ -540,6 +543,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Formula<AtomicConstraint> constraint = null;
 		Formula<AtomicConstraint> constraintTemp = null;
 		boolean predicateMore = false;
+
+		//TODO an dieser Stelle muss unterschieden werden, ob es sich um eine atomare Formel oder eine zusammengesetzte Formel handelt, bei atomarer Formel enthält atomOfConditional nur ein Element, dann bleibt alles, ansosten muss man  
 
 		//get the arguments for each conditional
 		//take each collection for the conditional
@@ -557,17 +562,136 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 						Term[] argsOfQueryAtom = ((RelationalAtom) atomOfQuery).getArguments();
 						Term[] argsOfConditional = ((RelationalAtom) atom).getArguments();
-						elementsOfConstraintsOfClass = generateElementsOfConstraint(argsOfConditional, argsOfQueryAtom);
+
+						//elementsOfConstraintsOfClass = generateElementsOfConstraint(argsOfConditional, argsOfQueryAtom);
 						argsOfClass.addAll(elementsOfConstraintsOfClass);
-						if (argsOfClass.size() > 1) {
-							constraintTemp = generateDisjunctionConstraint(argsOfClass);
-						}
+						System.out.println("elementsofConstraint" + argsOfClass.toString());
+
 					}
 
+					if (argsOfClass.size() > 1) {
+						constraintTemp = generateDisjunctionConstraint(argsOfClass);
+						System.out.println("constemp" + constraintTemp.toString());
+					}
 					if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
 						predicateMore = true;
 					}
 
+				}
+
+			}
+
+		}
+
+		if (predicateMore) {
+			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(atomsOfQuery);
+			constraint = new Conjunction<>(constraintTemp, reflexiveNegativeConstraint);
+		} else {
+			constraint = constraintTemp;
+		}
+		return constraint;
+	}
+
+	/**
+	 * Generates the constraint for the positive generalization,
+	 * 
+	 * @param atomsOfClass
+	 * @param atomsOfQuery
+	 * @return constraint
+	 */
+	private Formula<AtomicConstraint> generatePositiveConstraint(
+			Collection<Collection<Atom<RelationalAtom>>> atomsOfClass, Collection<Atom<RelationalAtom>> atomsOfQuery) {
+
+		Collection<Formula<AtomicConstraint>> argsOfClass = new HashSet<Formula<AtomicConstraint>>();
+		Collection<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new HashSet<Formula<AtomicConstraint>>();
+		Formula<AtomicConstraint> constraint = null;
+		Formula<AtomicConstraint> constraintTemp = null;
+		boolean predicateMore = false;
+
+		//TODO an dieser Stelle muss unterschieden werden, ob es sich um eine atomare Formel oder eine zusammengesetzte Formel handelt, bei atomarer Formel enthält atomOfConditional nur ein Element, dann bleibt alles, ansosten muss man  
+
+		//if the Query is an atomic formula
+		//get the arguments for each conditional
+		//take each collection for the conditional
+		for (Iterator<Collection<Atom<RelationalAtom>>> atoms = atomsOfClass.iterator(); atoms.hasNext();) {
+			Collection<Atom<RelationalAtom>> atomOfCondtional = atoms.next();
+			//take each atom of each conditional
+			if (atomOfCondtional.size() == 1) {
+
+				for (Iterator<Atom<RelationalAtom>> element = atomOfCondtional.iterator(); element.hasNext();) {
+					Atom<RelationalAtom> atom = (Atom<RelationalAtom>) element.next();
+					//get the arguments of each atom of the conditional
+					for (Iterator<Atom<RelationalAtom>> iteratorOfQuery = atomsOfQuery.iterator(); iteratorOfQuery
+							.hasNext();) {
+						Atom<RelationalAtom> atomOfQuery = (Atom<RelationalAtom>) iteratorOfQuery.next();
+
+						if (((RelationalAtom) atom).getPredicate()
+								.equals(((RelationalAtom) atomOfQuery).getPredicate())) {
+
+							Term[] argsOfQueryAtom = ((RelationalAtom) atomOfQuery).getArguments();
+							Term[] argsOfConditional = ((RelationalAtom) atom).getArguments();
+
+							elementsOfConstraintsOfClass = generateElementsOfConstraint(argsOfConditional,
+									argsOfQueryAtom);
+							argsOfClass.addAll(elementsOfConstraintsOfClass);
+
+							//Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(argsOfClass);
+							//listOfConstraints.add(conjunction);
+							System.out.println("elementsofConstraint" + argsOfClass.toString());
+							System.out.println("argsofclass" + argsOfClass.toString());
+
+						}
+
+						if (argsOfClass.size() > 1) {
+							constraintTemp = generateDisjunctionConstraint(argsOfClass);
+							System.out.println("constemp" + constraintTemp.toString());
+						}
+						if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
+							predicateMore = true;
+						}
+
+					}
+
+				}
+
+			} else {
+
+				//if the query is a composed formula
+				ArrayList<Formula<AtomicConstraint>> listOfConstraints = new ArrayList<>();
+				for (Iterator<Atom<RelationalAtom>> iteratorOfQuery = atomsOfQuery.iterator(); iteratorOfQuery
+						.hasNext();) {
+					Atom<RelationalAtom> atomOfQuery = (Atom<RelationalAtom>) iteratorOfQuery.next();
+
+					for (Iterator<Atom<RelationalAtom>> element = atomOfCondtional.iterator(); element.hasNext();) {
+						Atom<RelationalAtom> atom = (Atom<RelationalAtom>) element.next();
+						//get the arguments of each atom of the conditional
+						if (((RelationalAtom) atom).getPredicate()
+								.equals(((RelationalAtom) atomOfQuery).getPredicate())) {
+
+							Term[] argsOfQueryAtom = ((RelationalAtom) atomOfQuery).getArguments();
+							Term[] argsOfConditional = ((RelationalAtom) atom).getArguments();
+
+							elementsOfConstraintsOfClass = generateElementsOfFormulaConstraint(argsOfConditional,
+									argsOfQueryAtom);
+
+							argsOfClass.addAll(elementsOfConstraintsOfClass);
+
+							System.out.println("elementsofConstraint" + elementsOfConstraintsOfClass.toString());
+							System.out.println("argsofclass" + argsOfClass.toString());
+							Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(argsOfClass);
+							listOfConstraints.add(conjunction);
+							System.out.println("listOfConstraints" + listOfConstraints.toString());
+
+						}
+						if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
+							predicateMore = true;
+						}
+
+					}
+					if (argsOfClass.size() > 1) {
+						constraintTemp = generateDisjunctionConstraint(listOfConstraints);
+						System.out.println("constemp" + constraintTemp.toString());
+					}
 				}
 
 			}
@@ -760,7 +884,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	private Formula<AtomicConstraint> generateConjunctionConstraint(Collection<Formula<AtomicConstraint>> argsOfClass) {
 
 		Formula<AtomicConstraint> constraint = null;
-
 		Iterator<Formula<AtomicConstraint>> equiCons = argsOfClass.iterator();
 		if (equiCons.hasNext()) {
 			constraint = equiCons.next();
@@ -952,7 +1075,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			Term[] argsOfQueryAtom) {
 
 		ArrayList<Formula<AtomicConstraint>> listOfConstraints = new ArrayList<Formula<AtomicConstraint>>();
-		Collection<Formula<AtomicConstraint>> listOfEqualityConstraints = new ArrayList<Formula<AtomicConstraint>>();
+		ArrayList<Formula<AtomicConstraint>> listOfEqualityConstraints = new ArrayList<Formula<AtomicConstraint>>();
 
 		for (int i = 0; i < argsOfCond.length; i++) {
 
@@ -969,6 +1092,33 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		//generate the negative reflexive Constraint
 
 		return listOfConstraints;
+	}
+
+	/**
+	 * Creates an EqualityConstraint using the variables of the query and
+	 * constants of the generated conditionals.
+	 */
+	private HashSet<Formula<AtomicConstraint>> generateElementsOfFormulaConstraint(Term[] argsOfCond,
+			Term[] argsOfQueryAtom) {
+
+		//ArrayList<Formula<AtomicConstraint>> listOfConstraints = new ArrayList<Formula<AtomicConstraint>>();
+		HashSet<Formula<AtomicConstraint>> setOfEqualityConstraints = new HashSet<Formula<AtomicConstraint>>();
+
+		for (int i = 0; i < argsOfCond.length; i++) {
+
+			Variable var = new Variable(argsOfQueryAtom[i].toString(), argsOfQueryAtom[i].getType());
+			Constant cons = new Constant(argsOfCond[i].toString(), argsOfCond[i].getType());
+			EqualityConstraint equalConstraint = new EqualityConstraint(var, cons);
+			setOfEqualityConstraints.add(equalConstraint);
+
+		}
+
+		//Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(listOfEqualityConstraints);
+		//listOfConstraints.add(conjunction);
+
+		//generate the negative reflexive Constraint
+
+		return setOfEqualityConstraints;
 	}
 
 	/**
@@ -1040,7 +1190,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	 * Test if a class is reflexive (i.e. likes(a, a), likes (b, b), likes (c,
 	 * c))
 	 */
-	public boolean isReflexive(Collection<RelationalConditional> classifiedClass) {
+	public boolean isReflexiveAlt(Collection<RelationalConditional> classifiedClass) {
 
 		boolean isreflexive = true;
 
@@ -1089,8 +1239,60 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	}
 
 	/**
+	 * Test if a class is reflexive (i.e. likes(a, a), likes (b, b), likes (c,
+	 * c))
+	 */
+	public boolean isReflexive(Collection<RelationalConditional> classifiedClass) {
+
+		boolean isreflexive = false;
+
+		//if for each Relational Conditionals the constants are equal and the computed probability= 0.0 then the class is reflexive
+		//for instance likes(a,a), likes(b,b), likes(c,c)
+
+		//for each of the conditionals of the class get the atoms 
+		//for instance likes(a,a), likes(b,b), likes(c,c)
+		for (Iterator<RelationalConditional> iterator = classifiedClass.iterator(); iterator.hasNext();) {
+			RelationalConditional relationalConditional = (RelationalConditional) iterator.next();
+			Fraction prob = relationalConditional.getProbability();
+			Double dprob = prob.toFloatingPoint();
+			Collection<Atom<RelationalAtom>> atoms = new ArrayList<Atom<RelationalAtom>>();
+			atoms = relationalConditional.getAtoms();
+			//for each atom get the terms
+			for (Iterator<Atom<RelationalAtom>> iterator2 = atoms.iterator(); iterator2.hasNext();) {
+				Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator2.next();
+				Term[] arguments = ((RelationalAtom) atom).getArguments();
+				if (arguments.length > 1) {
+					isreflexive = true;
+
+				}
+				for (int i = 0; i < arguments.length - 1; i++) {
+
+					if (!(arguments[0].equals(arguments[i + 1]))) {
+
+						isreflexive = false;
+
+					}
+
+				}
+				/*if (dprob != 0.0 && isreflexive) {
+					isreflexive = false;
+				}*/
+
+			}
+		}
+
+		/*if ((getProbabilitiesOfClass(classifiedClass)).toFloatingPoint() == 0.0)
+			return true;
+		else
+			return false;
+		*/
+
+		return isreflexive;
+	}
+
+	/**
 	 * Tests if a class has the probability -1, which means the probability can
-	 * not be computed becaus the marginalisation requires a division by zero.
+	 * not be computed because the marginalisation requires a division by zero.
 	 */
 	private boolean isImpossible(Collection<RelationalConditional> classifiedClass) {
 		if ((getProbabilitiesOfClass(classifiedClass)).toFloatingPoint() == -1)

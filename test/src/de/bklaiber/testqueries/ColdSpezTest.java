@@ -35,9 +35,11 @@ public class ColdSpezTest extends AbstractQueryTest {
 	public void checkGeneralizationPositive() {
 		Vector<String> generalizations = new Vector<String>();
 
-		generalizations.addElement("(contact(X,anna) * cold(anna))[0.9500040196627286]");
-		generalizations.addElement("(contact(X,Y) * cold(Y))[0]<((X=bob * Y=carl) + (X=carl * Y=bob)) * X!=Y>");
-		generalizations.addElement("(contact(X,Y) * cold(Y))[0]< X!=Y>");
+		generalizations.addElement(
+				"(contact(X,Y) * cold(Y))[0.02068521355652176]<((X=bob * Y=carl) + (X=carl * Y=bob)) * X!=Y>");
+		generalizations.addElement(
+				"(contact(X,Y) * cold(Y))[0.3588]<((((X=carl + Y=anna) + (X=anna * Y=carl)) + X=anna * Y=bob) + X=bob * Y=anna)>");
+		generalizations.addElement("(contact(X,Y) * cold(Y))[0.0]< X=Y>");
 
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),

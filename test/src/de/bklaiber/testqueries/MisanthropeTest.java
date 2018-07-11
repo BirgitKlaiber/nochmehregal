@@ -35,10 +35,10 @@ public class MisanthropeTest extends AbstractQueryTest {
 	public void checkGeneralizationPositive() {
 		Vector<String> generalizations = new Vector<String>();
 
-		generalizations.addElement("(likes(U,V))[0.5869947844745569]<((U=c * V=b + U=b * V=c) * U!=V)>");
+		generalizations.addElement("(likes(U,V))[0.5869947844745569]<((U=b * V=c + U=c * V=b) * U!=V)>");
 
 		generalizations.addElement(
-				"(likes(U,V))[0.05000001133151919]<((((U=c * V=a + U=b * V=a) + U=a * V=c) + U=a * V=b) * U!=V)>");
+				"(likes(U,V))[0.05000001133151919]<((((U=c * V=a + U=a * V=c) + U=a * V=b) + U=b * V=a) * U!=V)>");
 		generalizations.addElement("(likes(U,V))[0.0]<U=V>");
 
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));

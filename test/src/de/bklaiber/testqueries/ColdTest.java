@@ -35,10 +35,9 @@ public class ColdTest extends AbstractQueryTest {
 	public void checkGeneralizationPositive() {
 		Vector<String> generalizations = new Vector<String>();
 
-		generalizations.addElement(
-				"(contact(X,Y) * cold(Y))[0]<((((((X=anna * Y=bob) + (X=carl * Y=bob)) + (X=bob * Y=anna)) + (X=anna * Y=carl)) + (X=bob * Y=carl)) + (X=carl * Y=anna)) * X!=Y>");
+		generalizations.addElement("(contact(X,Y) * cold(Y))[0.008090976869599835]<X=Y>");
 
-		generalizations.addElement("(contact(X,Y) * cold(Y))[0]<* X!=Y>");
+		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752275151685307]<X!=Y>");
 
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
@@ -68,8 +67,8 @@ public class ColdTest extends AbstractQueryTest {
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(generalization
 				.generalizeNegative(queries.elementAt(0), classifiedClasses, inference.getKnowledegbase()));
 
-		generalizations.addElement("(contact(X,Y) * cold(Y))[0]<X=Y>");
-		generalizations.addElement("(contact(X,Y) * cold(Y))[0]<X!=Y>");
+		generalizations.addElement("(contact(X,Y) * cold(Y))[0.008090976869599835]<X=Y>");
+		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752275151685307]<X!=Y>");
 
 		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
@@ -82,8 +81,8 @@ public class ColdTest extends AbstractQueryTest {
 	@Test
 	public void checkGeneralization() {
 		Vector<String> generalizations = new Vector<String>();
-		generalizations.addElement("(contact(X,Y) * cold(Y))[0]<X=Y>");
-		generalizations.addElement("(contact(X,Y) * cold(Y))[0]<(X!=Y>");
+		generalizations.addElement("(contact(X,Y) * cold(Y))[0.008090976869599835]<X=Y>");
+		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752275151685307]<X!=Y>");
 
 		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
@@ -95,7 +94,6 @@ public class ColdTest extends AbstractQueryTest {
 
 		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
-		assertEquals(generalizations.elementAt(2), generalizedClasses.elementAt(2).toString());
 		assertEquals(generalizations.size(), generalizedClasses.size());
 	}
 
