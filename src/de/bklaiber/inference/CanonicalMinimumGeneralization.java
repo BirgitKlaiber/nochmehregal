@@ -125,7 +125,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Iterator<Collection<RelationalConditional>> iteratorTwoClasses = classifiedClasses.iterator();
 		Collection<RelationalConditional> classificationTwo = iteratorTwoClasses.next();
 
-		System.out.println(classifiedClasses.size());
 		System.out.println(classifiedClasses.toString());
 		//if there are only two classes
 		if (classifiedClasses.size() == 2) {
@@ -251,7 +250,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			}
 
 		}
-
+		System.out.println("generalisation" + generalization.toString());
 		return generalization;
 
 	}//endofgeneralizePositive
@@ -604,6 +603,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		Collection<Formula<AtomicConstraint>> argsOfClass = new HashSet<Formula<AtomicConstraint>>();
 		Collection<Formula<AtomicConstraint>> elementsOfConstraintsOfClass = new HashSet<Formula<AtomicConstraint>>();
+		ArrayList<Formula<AtomicConstraint>> listOfConjunctions = new ArrayList<>();
+		ArrayList<Formula<AtomicConstraint>> listOfConstraints = new ArrayList<>();
 		Formula<AtomicConstraint> constraint = null;
 		Formula<AtomicConstraint> constraintTemp = null;
 		boolean predicateMore = false;
@@ -637,8 +638,8 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 							//Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(argsOfClass);
 							//listOfConstraints.add(conjunction);
-							System.out.println("elementsofConstraint" + argsOfClass.toString());
-							System.out.println("argsofclass" + argsOfClass.toString());
+							System.out.println("elementsofConstraintif" + argsOfClass.toString());
+							System.out.println("argsofclassif" + argsOfClass.toString());
 
 						}
 
@@ -657,14 +658,54 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			} else {
 
 				//if the query is a composed formula
-				ArrayList<Formula<AtomicConstraint>> listOfConstraints = new ArrayList<>();
-				for (Iterator<Atom<RelationalAtom>> iteratorOfQuery = atomsOfQuery.iterator(); iteratorOfQuery
+
+				/*for (Iterator<Atom<RelationalAtom>> iteratorOfQuery = atomsOfQuery.iterator(); iteratorOfQuery
 						.hasNext();) {
 					Atom<RelationalAtom> atomOfQuery = (Atom<RelationalAtom>) iteratorOfQuery.next();
-
+				
 					for (Iterator<Atom<RelationalAtom>> element = atomOfCondtional.iterator(); element.hasNext();) {
 						Atom<RelationalAtom> atom = (Atom<RelationalAtom>) element.next();
 						//get the arguments of each atom of the conditional
+						if (((RelationalAtom) atom).getPredicate()
+								.equals(((RelationalAtom) atomOfQuery).getPredicate())) {
+				
+							Term[] argsOfQueryAtom = ((RelationalAtom) atomOfQuery).getArguments();
+							Term[] argsOfConditional = ((RelationalAtom) atom).getArguments();
+				
+							elementsOfConstraintsOfClass = generateElementsOfFormulaConstraint(argsOfConditional,
+									argsOfQueryAtom);
+				
+							argsOfClass.addAll(elementsOfConstraintsOfClass);
+				
+							System.out.println("elementsofConstraintelse" + elementsOfConstraintsOfClass.toString());
+							System.out.println("argsofclasselse" + argsOfClass.toString());
+							Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(argsOfClass);
+							listOfConstraints.add(conjunction);
+							System.out.println("listOfConstraintselse" + listOfConstraints.toString());
+				
+						}
+						if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
+							predicateMore = true;
+						}
+				
+					}
+					
+					
+				*/
+
+				argsOfClass = new HashSet<Formula<AtomicConstraint>>();
+
+				listOfConstraints = new ArrayList<>();
+				for (Iterator<Atom<RelationalAtom>> element = atomOfCondtional.iterator(); element.hasNext();) {
+					Atom<RelationalAtom> atom = (Atom<RelationalAtom>) element.next();
+					listOfConstraints = new ArrayList<>();
+
+					elementsOfConstraintsOfClass = null;
+
+					for (Iterator<Atom<RelationalAtom>> iteratorOfQuery = atomsOfQuery.iterator(); iteratorOfQuery
+							.hasNext();) {
+						Atom<RelationalAtom> atomOfQuery = (Atom<RelationalAtom>) iteratorOfQuery.next();
+
 						if (((RelationalAtom) atom).getPredicate()
 								.equals(((RelationalAtom) atomOfQuery).getPredicate())) {
 
@@ -676,25 +717,29 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 							argsOfClass.addAll(elementsOfConstraintsOfClass);
 
-							System.out.println("elementsofConstraint" + elementsOfConstraintsOfClass.toString());
-							System.out.println("argsofclass" + argsOfClass.toString());
-							Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(argsOfClass);
-							listOfConstraints.add(conjunction);
-							System.out.println("listOfConstraints" + listOfConstraints.toString());
+							//System.out.println("elementsofConstraintelse" + elementsOfConstraintsOfClass.toString());
+							//System.out.println("argsofclasselse" + argsOfClass.toString());
 
-						}
-						if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
-							predicateMore = true;
 						}
 
 					}
-					if (argsOfClass.size() > 1) {
-						constraintTemp = generateDisjunctionConstraint(listOfConstraints);
-						System.out.println("constemp" + constraintTemp.toString());
+					Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(argsOfClass);
+					listOfConstraints.add(conjunction);
+					//System.out.println("listOfCondconsselse" + listOfConstraints.toString());
+
+					if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
+						predicateMore = true;
 					}
+
 				}
+				listOfConjunctions.addAll(listOfConstraints);
+				//System.out.println("listofConjunctions" + listOfConjunctions.toString());
 
-			}
+				if (listOfConjunctions.size() > 1) {
+					constraintTemp = generateDisjunctionConstraint(listOfConjunctions);
+					System.out.println("constemp" + constraintTemp.toString());
+				}
+			} //endelse
 
 		}
 
