@@ -72,6 +72,7 @@ public class ClasssifyTest extends AbstractQueryTest {
 		otherCollection.add(sylvesterCond);
 		otherCollection.add(kirbyCond);
 		otherCollection.add(bullyCond);
+
 		classifications.add(otherCollection);
 		classifications.add(tweetyCollection);
 

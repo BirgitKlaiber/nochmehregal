@@ -218,6 +218,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		} else {
 			//there are more than two classes
+			System.out.println("mehr Klassen");
 			for (Iterator<Collection<RelationalConditional>> iterator = classifiedClasses.iterator(); iterator
 					.hasNext();) {
 				Collection<RelationalConditional> classification = iterator.next();
@@ -718,11 +719,28 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 							argsOfClass.addAll(elementsOfConstraintsOfClass);
 
 							//System.out.println("elementsofConstraintelse" + elementsOfConstraintsOfClass.toString());
-							//System.out.println("argsofclasselse" + argsOfClass.toString());
+							System.out.println("argsofclasselse" + argsOfClass.toString());
 
 						}
 
 					}
+					HashSet<Formula<AtomicConstraint>> argsOfClass2 = new HashSet<Formula<AtomicConstraint>>();
+					for (Iterator iterator1 = argsOfClass.iterator(); iterator1.hasNext();) {
+						Formula<AtomicConstraint> formula1 = (Formula<AtomicConstraint>) iterator1.next();
+
+						for (Iterator iterator2 = argsOfClass.iterator(); iterator2.hasNext();) {
+							Formula<AtomicConstraint> formula2 = (Formula<AtomicConstraint>) iterator2.next();
+							if (formula1.toString().equals(formula2.toString())) {
+								System.out.println("a");
+								argsOfClass2.add(formula1);
+								System.out.println("args2" + argsOfClass2);
+							} else {
+								System.out.println("b");
+							}
+
+						}
+					}
+
 					Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(argsOfClass);
 					listOfConstraints.add(conjunction);
 					//System.out.println("listOfCondconsselse" + listOfConstraints.toString());
@@ -737,7 +755,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 				if (listOfConjunctions.size() > 1) {
 					constraintTemp = generateDisjunctionConstraint(listOfConjunctions);
-					System.out.println("constemp" + constraintTemp.toString());
+					if (constraintTemp != null) {
+						System.out.println("constemp" + constraintTemp.toString());
+					}
 				}
 			} //endelse
 
@@ -1147,23 +1167,23 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			Term[] argsOfQueryAtom) {
 
 		//ArrayList<Formula<AtomicConstraint>> listOfConstraints = new ArrayList<Formula<AtomicConstraint>>();
-		HashSet<Formula<AtomicConstraint>> setOfEqualityConstraints = new HashSet<Formula<AtomicConstraint>>();
+		HashSet<EqualityConstraint> setOfEqualityConstraints = new HashSet<EqualityConstraint>();
+		HashSet<Formula<AtomicConstraint>> setOfFormula = new HashSet<Formula<AtomicConstraint>>();
 
 		for (int i = 0; i < argsOfCond.length; i++) {
 
 			Variable var = new Variable(argsOfQueryAtom[i].toString(), argsOfQueryAtom[i].getType());
 			Constant cons = new Constant(argsOfCond[i].toString(), argsOfCond[i].getType());
 			EqualityConstraint equalConstraint = new EqualityConstraint(var, cons);
+
 			setOfEqualityConstraints.add(equalConstraint);
 
 		}
 
-		//Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(listOfEqualityConstraints);
-		//listOfConstraints.add(conjunction);
+		setOfFormula.addAll(setOfEqualityConstraints);
 
-		//generate the negative reflexive Constraint
-
-		return setOfEqualityConstraints;
+		//return setOfEqualityConstraints;
+		return setOfFormula;
 	}
 
 	/**
