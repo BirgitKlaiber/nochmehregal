@@ -68,6 +68,10 @@ public class BirdsTest extends AbstractQueryTest {
 
 		assertEquals(generalizations.size(), generalizedClasses.size());
 
+		System.out.println("Negative Generalisierung: ");
+		System.out.println("Erwartete Ausgabe: " + generalizations.toString());
+		System.out.println("Ausgabe der Komponente: " + generalizations.toString());
+
 	}
 
 	@Test
@@ -90,6 +94,10 @@ public class BirdsTest extends AbstractQueryTest {
 
 		assertEquals(generalizations.size(), generalizedClasses.size());
 
+		System.out.println("Positive Generalisierung: ");
+		System.out.println("Erwartete Ausgabe: " + generalizations.toString());
+		System.out.println("Ausgabe der Komponente: " + generalizations.toString());
+
 	}
 
 	//Tests if the generalization produces the results expected.
@@ -107,6 +115,10 @@ public class BirdsTest extends AbstractQueryTest {
 		assertEquals(generalizations.elementAt(1), generalization.elementAt(1).toString());
 
 		assertEquals(generalizations.size(), generalization.size());
+
+		System.out.println("Generalisierung: ");
+		System.out.println("Erwartete Ausgabe: " + generalizations.toString());
+		System.out.println("Ausgabe der Komponente: " + generalizations.toString());
 
 	}
 

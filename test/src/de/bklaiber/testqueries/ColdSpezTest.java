@@ -49,10 +49,13 @@ public class ColdSpezTest extends AbstractQueryTest {
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
 				generalization.generalizePositive(queries.elementAt(0), classifiedClasses));
 
+		System.out.println("Erwartete Ausgabe: " + generalizations.toString());
+		System.out.println("Ausgabe der Komponente: " + generalizations.toString());
 		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
 		assertEquals(generalizations.elementAt(2), generalizedClasses.elementAt(2).toString());
 		assertEquals(generalizations.size(), generalizedClasses.size());
+
 	}
 
 	/**
