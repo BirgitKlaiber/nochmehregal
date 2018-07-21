@@ -34,28 +34,6 @@ public class FriendshipTest extends AbstractQueryTest {
 	}
 
 	@Test
-	public void checkGeneralizationNegative() {
-		Vector<String> generalizations = new Vector<String>();
-
-		generalizations.addElement("(likes(U,V))[0.0]<U=V>");
-		generalizations.addElement("(likes(U,V))[0.6193173107763108]<U!=V>");
-
-		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
-		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
-				groundInstances);
-		CanonicalMinimumGeneralization generalization = (CanonicalMinimumGeneralization) inference.getGeneralization();
-
-		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
-				generalization.generalizeNegative(queries.elementAt(0), classifiedClasses, groundInstances));
-
-		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
-		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
-
-		assertEquals(generalizations.size(), generalizedClasses.size());
-
-	}
-
-	@Test
 	public void checkGeneralizationPositive() {
 		Vector<String> generalizations = new Vector<String>();
 
@@ -74,6 +52,34 @@ public class FriendshipTest extends AbstractQueryTest {
 		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
 
 		assertEquals(generalizations.size(), generalizedClasses.size());
+		System.out.println("Positive Generalisierung: ");
+		System.out.println("Erwartete Ausgabe: " + generalizations.toString());
+		System.out.println("Ausgabe der Komponente: " + generalizations.toString());
+
+	}
+
+	@Test
+	public void checkGeneralizationNegative() {
+		Vector<String> generalizations = new Vector<String>();
+
+		generalizations.addElement("(likes(U,V))[0.0]<U=V>");
+		generalizations.addElement("(likes(U,V))[0.6193173107763108]<U!=V>");
+
+		Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
+		Collection<Collection<RelationalConditional>> classifiedClasses = inference.classify(queries.elementAt(0),
+				groundInstances);
+		CanonicalMinimumGeneralization generalization = (CanonicalMinimumGeneralization) inference.getGeneralization();
+
+		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
+				generalization.generalizeNegative(queries.elementAt(0), classifiedClasses, groundInstances));
+
+		assertEquals(generalizations.elementAt(0), generalizedClasses.elementAt(0).toString());
+		assertEquals(generalizations.elementAt(1), generalizedClasses.elementAt(1).toString());
+
+		assertEquals(generalizations.size(), generalizedClasses.size());
+		System.out.println("Negative Generalisierung: ");
+		System.out.println("Erwartete Ausgabe: " + generalizations.toString());
+		System.out.println("Ausgabe der Komponente: " + generalizations.toString());
 
 	}
 
@@ -93,6 +99,9 @@ public class FriendshipTest extends AbstractQueryTest {
 		assertEquals(generalizations.elementAt(0), generalization.elementAt(0).toString());
 		assertEquals(generalizations.elementAt(1), generalization.elementAt(1).toString());
 		assertEquals(generalizations.size(), generalization.size());
+		System.out.println("Generalisierung: ");
+		System.out.println("Erwartete Ausgabe: " + generalizations.toString());
+		System.out.println("Ausgabe der Komponente: " + generalizations.toString());
 
 	}
 
