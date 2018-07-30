@@ -119,13 +119,13 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			Fraction probabilityOne = getProbabilitiesOfClass(classificationOne);
 			RelationalConditional generalizationOfClass = generateConditionalForOne(c, probabilityOne);
 			generalization.add(generalizationOfClass);
-			System.out.println(generalization.toString());
+			//System.out.println(generalization.toString());
 		}
 
 		Iterator<Collection<RelationalConditional>> iteratorTwoClasses = classifiedClasses.iterator();
 		Collection<RelationalConditional> classificationTwo = iteratorTwoClasses.next();
 
-		System.out.println(classifiedClasses.toString());
+		//System.out.println(classifiedClasses.toString());
 		//if there are only two classes
 		if (classifiedClasses.size() == 2) {
 
@@ -251,7 +251,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			}
 
 		}
-		System.out.println("generalisation" + generalization.toString());
+		System.out.println("generalisationPositive" + generalization.toString());
 		return generalization;
 
 	}//endofgeneralizePositive
@@ -291,7 +291,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			Fraction probabilityOne = getProbabilitiesOfClass(classificationOne);
 			RelationalConditional generalizationOfClass = generateConditionalForOne(c, probabilityOne);
 			generalization.add(generalizationOfClass);
-			System.out.println(generalization.toString());
+
 		}
 		Iterator<Collection<RelationalConditional>> iteratorTwoClasses = classifiedClasses.iterator();
 		Collection<RelationalConditional> classificationTwo = iteratorTwoClasses.next();
@@ -486,6 +486,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 			}
 
 		} //end else
+		System.out.println("generalisation negative" + generalization.toString());
 		return generalization;
 	}
 
@@ -565,13 +566,13 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 						//elementsOfConstraintsOfClass = generateElementsOfConstraint(argsOfConditional, argsOfQueryAtom);
 						argsOfClass.addAll(elementsOfConstraintsOfClass);
-						System.out.println("elementsofConstraint" + argsOfClass.toString());
+						//System.out.println("elementsofConstraint" + argsOfClass.toString());
 
 					}
 
 					if (argsOfClass.size() > 1) {
 						constraintTemp = generateDisjunctionConstraint(argsOfClass);
-						System.out.println("constemp" + constraintTemp.toString());
+						//System.out.println("constemp" + constraintTemp.toString());
 					}
 					if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
 						predicateMore = true;
@@ -639,14 +640,14 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 							//Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(argsOfClass);
 							//listOfConstraints.add(conjunction);
-							System.out.println("elementsofConstraintif" + argsOfClass.toString());
-							System.out.println("argsofclassif" + argsOfClass.toString());
+							//System.out.println("elementsofConstraintif" + argsOfClass.toString());
+							//System.out.println("argsofclassif" + argsOfClass.toString());
 
 						}
 
 						if (argsOfClass.size() > 1) {
 							constraintTemp = generateDisjunctionConstraint(argsOfClass);
-							System.out.println("constemp" + constraintTemp.toString());
+							//System.out.println("constemp" + constraintTemp.toString());
 						}
 						if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
 							predicateMore = true;
@@ -719,7 +720,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 							argsOfClass.addAll(elementsOfConstraintsOfClass);
 
 							//System.out.println("elementsofConstraintelse" + elementsOfConstraintsOfClass.toString());
-							System.out.println("argsofclasselse" + argsOfClass.toString());
+							//System.out.println("argsofclasselse" + argsOfClass.toString());
 
 						}
 
@@ -731,11 +732,10 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 						for (Iterator iterator2 = argsOfClass.iterator(); iterator2.hasNext();) {
 							Formula<AtomicConstraint> formula2 = (Formula<AtomicConstraint>) iterator2.next();
 							if (formula1.toString().equals(formula2.toString())) {
-								System.out.println("a");
 								argsOfClass2.add(formula1);
-								System.out.println("args2" + argsOfClass2);
+
 							} else {
-								System.out.println("b");
+
 							}
 
 						}
@@ -756,7 +756,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				if (listOfConjunctions.size() > 1) {
 					constraintTemp = generateDisjunctionConstraint(listOfConjunctions);
 					if (constraintTemp != null) {
-						System.out.println("constemp" + constraintTemp.toString());
+
 					}
 				}
 			} //endelse
