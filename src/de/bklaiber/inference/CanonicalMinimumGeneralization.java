@@ -218,7 +218,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		} else {
 			//there are more than two classes
-			System.out.println("mehr Klassen");
+
 			for (Iterator<Collection<RelationalConditional>> iterator = classifiedClasses.iterator(); iterator
 					.hasNext();) {
 				Collection<RelationalConditional> classification = iterator.next();
@@ -719,9 +719,6 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 							argsOfClass.addAll(elementsOfConstraintsOfClass);
 
-							//System.out.println("elementsofConstraintelse" + elementsOfConstraintsOfClass.toString());
-							//System.out.println("argsofclasselse" + argsOfClass.toString());
-
 						}
 
 					}
@@ -835,6 +832,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Formula<AtomicConstraint> constraintTemp = null;
 		Boolean predicateMore = false;
 		Term[] args = null;
+		ArrayList<Term> allArgs = new ArrayList<Term>();
 
 		for (Iterator<Atom<RelationalAtom>> iterator = atomsOfQuery.iterator(); iterator.hasNext();) {
 			Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
@@ -843,10 +841,13 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				predicateMore = true;
 			}
 			args = ((RelationalAtom) atom).getArguments();
+			for (int i = 0; i < args.length; i++) {
+				allArgs.add(args[i]);
+			}
 
 		}
 
-		elementsOfConstraintsOfClass = generateElementsOfSpecificConstraint(args, constants);
+		elementsOfConstraintsOfClass = generateElementsOfSpecificConstraint(allArgs, constants);
 		constraintTemp = generateDisjunctionConstraint(elementsOfConstraintsOfClass);
 
 		if (predicateMore) {
@@ -860,16 +861,23 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 	}
 
-	private ArrayList<Formula<AtomicConstraint>> generateElementsOfSpecificConstraint(Term[] argsOfQueryAtom,
+	private ArrayList<Formula<AtomicConstraint>> generateElementsOfSpecificConstraint(ArrayList<Term> allArgs,
 			Collection<Constant> constants) {
 
 		ArrayList<Formula<AtomicConstraint>> listOfConstraints = new ArrayList<Formula<AtomicConstraint>>();
 
-		for (int i = 0; i < argsOfQueryAtom.length; i++) {
-			for (Iterator<Constant> iterator = constants.iterator(); iterator.hasNext();) {
-				Constant c = iterator.next();
-				Variable var = new Variable(argsOfQueryAtom[i].toString(), argsOfQueryAtom[i].getType());
+		HashSet<Term> allArgsSet = new HashSet<>();
+		for (Term term : allArgs) {
+			allArgsSet.add(term);
+		}
+
+		for (Term term : allArgsSet) {
+
+			Variable var = new Variable(term.toString(), term.getType());
+			for (Iterator<Constant> iterator2 = constants.iterator(); iterator2.hasNext();) {
+				Constant c = iterator2.next();
 				EqualityConstraint atomicConstraint = new EqualityConstraint(var, c);
+
 				listOfConstraints.add(atomicConstraint);
 
 			}
@@ -895,6 +903,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		Formula<AtomicConstraint> constraintTemp = null;
 		Boolean predicateMore = false;
 		Term[] args = null;
+		ArrayList<Term> allArgs = new ArrayList<Term>();
 
 		for (Iterator<Atom<RelationalAtom>> iterator = atomsOfQuery.iterator(); iterator.hasNext();) {
 			Atom<RelationalAtom> atom = (Atom<RelationalAtom>) iterator.next();
@@ -903,10 +912,12 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				predicateMore = true;
 			}
 			args = ((RelationalAtom) atom).getArguments();
-
+			for (int i = 0; i < args.length; i++) {
+				allArgs.add(args[i]);
+			}
 		}
 
-		elementsOfConstraintsOfClass = generateElementsOfSpecificNegativeConstraint(args, constants);
+		elementsOfConstraintsOfClass = generateElementsOfSpecificNegativeConstraint(allArgs, constants);
 		constraintTemp = generateConjunctionConstraint(elementsOfConstraintsOfClass);
 
 		if (predicateMore) {
@@ -922,18 +933,24 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	/**
 	 * Generates the elements of a specific negative Constraint
 	 * 
-	 * @param argsOfQueryAtom
+	 * @param allArgs
 	 * @param constants
 	 * @return
 	 */
-	private ArrayList<Formula<AtomicConstraint>> generateElementsOfSpecificNegativeConstraint(Term[] argsOfQueryAtom,
+	private ArrayList<Formula<AtomicConstraint>> generateElementsOfSpecificNegativeConstraint(ArrayList<Term> allArgs,
 			Collection<Constant> constants) {
 		ArrayList<Formula<AtomicConstraint>> listOfConstraints = new ArrayList<Formula<AtomicConstraint>>();
 
-		for (int i = 0; i < argsOfQueryAtom.length; i++) {
+		HashSet<Term> allArgsSet = new HashSet<>();
+		for (Term term : allArgs) {
+			allArgsSet.add(term);
+		}
+
+		for (Term term : allArgsSet) {
+			Variable var = new Variable(term.toString(), term.getType());
 			for (Iterator<Constant> iterator = constants.iterator(); iterator.hasNext();) {
 				Constant c = iterator.next();
-				Variable var = new Variable(argsOfQueryAtom[i].toString(), argsOfQueryAtom[i].getType());
+
 				InequalityConstraint atomicConstraint = new InequalityConstraint(var, c);
 				listOfConstraints.add(atomicConstraint);
 
