@@ -696,6 +696,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 				*/
 
 				argsOfClass = new HashSet<Formula<AtomicConstraint>>();
+				HashSet<Formula<AtomicConstraint>> argsOfClass2 = new HashSet<Formula<AtomicConstraint>>();
 
 				listOfConstraints = new ArrayList<>();
 				for (Iterator<Atom<RelationalAtom>> element = atomOfCondtional.iterator(); element.hasNext();) {
@@ -717,29 +718,56 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 							elementsOfConstraintsOfClass = generateElementsOfFormulaConstraint(argsOfConditional,
 									argsOfQueryAtom);
 
-							argsOfClass.addAll(elementsOfConstraintsOfClass);
+							for (Formula<AtomicConstraint> e1 : elementsOfConstraintsOfClass) {
+								e1 = (EqualityConstraint) e1;
+								boolean isNotEqual = false;
+								if (argsOfClass.size() > 0) {
+									for (Formula<AtomicConstraint> e2 : argsOfClass) {
+										e2 = (EqualityConstraint) e2;
 
-						}
-
-					}
-					HashSet<Formula<AtomicConstraint>> argsOfClass2 = new HashSet<Formula<AtomicConstraint>>();
-					for (Iterator iterator1 = argsOfClass.iterator(); iterator1.hasNext();) {
-						Formula<AtomicConstraint> formula1 = (Formula<AtomicConstraint>) iterator1.next();
-
-						for (Iterator iterator2 = argsOfClass.iterator(); iterator2.hasNext();) {
-							Formula<AtomicConstraint> formula2 = (Formula<AtomicConstraint>) iterator2.next();
-							if (formula1.toString().equals(formula2.toString())) {
-								argsOfClass2.add(formula1);
-
-							} else {
-
+										if (!((AtomicConstraint) e1).getT2().equals(((AtomicConstraint) e2).getT2())) {
+											isNotEqual = true;
+											//argsOfClass.add(e1);
+										} else {
+											isNotEqual = false;
+										}
+									}
+									if (isNotEqual) {
+										argsOfClass.add(e1);
+									}
+								} else {
+									argsOfClass.add(e1);
+								}
 							}
 
-						}
-					}
+							/*if (elementsOfConstraintsOfClass.size() == 1) {
+								argsOfClass.addAll(elementsOfConstraintsOfClass);
+							}*/
 
-					Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(argsOfClass);
-					listOfConstraints.add(conjunction);
+						}
+
+					}
+					//HashSet<Formula<AtomicConstraint>> argsOfClass2 = new HashSet<Formula<AtomicConstraint>>();
+					//for (Iterator iterator1 = argsOfClass.iterator(); iterator1.hasNext();) {
+					/*Iterator iterator1 = argsOfClass.iterator();
+					
+					Formula<AtomicConstraint> formula1 = (Formula<AtomicConstraint>) iterator1.next();
+					argsOfClass2.add(formula1);
+					for (Iterator iterator2 = argsOfClass.iterator(); iterator2.hasNext();) {
+					
+						Formula<AtomicConstraint> formula2 = (Formula<AtomicConstraint>) iterator2.next();
+						if (!formula1.equals(formula2)) {
+							argsOfClass2.add(formula2);
+					
+						} else {
+					
+						}
+					
+					}*/
+					//}
+
+					//Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(argsOfClass);
+					//listOfConstraints.add(conjunction);
 					//System.out.println("listOfCondconsselse" + listOfConstraints.toString());
 
 					if (((RelationalAtom) atom).getPredicate().getArity() > 1) {
@@ -747,6 +775,11 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					}
 
 				}
+				//Formula<AtomicConstraint> conjunction2 = generateConjunctionConstraint(argsOfClass2);
+				//.out.println("conjunction2" + conjunction2);
+
+				Formula<AtomicConstraint> conjunction = generateConjunctionConstraint(argsOfClass);
+				listOfConstraints.add(conjunction);
 				listOfConjunctions.addAll(listOfConstraints);
 				//System.out.println("listofConjunctions" + listOfConjunctions.toString());
 
@@ -760,7 +793,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 
 		}
 
-		if (predicateMore) {
+		if (predicateMore)
+
+		{
 			Formula<AtomicConstraint> reflexiveNegativeConstraint = generateReflexiveNegativeConstraint(atomsOfQuery);
 			constraint = new Conjunction<>(constraintTemp, reflexiveNegativeConstraint);
 		} else {
@@ -1271,14 +1306,14 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 	/**
 	 * Test if a class is reflexive (i.e. likes(a, a), likes (b, b), likes (c,
 	 * c))
-	 */
-	public boolean isReflexiveAlt(Collection<RelationalConditional> classifiedClass) {
-
+	 *//*
+		public boolean isReflexiveAlt(Collection<RelationalConditional> classifiedClass) {
+		
 		boolean isreflexive = true;
-
+		
 		//if for each Relational Conditionals the constants are equal and the computed probability= 0.0 then the class is reflexive
 		//for instance likes(a,a), likes(b,b), likes(c,c)
-
+		
 		//for each of the conditionals of the class get the atoms 
 		//for instance likes(a,a), likes(b,b), likes(c,c)
 		for (Iterator<RelationalConditional> iterator = classifiedClass.iterator(); iterator.hasNext();) {
@@ -1296,30 +1331,24 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					break;
 				}
 				for (int i = 0; i < arguments.length - 1; i++) {
-
+		
 					if (!(arguments[0].equals(arguments[i + 1]))) {
-
+		
 						isreflexive = false;
-
+		
 					}
-
+		
 				}
 				if (dprob != 0.0 && isreflexive) {
 					isreflexive = false;
 				}
-
+		
 			}
 		}
-
-		/*if ((getProbabilitiesOfClass(classifiedClass)).toFloatingPoint() == 0.0)
-			return true;
-		else
-			return false;
-		*/
-
+		
 		return isreflexive;
-	}
-
+		}
+		*/
 	/**
 	 * Test if a class is reflexive (i.e. likes(a, a), likes (b, b), likes (c,
 	 * c))
@@ -1356,18 +1385,9 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 					}
 
 				}
-				/*if (dprob != 0.0 && isreflexive) {
-					isreflexive = false;
-				}*/
 
 			}
 		}
-
-		/*if ((getProbabilitiesOfClass(classifiedClass)).toFloatingPoint() == 0.0)
-			return true;
-		else
-			return false;
-		*/
 
 		return isreflexive;
 	}
