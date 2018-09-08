@@ -37,10 +37,10 @@ public class GeneralizeColdSpezTest {
 
 		Vector<String> generalizations = new Vector<String>();
 
-		generalizations.addElement("(contact(X,Y) * cold(Y))[0.03588]<((X=carl * Y=bob) + (X=bob * Y=carl) * X!=Y>");
-		generalizations.addElement("(contact(X,Y) * cold(Y))[0.0]<X=Y>");
 		generalizations.addElement(
-				"(contact(X,Y) * cold(Y))[0.020752]<((((X=carl * Y=anna) + (X=anna * Y=carl)) + (X=bob * Y=anna)) + (X=bob * Y=carl)) * X!=Y>");
+				"(contact(X,Y) * cold(Y))[0.03588]<((((X=carl * Y=anna + X=anna * Y=carl) + Y=anna * X=bob) + X=anna * Y=bob) * X!=Y)>");
+		generalizations.addElement("(contact(X,Y) * cold(Y))[0.0]<X=Y>");
+		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752]<((X=bob * Y=carl + Y=bob * X=carl) * X!=Y)>");
 
 		/*Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
 		Collection<Collection<RelationalConditional>> classifiedClasses2 = inference.classify(queries.elementAt(0),
@@ -72,11 +72,11 @@ public class GeneralizeColdSpezTest {
 		LinkedList lits9 = new LinkedList<>();
 
 		Term[] arguments11 = new Term[2];
-		arguments11[0] = new Constant("anna", person);
-		arguments11[1] = new Constant("carl", person);
+		arguments11[0] = new Constant("carl", person);
+		arguments11[1] = new Constant("anna", person);
 
 		Term[] arguments12 = new Term[1];
-		arguments12[0] = new Constant("carl", person);
+		arguments12[0] = new Constant("anna", person);
 
 		Literal literal_11 = new Literal<>(new RelationalAtom(contact, arguments11), positive);
 		Literal literal_12 = new Literal<>(new RelationalAtom(cold, arguments12), positive);
@@ -86,19 +86,16 @@ public class GeneralizeColdSpezTest {
 
 		Term[] arguments21 = new Term[2];
 		arguments21[0] = new Constant("anna", person);
-		arguments21[1] = new Constant("bob", person);
+		arguments21[1] = new Constant("carl", person);
 
 		Term[] arguments22 = new Term[1];
-		arguments22[0] = new Constant("bob", person);
+		arguments22[0] = new Constant("carl", person);
 
 		Literal literal_21 = new Literal<>(new RelationalAtom(contact, arguments21), positive);
 		Literal literal_22 = new Literal<>(new RelationalAtom(cold, arguments22), positive);
 
-		lits2.add(literal_21);
-		lits2.add(literal_22);
-
 		Term[] arguments31 = new Term[2];
-		arguments31[0] = new Constant("carl", person);
+		arguments31[0] = new Constant("bob", person);
 		arguments31[1] = new Constant("anna", person);
 
 		Term[] arguments32 = new Term[1];
@@ -106,6 +103,9 @@ public class GeneralizeColdSpezTest {
 
 		Literal literal_31 = new Literal<>(new RelationalAtom(contact, arguments31), positive);
 		Literal literal_32 = new Literal<>(new RelationalAtom(cold, arguments32), positive);
+
+		lits2.add(literal_21);
+		lits2.add(literal_22);
 
 		lits3.add(literal_31);
 		lits3.add(literal_32);
@@ -137,11 +137,11 @@ public class GeneralizeColdSpezTest {
 		lits5.add(literal_52);
 
 		Term[] arguments61 = new Term[2];
-		arguments61[0] = new Constant("bob", person);
-		arguments61[1] = new Constant("anna", person);
+		arguments61[0] = new Constant("anna", person);
+		arguments61[1] = new Constant("bob", person);
 
 		Term[] arguments62 = new Term[1];
-		arguments62[0] = new Constant("anna", person);
+		arguments62[0] = new Constant("bob", person);
 
 		Literal literal_61 = new Literal<>(new RelationalAtom(contact, arguments61), positive);
 		Literal literal_62 = new Literal<>(new RelationalAtom(cold, arguments62), positive);
@@ -262,8 +262,8 @@ public class GeneralizeColdSpezTest {
 
 		Vector<String> generalizations = new Vector<String>();
 
-		generalizations.addElement("(contact(X,Y) * cold(Y))[0.03588]<((X!=anna * Y!=anna) * X!=Y>");
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.0]<X=Y>");
+		generalizations.addElement("(contact(X,Y) * cold(Y))[0.03588]<((X!=anna * Y!=anna) * X!=Y>");
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752]<(X=anna + Y=anna) * X!=Y>");
 
 		/*Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
