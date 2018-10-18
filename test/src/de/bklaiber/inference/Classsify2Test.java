@@ -81,7 +81,6 @@ public class Classsify2Test extends AbstractQueryTest {
 		System.out.println(classifiedClasses.toString());
 
 		assertEquals(classifications.toString(), classifiedClasses.toString());
-		//assertEquals(classifications, classifiedClasses);
 
 		assertEquals(classifications.size(), classifiedClasses.size());
 

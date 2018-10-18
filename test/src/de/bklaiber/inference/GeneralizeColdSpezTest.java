@@ -42,10 +42,6 @@ public class GeneralizeColdSpezTest {
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.0]<X=Y>");
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752]<((X=bob * Y=carl + Y=bob * X=carl) * X!=Y)>");
 
-		/*Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
-		Collection<Collection<RelationalConditional>> classifiedClasses2 = inference.classify(queries.elementAt(0),
-				groundInstances);*/
-
 		Collection<Collection<RelationalConditional>> classifiedClasses = new Vector<>();
 		Collection<RelationalConditional> classifiedClass1 = new Vector<>();
 		Collection<RelationalConditional> classifiedClass2 = new Vector<>();
@@ -266,10 +262,6 @@ public class GeneralizeColdSpezTest {
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.03588]<((X!=anna * Y!=anna) * X!=Y>");
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752]<(X=anna + Y=anna) * X!=Y>");
 
-		/*Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
-		Collection<Collection<RelationalConditional>> classifiedClasses2 = inference.classify(queries.elementAt(0),
-				groundInstances);*/
-
 		Collection<Collection<RelationalConditional>> classifiedClasses = new Vector<>();
 		Collection<RelationalConditional> classifiedClass1 = new Vector<>();
 		Collection<RelationalConditional> classifiedClass2 = new Vector<>();
@@ -466,8 +458,6 @@ public class GeneralizeColdSpezTest {
 		literals.add(literal_101);
 		literals.add(literal_102);
 
-		//TODO kb
-
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(generalization
 				.generalizeNegative(new RelationalFact(new ElementaryConjunction<>(literals), Tautology.create()),
 						classifiedClasses, classifiedClass3));
@@ -493,10 +483,6 @@ public class GeneralizeColdSpezTest {
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.03588]<((X!=anna * Y!=anna) * X!=Y>");
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.0]<X=Y>");
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752]<(X=anna + Y=anna) * X!=Y>");
-
-		/*Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
-		Collection<Collection<RelationalConditional>> classifiedClasses2 = inference.classify(queries.elementAt(0),
-				groundInstances);*/
 
 		Collection<Collection<RelationalConditional>> classifiedClasses = new Vector<>();
 		Collection<RelationalConditional> classifiedClass1 = new Vector<>();
@@ -693,7 +679,7 @@ public class GeneralizeColdSpezTest {
 
 		literals.add(literal_101);
 		literals.add(literal_102);
-		//TODO kb
+
 		Vector<RelationalConditional> generalizedClasses = new Vector<RelationalConditional>(
 				generalization.generalize(new RelationalFact(new ElementaryConjunction<>(literals), Tautology.create()),
 						classifiedClasses, classifiedClass3));

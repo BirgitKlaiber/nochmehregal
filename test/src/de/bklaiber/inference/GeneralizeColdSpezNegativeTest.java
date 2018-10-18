@@ -42,10 +42,6 @@ public class GeneralizeColdSpezNegativeTest {
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.03588]<((X=anna + Y=anna) * X!=Y)>");
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752]<(X!=anna * Y!=anna * X!=Y)>");
 
-		/*Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
-		Collection<Collection<RelationalConditional>> classifiedClasses2 = inference.classify(queries.elementAt(0),
-				groundInstances);*/
-
 		Collection<Collection<RelationalConditional>> classifiedClasses = new Vector<>();
 		Collection<RelationalConditional> classifiedClass1 = new Vector<>();
 		Collection<RelationalConditional> classifiedClass2 = new Vector<>();

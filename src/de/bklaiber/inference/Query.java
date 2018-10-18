@@ -37,7 +37,8 @@ import edu.cs.ai.log4KR.structuredLogics.satisfiability.SatisfiabilityTestOjAlgo
 /**
  * 
  * 
- * This class is necessary to query the kb. It contains the main method.
+ * This class is necessary to query the kb. It contains the main method for the
+ * experiments; is no longer in use for the component.
  * 
  * @author klaiber
  *

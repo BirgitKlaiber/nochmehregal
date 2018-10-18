@@ -40,10 +40,6 @@ public class GeneralizeColdTest {
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.0]<X=Y>");
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752]<X!=Y>");
 
-		/*Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
-		Collection<Collection<RelationalConditional>> classifiedClasses2 = inference.classify(queries.elementAt(0),
-				groundInstances);*/
-
 		Collection<Collection<RelationalConditional>> classifiedClasses = new Vector<>();
 		Collection<RelationalConditional> classifiedClass1 = new Vector<>();
 		Collection<RelationalConditional> classifiedClass2 = new Vector<>();
@@ -80,9 +76,6 @@ public class GeneralizeColdTest {
 
 		lits1.add(literal_11);
 		lits1.add(literal_12);
-
-		//lits1.add(new RelationalAtom(contact, arguments11));
-		//lits1.add(new RelationalAtom(cold, arguments12));
 
 		Term[] arguments21 = new Term[2];
 		arguments21[0] = new Constant("anna", person);
@@ -263,10 +256,6 @@ public class GeneralizeColdTest {
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.0]<X=Y>");
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752]<X!=Y>");
 
-		/*Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
-		Collection<Collection<RelationalConditional>> classifiedClasses2 = inference.classify(queries.elementAt(0),
-				groundInstances);*/
-
 		Collection<Collection<RelationalConditional>> classifiedClasses = new Vector<>();
 		Collection<RelationalConditional> classifiedClass1 = new Vector<>();
 		Collection<RelationalConditional> classifiedClass2 = new Vector<>();
@@ -303,9 +292,6 @@ public class GeneralizeColdTest {
 
 		lits1.add(literal_11);
 		lits1.add(literal_12);
-
-		//lits1.add(new RelationalAtom(contact, arguments11));
-		//lits1.add(new RelationalAtom(cold, arguments12));
 
 		Term[] arguments21 = new Term[2];
 		arguments21[0] = new Constant("anna", person);
@@ -485,10 +471,6 @@ public class GeneralizeColdTest {
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.0]<X=Y>");
 		generalizations.addElement("(contact(X,Y) * cold(Y))[0.020752]<X!=Y>");
 
-		/*Collection<RelationalConditional> groundInstances = inference.ground(queries.elementAt(0));
-		Collection<Collection<RelationalConditional>> classifiedClasses2 = inference.classify(queries.elementAt(0),
-				groundInstances);*/
-
 		Collection<Collection<RelationalConditional>> classifiedClasses = new Vector<>();
 		Collection<RelationalConditional> classifiedClass1 = new Vector<>();
 		Collection<RelationalConditional> classifiedClass2 = new Vector<>();
@@ -525,9 +507,6 @@ public class GeneralizeColdTest {
 
 		lits1.add(literal_11);
 		lits1.add(literal_12);
-
-		//lits1.add(new RelationalAtom(contact, arguments11));
-		//lits1.add(new RelationalAtom(cold, arguments12));
 
 		Term[] arguments21 = new Term[2];
 		arguments21[0] = new Constant("anna", person);

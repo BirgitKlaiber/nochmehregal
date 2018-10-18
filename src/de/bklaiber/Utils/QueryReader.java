@@ -11,8 +11,11 @@ import java.util.Set;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.kbParser.log4KRReader.Log4KRReader;
 import edu.cs.ai.log4KR.relational.probabilisticConditionalLogic.syntax.RelationalConditional;
 
-/*
- * this class is used to read from a textfile to initialize a knowledgebase and the queris.
+/**
+ * this class is used to read from a textfile to initialize a knowledgebase and
+ * the queris.
+ * 
+ * @return queries
  */
 public class QueryReader {
 	public static final String QUERY_PREFIX = "query";

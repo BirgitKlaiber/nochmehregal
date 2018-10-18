@@ -163,6 +163,8 @@ public class Inference {
 
 	/**
 	 * 
+	 * Grunds the query.
+	 *
 	 * @param c
 	 *            relational unconditioned conditional of the query
 	 * 
@@ -207,6 +209,11 @@ public class Inference {
 
 	}
 
+	/**
+	 * Returns the knowledgebase.
+	 * 
+	 * @return knowledgebase
+	 */
 	public Collection<RelationalConditional> getKnowledegbase() {
 		return kb;
 	}

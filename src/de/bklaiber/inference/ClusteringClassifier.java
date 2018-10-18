@@ -39,10 +39,21 @@ public class ClusteringClassifier extends AbstractClassifier {
 		return super.classify(probabilisticGroundInstances);
 	}
 
+	/**
+	 * Returns the algorithm
+	 * 
+	 * @return algorithm
+	 */
 	public ClusteringAlgorithm getAlgorithm() {
 		return algorithm;
 	}
 
+	/**
+	 * 
+	 * Sets the algorithm
+	 * 
+	 * @param algorithm
+	 */
 	public void setAlgorithm(ClusteringAlgorithm algorithm) {
 		this.algorithm = algorithm;
 	}

@@ -16,11 +16,18 @@ public class SimpleRoundingClassifier extends AbstractClassifier {
 
 	Fraction roundScale = null;
 
+	/**
+	 * Returns the scale for rounding.
+	 * 
+	 * @return roundscale
+	 */
 	public Fraction getRoundScale() {
 		return roundScale;
 	}
 
 	/**
+	 * 
+	 * Sets the scale for rounding.
 	 * 
 	 * @param roundScale
 	 *            must be 1/n.
@@ -34,6 +41,13 @@ public class SimpleRoundingClassifier extends AbstractClassifier {
 		roundScale = new Fraction(1, Integer.parseInt(properties.getProperty("roundScale", "100")));
 	}
 
+	/**
+	 * 
+	 * Tests if two probabilitys are equal
+	 * 
+	 * 
+	 * 
+	 */
 	@Override
 	public boolean isEquivalent(RelationalConditional probGroundInsA, RelationalConditional probGroundInsB,
 			Collection<RelationalConditional> probabilisticGroundInstances) {
@@ -44,6 +58,7 @@ public class SimpleRoundingClassifier extends AbstractClassifier {
 		return false;
 	}
 
+	//not implemented
 	@Override
 	public boolean isConfigurable() {
 		return true;

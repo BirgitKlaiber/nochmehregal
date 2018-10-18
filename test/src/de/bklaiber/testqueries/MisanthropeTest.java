@@ -54,11 +54,11 @@ public class MisanthropeTest extends AbstractQueryTest {
 		assertEquals(generalizations.elementAt(2), generalizedClasses.elementAt(2).toString());
 		assertEquals(generalizations.size(), generalizedClasses.size());
 
-		System.out.println("Positive Generalisierung: ");
-
-		System.out.println("Erwartete Ausgabe: " + generalizations.toString());
-		System.out.println("Ausgabe der Komponente: " + generalizations.toString());
-	}
+		/*	System.out.println("Positive Generalisierung: ");
+		
+			System.out.println("Erwartete Ausgabe: " + generalizations.toString());
+			System.out.println("Ausgabe der Komponente: " + generalizations.toString());
+		*/ }
 
 	/**
 	 * Tests if the generalization produces the results expected.
@@ -84,11 +84,11 @@ public class MisanthropeTest extends AbstractQueryTest {
 		assertEquals(generalizations.elementAt(2), generalizedClasses.elementAt(2).toString());
 		assertEquals(generalizations.size(), generalizedClasses.size());
 
-		System.out.println("Negative Generalisierung: ");
-
+		/*System.out.println("Negative Generalisierung: ");
+		
 		System.out.println("Erwartete Ausgabe: " + generalizations.toString());
 		System.out.println("Ausgabe der Komponente: " + generalizations.toString());
-	}
+		*/ }
 
 	/**
 	 * Tests if the generalization produces the results expected.
@@ -113,11 +113,11 @@ public class MisanthropeTest extends AbstractQueryTest {
 		assertEquals(generalizations.elementAt(2), generalizedClasses.elementAt(2).toString());
 		assertEquals(generalizations.size(), generalizedClasses.size());
 
-		System.out.println("Generalisierung: ");
-
+		/*System.out.println("Generalisierung: ");
+		
 		System.out.println("Erwartete Ausgabe: " + generalizations.toString());
 		System.out.println("Ausgabe der Komponente: " + generalizations.toString());
-	}
+		*/ }
 
 	/**
 	 * Tests if the runtime is below expected threshold.
