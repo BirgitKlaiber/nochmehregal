@@ -82,7 +82,7 @@ public class CanonicalMinimumGeneralization extends AbstractGeneralization {
 		default:
 			break;
 		}
-		System.out.println("Ausgabe der Komponente: " + generalization);
+		//System.out.println("Ausgabe der Komponente: " + generalization);
 		return generalization;
 
 	}
